@@ -1,7 +1,7 @@
-import 'package:bearlysocial/functions/getters/app_colors.dart';
-import 'package:bearlysocial/functions/getters/app_shadows.dart';
-import 'package:bearlysocial/widgets/buttons/colored_btn.dart';
-import 'package:bearlysocial/widgets/lines/horizontal_thin_line.dart';
+import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
+import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
+import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
+import 'package:bearlysocial/generic/widgets/lines/horizontal_thin_line.dart';
 import 'package:flutter/material.dart';
 
 class AccountRecovery extends StatefulWidget {

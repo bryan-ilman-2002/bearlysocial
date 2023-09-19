@@ -1,17 +1,22 @@
-import 'package:bearlysocial/functions/getters/app_colors.dart';
-import 'package:bearlysocial/functions/getters/app_shadows.dart';
-import 'package:bearlysocial/widgets/buttons/colored_btn.dart';
-import 'package:bearlysocial/widgets/modals/account_recovery.dart';
+import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
+import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
+import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
+import 'package:bearlysocial/specific/modals/account_recovery.dart';
 import 'package:flutter/material.dart';
 
-class SignUpAndSignIn extends StatefulWidget {
-  const SignUpAndSignIn({super.key});
+class SignIn extends StatefulWidget {
+  final Function(int) onTap;
+
+  const SignIn({
+    super.key,
+    required this.onTap,
+  });
 
   @override
-  State<SignUpAndSignIn> createState() => _SignUpAndSignInState();
+  State<SignIn> createState() => _SignInState();
 }
 
-class _SignUpAndSignInState extends State<SignUpAndSignIn> {
+class _SignInState extends State<SignIn> {
   bool _obscureText = true;
 
   FocusNode usernameFocusNode = FocusNode();
@@ -169,11 +174,8 @@ class _SignUpAndSignInState extends State<SignUpAndSignIn> {
                 ),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: ColoredButton(
-                    width: 128,
-                    verticalPadding: 4,
-                    basicBorderRadius: 128,
-                    callbackFunction: () {
+                  child: GestureDetector(
+                    onTap: () {
                       showModalBottomSheet(
                         context: context,
                         useSafeArea: true,
@@ -183,8 +185,6 @@ class _SignUpAndSignInState extends State<SignUpAndSignIn> {
                         },
                       );
                     },
-                    buttonColor: Colors.transparent,
-                    borderColor: Colors.transparent,
                     child: const Text(
                       'Forgot password?',
                       style: TextStyle(),
@@ -209,20 +209,24 @@ class _SignUpAndSignInState extends State<SignUpAndSignIn> {
                     ),
                   ),
                 ),
+                const SizedBox(
+                  height: 6,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
                       'Don\'t have an account?',
                     ),
-                    ColoredButton(
-                      width: 112,
-                      verticalPadding: 4,
-                      basicBorderRadius: 128,
-                      buttonColor: Colors.transparent,
-                      borderColor: Colors.transparent,
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        widget.onTap(0);
+                      },
                       child: Text(
-                        'Sign up instead!',
+                        'Sign up first!',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: heavyGray,

@@ -1,4 +1,4 @@
-import 'package:bearlysocial/functions/getters/app_colors.dart';
+import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class HorizontalThinLine extends StatelessWidget {

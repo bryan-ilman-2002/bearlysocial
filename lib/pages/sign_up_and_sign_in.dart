@@ -1,6 +1,7 @@
 import 'package:bearlysocial/functions/getters/app_colors.dart';
 import 'package:bearlysocial/functions/getters/app_shadows.dart';
 import 'package:bearlysocial/widgets/buttons/colored_btn.dart';
+import 'package:bearlysocial/widgets/modals/account_recovery.dart';
 import 'package:flutter/material.dart';
 
 class SignUpAndSignIn extends StatefulWidget {
@@ -166,15 +167,25 @@ class _SignUpAndSignInState extends State<SignUpAndSignIn> {
                 const SizedBox(
                   height: 8,
                 ),
-                const Align(
+                Align(
                   alignment: Alignment.centerRight,
                   child: ColoredButton(
                     width: 128,
                     verticalPadding: 4,
                     basicBorderRadius: 128,
+                    callbackFunction: () {
+                      showModalBottomSheet(
+                        context: context,
+                        useSafeArea: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (BuildContext context) {
+                          return const AccountRecovery();
+                        },
+                      );
+                    },
                     buttonColor: Colors.transparent,
                     borderColor: Colors.transparent,
-                    child: Text(
+                    child: const Text(
                       'Forgot password?',
                       style: TextStyle(),
                     ),
@@ -203,7 +214,6 @@ class _SignUpAndSignInState extends State<SignUpAndSignIn> {
                   children: [
                     const Text(
                       'Don\'t have an account?',
-                      style: TextStyle(),
                     ),
                     ColoredButton(
                       width: 112,

@@ -1,5 +1,8 @@
+import 'package:bearlysocial/generic/enums/apis.dart';
+import 'package:bearlysocial/generic/functions/generate_hash.dart';
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
+import 'package:bearlysocial/generic/functions/make_request.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:flutter/material.dart';
 
@@ -18,25 +21,68 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   bool _obscureText = true;
 
-  FocusNode usernameFocusNode = FocusNode();
-  FocusNode passwordFocusNode = FocusNode();
+  bool _inputIsBlocked = false;
+  bool _usernameIsTaken = false;
+
+  bool _usernameIsValid = true;
+  bool _passwordIsValid = true;
+
+  final FocusNode _usernameFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+
+  final TextEditingController _usernameTextFieldController =
+      TextEditingController();
+  final TextEditingController _passwordTextFieldController =
+      TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    usernameFocusNode.addListener(() {
+    _usernameFocusNode.addListener(() {
       setState(() {});
     });
-    passwordFocusNode.addListener(() {
+    _passwordFocusNode.addListener(() {
       setState(() {});
     });
   }
 
   @override
   void dispose() {
-    usernameFocusNode.dispose();
-    passwordFocusNode.dispose();
+    _usernameFocusNode.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
+  }
+
+  void signUp() {
+    setState(() {
+      _inputIsBlocked = true;
+
+      _usernameIsValid = _usernameTextFieldController.text.isNotEmpty;
+      _passwordIsValid = _passwordTextFieldController.text.isNotEmpty;
+
+      if (_usernameIsValid && _passwordIsValid) {
+        String id = hash16(_usernameTextFieldController.text);
+        String token = hash32(_passwordTextFieldController.text);
+
+        makeRequest(API.signUp, {'id': id, 'token': token}).then((response) {
+          if (mounted) {
+            setState(() {
+              if (response.statusCode == 200) {
+                _usernameIsTaken = false;
+                print('Response body: ${response.body}');
+              } else {
+                _usernameIsTaken = true;
+                print('Response body: ${response.body}');
+              }
+
+              _inputIsBlocked = false;
+            });
+          }
+        });
+      } else {
+        _inputIsBlocked = false;
+      }
+    });
   }
 
   @override
@@ -83,17 +129,24 @@ class _SignUpState extends State<SignUp> {
                   height: 80,
                 ),
                 TextField(
-                  focusNode: usernameFocusNode,
+                  focusNode: _usernameFocusNode,
+                  controller: _usernameTextFieldController,
                   decoration: InputDecoration(
                     labelText: 'Username',
                     labelStyle: TextStyle(
                       fontSize: 20,
-                      fontWeight: usernameFocusNode.hasFocus
+                      fontWeight: _usernameFocusNode.hasFocus
                           ? FontWeight.bold
                           : FontWeight.normal,
-                      color:
-                          usernameFocusNode.hasFocus ? heavyGray : moderateGray,
+                      color: _usernameFocusNode.hasFocus
+                          ? heavyGray
+                          : moderateGray,
                     ),
+                    errorText: _usernameIsValid
+                        ? _usernameIsTaken
+                            ? 'Username is already taken.'
+                            : null
+                        : 'Username cannot be empty.',
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: moderateGray,
@@ -114,17 +167,21 @@ class _SignUpState extends State<SignUp> {
                 ),
                 TextField(
                   obscureText: _obscureText,
-                  focusNode: passwordFocusNode,
+                  focusNode: _passwordFocusNode,
+                  controller: _passwordTextFieldController,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     labelStyle: TextStyle(
                       fontSize: 20,
-                      fontWeight: passwordFocusNode.hasFocus
+                      fontWeight: _passwordFocusNode.hasFocus
                           ? FontWeight.bold
                           : FontWeight.normal,
-                      color:
-                          passwordFocusNode.hasFocus ? heavyGray : moderateGray,
+                      color: _passwordFocusNode.hasFocus
+                          ? heavyGray
+                          : moderateGray,
                     ),
+                    errorText:
+                        _passwordIsValid ? null : 'Password cannot be empty.',
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: moderateGray,
@@ -144,7 +201,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                       icon: Icon(
                         _obscureText ? Icons.visibility : Icons.visibility_off,
-                        color: passwordFocusNode.hasFocus
+                        color: _passwordFocusNode.hasFocus
                             ? heavyGray
                             : moderateGray,
                       ),
@@ -158,22 +215,32 @@ class _SignUpState extends State<SignUp> {
                   ),
                 ),
                 const SizedBox(
-                  height: 40,
+                  height: 56,
                 ),
                 ColoredButton(
                   width: double.infinity,
                   verticalPadding: 16,
                   buttonColor: heavyGray,
                   basicBorderRadius: 16,
+                  callbackFunction: _inputIsBlocked ? null : signUp,
                   borderColor: Colors.transparent,
                   buttonShadow: moderateShadow,
-                  child: const Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: _inputIsBlocked
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Sign Up',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
                 const SizedBox(
                   height: 6,

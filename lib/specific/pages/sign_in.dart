@@ -1,7 +1,7 @@
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
-import 'package:bearlysocial/specific/modals/account_recovery.dart';
+import 'package:bearlysocial/generic/widgets/modals/account_recovery.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {

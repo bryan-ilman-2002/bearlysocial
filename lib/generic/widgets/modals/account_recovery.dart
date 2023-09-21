@@ -13,6 +13,7 @@ class AccountRecovery extends StatefulWidget {
 
 class _AccountRecoveryState extends State<AccountRecovery> {
   final FocusNode _emailFocusNode = FocusNode();
+
   final TextEditingController _emailTextFieldController =
       TextEditingController();
 

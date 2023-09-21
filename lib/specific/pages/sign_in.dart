@@ -1,5 +1,8 @@
+import 'package:bearlysocial/generic/enums/apis.dart';
+import 'package:bearlysocial/generic/functions/generate_hash.dart';
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
+import 'package:bearlysocial/generic/functions/make_request.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/generic/widgets/modals/account_recovery.dart';
 import 'package:flutter/material.dart';
@@ -19,25 +22,68 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   bool _obscureText = true;
 
-  FocusNode usernameFocusNode = FocusNode();
-  FocusNode passwordFocusNode = FocusNode();
+  bool _inputIsBlocked = false;
+  bool _passwordIsWrong = false;
+
+  bool _usernameIsValid = true;
+  bool _passwordIsValid = true;
+
+  final FocusNode _usernameFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+
+  final TextEditingController _usernameTextFieldController =
+      TextEditingController();
+  final TextEditingController _passwordTextFieldController =
+      TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    usernameFocusNode.addListener(() {
+    _usernameFocusNode.addListener(() {
       setState(() {});
     });
-    passwordFocusNode.addListener(() {
+    _passwordFocusNode.addListener(() {
       setState(() {});
     });
   }
 
   @override
   void dispose() {
-    usernameFocusNode.dispose();
-    passwordFocusNode.dispose();
+    _usernameFocusNode.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
+  }
+
+  void signIn() {
+    setState(() {
+      _inputIsBlocked = true;
+
+      _usernameIsValid = _usernameTextFieldController.text.isNotEmpty;
+      _passwordIsValid = _passwordTextFieldController.text.isNotEmpty;
+
+      if (_usernameIsValid && _passwordIsValid) {
+        String id = hash16(_usernameTextFieldController.text);
+        String token = hash32(_passwordTextFieldController.text);
+
+        makeRequest(API.signIn, {'id': id, 'token': token}).then((response) {
+          if (mounted) {
+            setState(() {
+              if (response.statusCode == 200) {
+                _passwordIsWrong = false;
+                print('Response body: ${response.body}');
+              } else {
+                _passwordIsWrong = true;
+                print('Response body: ${response.body}');
+              }
+
+              _inputIsBlocked = false;
+            });
+          }
+        });
+      } else {
+        _inputIsBlocked = false;
+      }
+    });
   }
 
   @override
@@ -95,17 +141,21 @@ class _SignInState extends State<SignIn> {
                   height: 80,
                 ),
                 TextField(
-                  focusNode: usernameFocusNode,
+                  focusNode: _usernameFocusNode,
+                  controller: _usernameTextFieldController,
                   decoration: InputDecoration(
                     labelText: 'Username',
                     labelStyle: TextStyle(
                       fontSize: 20,
-                      fontWeight: usernameFocusNode.hasFocus
+                      fontWeight: _usernameFocusNode.hasFocus
                           ? FontWeight.bold
                           : FontWeight.normal,
-                      color:
-                          usernameFocusNode.hasFocus ? heavyGray : moderateGray,
+                      color: _usernameFocusNode.hasFocus
+                          ? heavyGray
+                          : moderateGray,
                     ),
+                    errorText:
+                        _usernameIsValid ? null : 'Username cannot be empty.',
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: moderateGray,
@@ -126,17 +176,24 @@ class _SignInState extends State<SignIn> {
                 ),
                 TextField(
                   obscureText: _obscureText,
-                  focusNode: passwordFocusNode,
+                  focusNode: _passwordFocusNode,
+                  controller: _passwordTextFieldController,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     labelStyle: TextStyle(
                       fontSize: 20,
-                      fontWeight: passwordFocusNode.hasFocus
+                      fontWeight: _passwordFocusNode.hasFocus
                           ? FontWeight.bold
                           : FontWeight.normal,
-                      color:
-                          passwordFocusNode.hasFocus ? heavyGray : moderateGray,
+                      color: _passwordFocusNode.hasFocus
+                          ? heavyGray
+                          : moderateGray,
                     ),
+                    errorText: _passwordIsValid
+                        ? _passwordIsWrong
+                            ? 'Password is wrong.'
+                            : null
+                        : 'Password cannot be empty.',
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: moderateGray,
@@ -156,7 +213,7 @@ class _SignInState extends State<SignIn> {
                       ),
                       icon: Icon(
                         _obscureText ? Icons.visibility : Icons.visibility_off,
-                        color: passwordFocusNode.hasFocus
+                        color: _passwordFocusNode.hasFocus
                             ? heavyGray
                             : moderateGray,
                       ),
@@ -199,15 +256,25 @@ class _SignInState extends State<SignIn> {
                   verticalPadding: 16,
                   buttonColor: heavyGray,
                   basicBorderRadius: 16,
+                  callbackFunction: _inputIsBlocked ? null : signIn,
                   borderColor: Colors.transparent,
                   buttonShadow: moderateShadow,
-                  child: const Text(
-                    'Sign In',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: _inputIsBlocked
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Sign In',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
                 const SizedBox(
                   height: 6,

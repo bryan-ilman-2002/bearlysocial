@@ -17,8 +17,8 @@ class _AccountRecoveryState extends State<AccountRecovery> {
   final TextEditingController _emailTextFieldController =
       TextEditingController();
 
-  bool submitted = false;
-  bool emailIsValid = true;
+  bool _submitted = false;
+  bool _emailIsValid = true;
 
   @override
   void initState() {
@@ -40,9 +40,9 @@ class _AccountRecoveryState extends State<AccountRecovery> {
       final RegExp regex = RegExp(
           r'^[a-zA-Z0-9.a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
       if (regex.hasMatch(email)) {
-        submitted = true;
+        _submitted = true;
       } else {
-        emailIsValid = false;
+        _emailIsValid = false;
       }
     });
   }
@@ -90,7 +90,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
         const SizedBox(
           height: 12,
         ),
-        if (!submitted)
+        if (!_submitted)
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 40,
@@ -111,7 +111,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                           _emailFocusNode.hasFocus ? heavyGray : moderateGray,
                     ),
                     errorText:
-                        emailIsValid ? null : 'Please enter a valid email.',
+                        _emailIsValid ? null : 'Please enter a valid email.',
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: moderateGray,

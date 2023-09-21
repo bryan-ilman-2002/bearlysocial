@@ -29,16 +29,16 @@ class _PreAuthPageManager extends State<PreAuthPageManager> {
     });
   }
 
-  List<Widget> pages = [];
+  List<Widget> _pages = [];
 
   @override
   Widget build(BuildContext context) {
-    pages = pages.isEmpty ? initPages() : pages;
+    _pages = _pages.isEmpty ? initPages() : _pages;
 
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: pages,
+        children: _pages,
       ),
     );
   }

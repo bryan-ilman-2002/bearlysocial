@@ -16,7 +16,7 @@ void main() {
 class App extends ConsumerWidget {
   App({super.key});
 
-  final TextTheme mukta = TextTheme(
+  final TextTheme _mukta = TextTheme(
     bodyMedium: TextStyle(
       overflow: TextOverflow.ellipsis,
       fontFamily: 'Mukta',
@@ -40,7 +40,7 @@ class App extends ConsumerWidget {
     return MaterialApp(
       title: 'BearlySocial',
       theme: ThemeData(
-        textTheme: mukta,
+        textTheme: _mukta,
         iconTheme: IconThemeData(
           size: 24,
           color: moderateGray,

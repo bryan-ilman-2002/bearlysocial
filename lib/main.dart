@@ -1,5 +1,6 @@
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/providers/db_access.dart';
+import 'package:bearlysocial/specific/page_managers/post_auth_page_manager.dart';
 import 'package:bearlysocial/specific/page_managers/pre_auth_page_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,7 +51,7 @@ class App extends ConsumerWidget {
         ),
         splashFactory: InkRipple.splashFactory,
       ),
-      home: const PreAuthPageManager(),
+      home: const PostAuthPageManager(),
     );
   }
 }

@@ -1,4 +1,6 @@
-import 'package:bearlysocial/generic/enums/apis.dart';
+import 'dart:convert';
+
+import 'package:bearlysocial/generic/enums/api.dart';
 import 'package:bearlysocial/generic/functions/generate_hash.dart';
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
@@ -54,7 +56,7 @@ class _SignInState extends State<SignIn> {
     super.dispose();
   }
 
-  void signIn() {
+  void _signIn() {
     setState(() {
       _inputIsBlocked = true;
 
@@ -70,10 +72,10 @@ class _SignInState extends State<SignIn> {
             setState(() {
               if (response.statusCode == 200) {
                 _passwordIsWrong = false;
-                print('Response body: ${response.body}');
+                print(jsonDecode(response.body));
               } else {
                 _passwordIsWrong = true;
-                print('Response body: ${response.body}');
+                print(jsonDecode(response.body));
               }
 
               _inputIsBlocked = false;
@@ -256,7 +258,7 @@ class _SignInState extends State<SignIn> {
                   verticalPadding: 16,
                   buttonColor: heavyGray,
                   basicBorderRadius: 16,
-                  callbackFunction: _inputIsBlocked ? null : signIn,
+                  callbackFunction: _inputIsBlocked ? null : _signIn,
                   borderColor: Colors.transparent,
                   buttonShadow: moderateShadow,
                   child: _inputIsBlocked

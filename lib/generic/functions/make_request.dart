@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:bearlysocial/generic/enums/apis.dart';
+import 'package:bearlysocial/generic/enums/api.dart';
 import 'package:http/http.dart' as http;
 
 Future<http.Response> makeRequest(API api, Map body) async {

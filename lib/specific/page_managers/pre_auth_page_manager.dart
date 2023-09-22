@@ -10,7 +10,7 @@ class PreAuthPageManager extends StatefulWidget {
 }
 
 class _PreAuthPageManager extends State<PreAuthPageManager> {
-  List<Widget> initPages() {
+  List<Widget> _initPages() {
     return <Widget>[
       SignUp(
         onTap: _onTab,
@@ -33,7 +33,7 @@ class _PreAuthPageManager extends State<PreAuthPageManager> {
 
   @override
   Widget build(BuildContext context) {
-    _pages = _pages.isEmpty ? initPages() : _pages;
+    _pages = _pages.isEmpty ? _initPages() : _pages;
 
     return Scaffold(
       body: IndexedStack(

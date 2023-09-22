@@ -36,6 +36,7 @@ class _PreAuthPageManager extends State<PreAuthPageManager> {
     _pages = _pages.isEmpty ? _initPages() : _pages;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: IndexedStack(
         index: _selectedIndex,
         children: _pages,

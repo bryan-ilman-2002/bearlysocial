@@ -112,6 +112,22 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                     ),
                     errorText:
                         _emailIsValid ? null : 'Please enter a valid email.',
+                    errorStyle: TextStyle(
+                      fontSize: 12,
+                      color: moderateRed,
+                    ),
+                    errorBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: moderateRed,
+                        width: 1.6,
+                      ),
+                    ),
+                    focusedErrorBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: moderateRed,
+                        width: 1.6,
+                      ),
+                    ),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: moderateGray,

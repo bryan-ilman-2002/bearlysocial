@@ -51,7 +51,7 @@ class App extends ConsumerWidget {
         ),
         splashFactory: InkRipple.splashFactory,
       ),
-      home: const PostAuthPageManager(),
+      home: const PreAuthPageManager(),
     );
   }
 }

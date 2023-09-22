@@ -78,6 +78,7 @@ class _PostAuthPageManager extends State<PostAuthPageManager> {
     _pages = _pages.isEmpty ? initPostAuthPages(_scrollListener) : _pages;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       bottomNavigationBar: MainNavigationBar(
         navItems: const [
           ['Explore', Icons.explore, Icons.explore_outlined],
@@ -100,9 +101,9 @@ class _PostAuthPageManager extends State<PostAuthPageManager> {
               backgroundColor: Colors.white,
               mini: true,
               child: Icon(
-                Icons.arrow_upward_rounded,
-                color: moderateGray,
+                Icons.arrow_upward,
                 size: 24,
+                color: moderateGray,
               ),
             )
           : null,

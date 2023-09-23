@@ -1,9 +1,12 @@
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
+import 'package:bearlysocial/generic/functions/providers/auth.dart';
+import 'package:bearlysocial/generic/functions/providers/db_access.dart';
 import 'package:bearlysocial/generic/widgets/buttons/setting_button.dart';
 import 'package:bearlysocial/generic/widgets/lines/horizontal_thin_line.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends ConsumerStatefulWidget {
   final ScrollController controller;
 
   const SettingsPage({
@@ -12,10 +15,15 @@ class SettingsPage extends StatelessWidget {
   });
 
   @override
+  ConsumerState<SettingsPage> createState() => _SignInState();
+}
+
+class _SignInState extends ConsumerState<SettingsPage> {
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        controller: controller,
+        controller: widget.controller,
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -128,8 +136,9 @@ class SettingsPage extends StatelessWidget {
               height: 32,
             ),
             GestureDetector(
+              onTap: ref.watch(exitApp),
               child: Text(
-                'Log Out',
+                'Sign Out',
                 style: TextStyle(
                   color: moderateRed,
                 ),

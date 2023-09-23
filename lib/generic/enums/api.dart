@@ -4,6 +4,7 @@ String _routePrefix = '';
 enum API {
   signUp,
   signIn,
+  checkMainAccessNumber,
 }
 
 extension GetString on API {
@@ -13,6 +14,8 @@ extension GetString on API {
         return '$_domain$_routePrefix' 'sign-up';
       case API.signIn:
         return '$_domain$_routePrefix' 'sign-in';
+      case API.checkMainAccessNumber:
+        return '$_domain$_routePrefix' 'check-main-access-number';
       default:
         return '';
     }

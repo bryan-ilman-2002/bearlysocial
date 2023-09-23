@@ -1,15 +1,23 @@
 import 'dart:convert';
 
 import 'package:bearlysocial/generic/enums/api.dart';
+import 'package:bearlysocial/generic/enums/db_key.dart';
 import 'package:bearlysocial/generic/functions/generate_hash.dart';
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
 import 'package:bearlysocial/generic/functions/make_request.dart';
+import 'package:bearlysocial/generic/functions/providers/auth.dart';
+import 'package:bearlysocial/generic/functions/providers/db_access.dart';
+import 'package:bearlysocial/generic/schemas/extra.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/generic/widgets/modals/account_recovery.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hashlib/hashlib.dart';
+import 'package:http/http.dart';
+import 'package:isar/isar.dart';
 
-class SignIn extends StatefulWidget {
+class SignIn extends ConsumerStatefulWidget {
   final Function(int) onTap;
 
   const SignIn({
@@ -18,10 +26,10 @@ class SignIn extends StatefulWidget {
   });
 
   @override
-  State<SignIn> createState() => _SignInState();
+  ConsumerState<SignIn> createState() => _SignInState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SignInState extends ConsumerState<SignIn> {
   bool _obscureText = true;
 
   bool _inputIsBlocked = false;
@@ -56,36 +64,54 @@ class _SignInState extends State<SignIn> {
     super.dispose();
   }
 
-  void _signIn() {
+  void _signIn(Isar? db) async {
     setState(() {
       _inputIsBlocked = true;
 
       _usernameIsValid = _usernameTextFieldController.text.isNotEmpty;
       _passwordIsValid = _passwordTextFieldController.text.isNotEmpty;
-
-      if (_usernameIsValid && _passwordIsValid) {
-        String id = hash16(_usernameTextFieldController.text);
-        String token = hash32(_passwordTextFieldController.text);
-
-        makeRequest(API.signIn, {'id': id, 'token': token}).then((response) {
-          if (mounted) {
-            setState(() {
-              if (response.statusCode == 200) {
-                _passwordIsWrong = false;
-                print(jsonDecode(response.body));
-              } else {
-                _passwordIsWrong = true;
-                print(jsonDecode(response.body));
-              }
-
-              _inputIsBlocked = false;
-            });
-          }
-        });
-      } else {
-        _inputIsBlocked = false;
-      }
     });
+
+    if (_usernameIsValid && _passwordIsValid) {
+      String id = hash16(_usernameTextFieldController.text);
+      String token = hash32(_passwordTextFieldController.text);
+
+      final Response httpResponse =
+          await makeRequest(API.signIn, {'id': id, 'token': token});
+
+      if (mounted && db != null) {
+        if (httpResponse.statusCode == 200) {
+          final Extra idDB = Extra()
+            ..key = crc32code(DatabaseKey.id.string)
+            ..value = id;
+
+          final Extra mainAccessNumberDB = Extra()
+            ..key = crc32code(DatabaseKey.mainAccessNumber.string)
+            ..value = jsonDecode(httpResponse.body)['mainAccessNumber'];
+
+          await db.writeTxn(() async {
+            await db.extras.put(idDB);
+            await db.extras.put(mainAccessNumberDB);
+          });
+
+          setState(() {
+            _passwordIsWrong = false;
+            _inputIsBlocked = false;
+          });
+
+          ref.watch(enterApp)();
+        } else {
+          setState(() {
+            _passwordIsWrong = true;
+            _inputIsBlocked = false;
+          });
+        }
+      }
+    } else {
+      setState(() {
+        _inputIsBlocked = false;
+      });
+    }
   }
 
   @override
@@ -286,7 +312,11 @@ class _SignInState extends State<SignIn> {
                 verticalPadding: 16,
                 buttonColor: heavyGray,
                 basicBorderRadius: 16,
-                callbackFunction: _inputIsBlocked ? null : _signIn,
+                callbackFunction: _inputIsBlocked
+                    ? null
+                    : () {
+                        _signIn(ref.watch(databaseAccess));
+                      },
                 borderColor: Colors.transparent,
                 buttonShadow: moderateShadow,
                 child: _inputIsBlocked

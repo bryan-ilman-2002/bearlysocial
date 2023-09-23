@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:crypto/crypto.dart';
+import 'package:hashlib/hashlib.dart';
 
 String hash16(String input) {
   var bytes = utf8.encode(input);

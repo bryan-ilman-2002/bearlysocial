@@ -1,8 +1,13 @@
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
+import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
 import 'package:bearlysocial/generic/functions/providers/auth.dart';
 import 'package:bearlysocial/generic/functions/providers/db_access.dart';
+import 'package:bearlysocial/generic/functions/show_modal_bottom_sheet.dart';
+import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/generic/widgets/buttons/setting_button.dart';
 import 'package:bearlysocial/generic/widgets/lines/horizontal_thin_line.dart';
+import 'package:bearlysocial/generic/widgets/sheets/bottom_sheet.dart'
+    as app_bottom_sheet;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -55,12 +60,16 @@ class _SignInState extends ConsumerState<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Mark Zuckerberg',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: heavyGray,
+                Expanded(
+                  child: Text(
+                    'Mark Zuckerberg',
+                    maxLines: 4,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: heavyGray,
+                    ),
                   ),
                 ),
               ],
@@ -72,9 +81,49 @@ class _SignInState extends ConsumerState<SettingsPage> {
             const SizedBox(
               height: 16,
             ),
-            const SettingButton(
+            SettingButton(
               icon: Icons.person,
               label: 'Personal Information',
+              callbackFunction: () {
+                showFullHeightModalBottomSheet(
+                  context: context,
+                  body: app_bottom_sheet.BottomSheet(
+                    title: 'Personal Information',
+                    content: Text('hello'),
+                    closure: [
+                      ColoredButton(
+                        horizontalPadding: 48,
+                        verticalPadding: 16,
+                        buttonColor: Colors.white,
+                        borderRadius: 16,
+                        borderColor: Colors.transparent,
+                        child: Text(
+                          'Reset',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: heavyGray,
+                          ),
+                        ),
+                      ),
+                      ColoredButton(
+                        horizontalPadding: 48,
+                        verticalPadding: 16,
+                        buttonColor: heavyGray,
+                        borderRadius: 16,
+                        borderColor: Colors.transparent,
+                        buttonShadow: moderateShadow,
+                        child: const Text(
+                          'Apply',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
             ),
             const HorizontalThinLine(
               height: 0.12,

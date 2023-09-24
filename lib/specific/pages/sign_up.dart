@@ -277,7 +277,7 @@ class _SignUpState extends ConsumerState<SignUp> {
                 width: double.infinity,
                 verticalPadding: 16,
                 buttonColor: heavyGray,
-                basicBorderRadius: 16,
+                borderRadius: 16,
                 callbackFunction: _inputIsBlocked
                     ? null
                     : () {

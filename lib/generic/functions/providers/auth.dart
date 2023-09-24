@@ -9,7 +9,7 @@ class AuthenticationStateNotifier extends StateNotifier<bool> {
   }
 
   void exitApp() async {
-    Isar.getInstance()?.close(deleteFromDisk: true);
+    await Isar.getInstance()?.close(deleteFromDisk: true);
     state = false;
   }
 }

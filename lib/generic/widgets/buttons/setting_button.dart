@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class SettingButton extends StatelessWidget {
   final IconData icon;
   final String label;
+  final Function? callbackFunction;
   final Color? splashColor;
   final Color? buttonColor;
   final Color? iconColor;
@@ -13,6 +14,7 @@ class SettingButton extends StatelessWidget {
     super.key,
     required this.icon,
     required this.label,
+    this.callbackFunction,
     this.splashColor,
     this.buttonColor,
     this.iconColor,
@@ -55,7 +57,11 @@ class SettingButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          if (callbackFunction != null) {
+            callbackFunction!();
+          }
+        },
         splashColor: splashColor,
         borderRadius: BorderRadius.circular(borderRadius),
         child: content,

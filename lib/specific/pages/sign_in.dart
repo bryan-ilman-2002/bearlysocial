@@ -10,7 +10,7 @@ import 'package:bearlysocial/generic/functions/providers/auth.dart';
 import 'package:bearlysocial/generic/functions/providers/db_access.dart';
 import 'package:bearlysocial/generic/schemas/extra.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
-import 'package:bearlysocial/generic/widgets/modals/account_recovery.dart';
+import 'package:bearlysocial/specific/widgets/sheets/account_recovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hashlib/hashlib.dart';
@@ -311,7 +311,7 @@ class _SignInState extends ConsumerState<SignIn> {
                 width: double.infinity,
                 verticalPadding: 16,
                 buttonColor: heavyGray,
-                basicBorderRadius: 16,
+                borderRadius: 16,
                 callbackFunction: _inputIsBlocked
                     ? null
                     : () {

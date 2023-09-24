@@ -1,7 +1,8 @@
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
-import 'package:bearlysocial/generic/widgets/lines/horizontal_thin_line.dart';
+import 'package:bearlysocial/generic/widgets/sheets/bottom_sheet.dart'
+    as app_bottom_sheet;
 import 'package:flutter/material.dart';
 
 class AccountRecovery extends StatefulWidget {
@@ -49,53 +50,29 @@ class _AccountRecoveryState extends State<AccountRecovery> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-      ),
-      child: Column(children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Icon(
-                  Icons.close_rounded,
-                  color: moderateGray,
+    return app_bottom_sheet.BottomSheet(
+      title: 'Account Recovery',
+      content: _submitted
+          ? Column(
+              children: [
+                Icon(
+                  Icons.check_rounded,
+                  size: 48,
+                  color: heavyGray,
                 ),
-              ),
-            ),
-            Text(
-              'Account Recovery',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: heavyGray,
-              ),
-            ),
-          ],
-        ),
-        const HorizontalThinLine(
-          horizontalMargin: 0,
-        ),
-        const SizedBox(
-          height: 12,
-        ),
-        if (!_submitted)
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 40,
-            ),
-            child: Column(
+                const SizedBox(
+                  height: 12,
+                ),
+                const Text(
+                  'We have sent a link to reset your password to your email. '
+                  'Please check your inbox for our message. '
+                  'If you do not see it in your inbox, we recommend checking your spam or junk folder as well.',
+                  maxLines: 128,
+                  textAlign: TextAlign.justify,
+                ),
+              ],
+            )
+          : Column(
               children: [
                 TextField(
                   focusNode: _emailFocusNode,
@@ -162,7 +139,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                     width: 128,
                     verticalPadding: 16,
                     buttonColor: heavyGray,
-                    basicBorderRadius: 16,
+                    borderRadius: 16,
                     callbackFunction: checkEmail,
                     borderColor: Colors.transparent,
                     buttonShadow: moderateShadow,
@@ -177,33 +154,6 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                 )
               ],
             ),
-          )
-        else
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 40,
-            ),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.check_rounded,
-                  size: 48,
-                  color: heavyGray,
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                const Text(
-                  'We have sent a link to reset your password to your email. '
-                  'Please check your inbox for our message. '
-                  'If you do not see it in your inbox, we recommend checking your spam or junk folder as well.',
-                  maxLines: 128,
-                  textAlign: TextAlign.justify,
-                ),
-              ],
-            ),
-          ),
-      ]),
     );
   }
 }

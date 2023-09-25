@@ -1,8 +1,8 @@
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class LoadingPage extends StatelessWidget {
-  const LoadingPage({super.key});
+class PreparationPage extends StatelessWidget {
+  const PreparationPage({super.key});
 
   @override
   Widget build(BuildContext context) {

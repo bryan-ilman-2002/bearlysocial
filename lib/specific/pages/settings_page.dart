@@ -1,7 +1,6 @@
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
 import 'package:bearlysocial/generic/functions/providers/auth.dart';
-import 'package:bearlysocial/generic/functions/providers/db_access.dart';
 import 'package:bearlysocial/generic/functions/show_modal_bottom_sheet.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/generic/widgets/buttons/setting_button.dart';

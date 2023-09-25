@@ -1,22 +1,31 @@
+import 'package:bearlysocial/generic/functions/empty_db.dart';
+import 'package:bearlysocial/generic/functions/providers/prep.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:isar/isar.dart';
 
 class AuthenticationStateNotifier extends StateNotifier<bool> {
-  AuthenticationStateNotifier() : super(false);
+  AuthenticationStateNotifier(this._providerRef) : super(false);
+  final Ref _providerRef;
 
-  void enterApp() async {
+  void enterApp() {
     state = true;
+    _providerRef.read(prepApp)();
   }
 
   void exitApp() async {
-    await Isar.getInstance()?.close(deleteFromDisk: true);
+    await emptyDatabase();
+
     state = false;
+    _providerRef.read(prepApp)();
+  }
+
+  void setAuth(bool auth) {
+    state = auth;
   }
 }
 
 final authenticationStateNotifierProvider =
     StateNotifierProvider<AuthenticationStateNotifier, bool>(
-  (ref) => AuthenticationStateNotifier(),
+  (ref) => AuthenticationStateNotifier(ref),
 );
 
 final auth = Provider((ref) {
@@ -29,4 +38,8 @@ final enterApp = Provider((ref) {
 
 final exitApp = Provider((ref) {
   return ref.read(authenticationStateNotifierProvider.notifier).exitApp;
+});
+
+final setAuth = Provider((ref) {
+  return ref.read(authenticationStateNotifierProvider.notifier).setAuth;
 });

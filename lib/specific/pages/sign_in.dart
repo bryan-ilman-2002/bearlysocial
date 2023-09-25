@@ -7,7 +7,6 @@ import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
 import 'package:bearlysocial/generic/functions/make_request.dart';
 import 'package:bearlysocial/generic/functions/providers/auth.dart';
-import 'package:bearlysocial/generic/functions/providers/db_access.dart';
 import 'package:bearlysocial/generic/schemas/extra.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/specific/widgets/sheets/account_recovery.dart';
@@ -64,7 +63,7 @@ class _SignInState extends ConsumerState<SignIn> {
     super.dispose();
   }
 
-  void _signIn(Isar? db) async {
+  void _signIn() async {
     setState(() {
       _inputIsBlocked = true;
 
@@ -79,19 +78,21 @@ class _SignInState extends ConsumerState<SignIn> {
       final Response httpResponse =
           await makeRequest(API.signIn, {'id': id, 'token': token});
 
-      if (mounted && db != null) {
+      if (mounted) {
         if (httpResponse.statusCode == 200) {
-          final Extra idDB = Extra()
+          final Isar? dbConnection = Isar.getInstance();
+
+          final Extra savedId = Extra()
             ..key = crc32code(DatabaseKey.id.string)
             ..value = id;
 
-          final Extra mainAccessNumberDB = Extra()
+          final Extra savedMainAccessNumber = Extra()
             ..key = crc32code(DatabaseKey.mainAccessNumber.string)
             ..value = jsonDecode(httpResponse.body)['mainAccessNumber'];
 
-          await db.writeTxn(() async {
-            await db.extras.put(idDB);
-            await db.extras.put(mainAccessNumberDB);
+          await dbConnection?.writeTxn(() async {
+            await dbConnection.extras.put(savedId);
+            await dbConnection.extras.put(savedMainAccessNumber);
           });
 
           setState(() {
@@ -315,7 +316,7 @@ class _SignInState extends ConsumerState<SignIn> {
                 callbackFunction: _inputIsBlocked
                     ? null
                     : () {
-                        _signIn(ref.watch(databaseAccess));
+                        _signIn();
                       },
                 borderColor: Colors.transparent,
                 buttonShadow: moderateShadow,

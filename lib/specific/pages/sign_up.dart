@@ -9,6 +9,7 @@ import 'package:bearlysocial/generic/functions/make_request.dart';
 import 'package:bearlysocial/generic/functions/providers/auth.dart';
 import 'package:bearlysocial/generic/schemas/extra.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
+import 'package:bearlysocial/generic/widgets/form_elements/underlined_txt_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hashlib/hashlib.dart';
@@ -28,8 +29,6 @@ class SignUp extends ConsumerStatefulWidget {
 }
 
 class _SignUpState extends ConsumerState<SignUp> {
-  bool _obscureText = true;
-
   bool _inputIsBlocked = false;
   bool _usernameIsTaken = false;
 
@@ -155,121 +154,28 @@ class _SignUpState extends ConsumerState<SignUp> {
               const SizedBox(
                 height: 80,
               ),
-              TextField(
-                focusNode: _usernameFocusNode,
+              UnderlinedTextField(
+                label: 'Username',
+                textIsPassword: false,
                 controller: _usernameTextFieldController,
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                  labelStyle: TextStyle(
-                    fontSize: 20,
-                    fontWeight: _usernameFocusNode.hasFocus
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                    color:
-                        _usernameFocusNode.hasFocus ? heavyGray : moderateGray,
-                  ),
-                  errorText: _usernameIsValid
-                      ? _usernameIsTaken
-                          ? 'Username is already taken.'
-                          : null
-                      : 'Username cannot be empty.',
-                  errorStyle: TextStyle(
-                    fontSize: 12,
-                    color: moderateRed,
-                  ),
-                  errorBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: moderateRed,
-                      width: 1.6,
-                    ),
-                  ),
-                  focusedErrorBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: moderateRed,
-                      width: 1.6,
-                    ),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: moderateGray,
-                      width: 0.4,
-                    ),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: heavyGray,
-                      width: 1.6,
-                    ),
-                  ),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                ),
+                node: _usernameFocusNode,
+                textIsvalid: _usernameIsValid,
+                textIsError: _usernameIsTaken,
+                invalidText: 'Username cannot be empty.',
+                errorText: 'Username is already taken.',
               ),
               const SizedBox(
                 height: 32,
               ),
-              TextField(
-                obscureText: _obscureText,
-                focusNode: _passwordFocusNode,
+              UnderlinedTextField(
+                label: 'Password',
+                textIsPassword: true,
                 controller: _passwordTextFieldController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  labelStyle: TextStyle(
-                    fontSize: 20,
-                    fontWeight: _passwordFocusNode.hasFocus
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                    color:
-                        _passwordFocusNode.hasFocus ? heavyGray : moderateGray,
-                  ),
-                  errorText:
-                      _passwordIsValid ? null : 'Password cannot be empty.',
-                  errorStyle: TextStyle(
-                    fontSize: 12,
-                    color: moderateRed,
-                  ),
-                  errorBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: moderateRed,
-                      width: 1.6,
-                    ),
-                  ),
-                  focusedErrorBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: moderateRed,
-                      width: 1.6,
-                    ),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: moderateGray,
-                      width: 0.4,
-                    ),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: heavyGray,
-                      width: 1.6,
-                    ),
-                  ),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  suffixIcon: IconButton(
-                    padding: const EdgeInsets.only(
-                      top: 16,
-                    ),
-                    icon: Icon(
-                      _obscureText ? Icons.visibility : Icons.visibility_off,
-                      color: _passwordFocusNode.hasFocus
-                          ? heavyGray
-                          : moderateGray,
-                    ),
-                    splashColor: Colors.transparent,
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                  ),
-                ),
+                node: _passwordFocusNode,
+                textIsvalid: _passwordIsValid,
+                textIsError: false,
+                invalidText: 'Password cannot be empty.',
+                errorText: '',
               ),
               const SizedBox(
                 height: 56,

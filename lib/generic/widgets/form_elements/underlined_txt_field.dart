@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class UnderlinedTextField extends StatefulWidget {
   final String label;
-  final bool textIsPassword;
+  final bool obscureText;
   final TextEditingController controller;
   final FocusNode node;
   final bool textIsvalid;
@@ -14,7 +14,7 @@ class UnderlinedTextField extends StatefulWidget {
   const UnderlinedTextField({
     super.key,
     required this.label,
-    required this.textIsPassword,
+    required this.obscureText,
     required this.controller,
     required this.node,
     required this.textIsvalid,
@@ -32,7 +32,7 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      obscureText: _obscureText,
+      obscureText: widget.obscureText ? _obscureText : false,
       focusNode: widget.node,
       controller: widget.controller,
       decoration: InputDecoration(
@@ -43,10 +43,10 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
               widget.node.hasFocus ? FontWeight.bold : FontWeight.normal,
           color: widget.node.hasFocus ? heavyGray : moderateGray,
         ),
-        errorText: widget.textIsvalid
-            ? null
-            : widget.textIsError
-                ? widget.errorText
+        errorText: widget.textIsError
+            ? widget.errorText
+            : widget.textIsvalid
+                ? null
                 : widget.invalidText,
         errorStyle: TextStyle(
           fontSize: 12,
@@ -77,7 +77,7 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
           ),
         ),
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: widget.textIsPassword
+        suffixIcon: widget.obscureText
             ? IconButton(
                 padding: const EdgeInsets.only(
                   top: 16,

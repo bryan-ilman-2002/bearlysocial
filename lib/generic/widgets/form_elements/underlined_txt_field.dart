@@ -41,7 +41,7 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
           fontSize: 20,
           fontWeight:
               widget.node.hasFocus ? FontWeight.bold : FontWeight.normal,
-          color: widget.node.hasFocus ? heavyGray : moderateGray,
+          color: widget.node.hasFocus ? heavyGray : heavyGray,
         ),
         errorText: widget.textIsError
             ? widget.errorText

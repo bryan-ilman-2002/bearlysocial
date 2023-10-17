@@ -7,6 +7,7 @@ import 'package:bearlysocial/generic/widgets/buttons/setting_button.dart';
 import 'package:bearlysocial/generic/widgets/lines/horizontal_thin_line.dart';
 import 'package:bearlysocial/generic/widgets/sheets/bottom_sheet.dart'
     as app_bottom_sheet;
+import 'package:bearlysocial/specific/widgets/modals/personal_information.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -88,7 +89,7 @@ class _SignInState extends ConsumerState<SettingsPage> {
                   context: context,
                   body: app_bottom_sheet.BottomSheet(
                     title: 'Personal Information',
-                    content: Text('hello'),
+                    content: const PersonalInformation(),
                     closure: [
                       ColoredButton(
                         horizontalPadding: 48,
@@ -118,7 +119,7 @@ class _SignInState extends ConsumerState<SettingsPage> {
                             color: Colors.white,
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 );

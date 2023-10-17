@@ -10,7 +10,7 @@ import 'package:bearlysocial/generic/functions/providers/auth.dart';
 import 'package:bearlysocial/generic/schemas/extra.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/generic/widgets/form_elements/underlined_txt_field.dart';
-import 'package:bearlysocial/specific/widgets/sheets/account_recovery.dart';
+import 'package:bearlysocial/specific/widgets/modals/account_recovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hashlib/hashlib.dart';
@@ -19,7 +19,7 @@ import 'package:isar/isar.dart';
 
 class PreAuthenticationPage extends ConsumerStatefulWidget {
   final Function(int) onTap;
-  final bool thisIsSignUp;
+  final bool enableAccountRecovery;
   final API url;
   final String exclamation;
   final String question;
@@ -28,7 +28,7 @@ class PreAuthenticationPage extends ConsumerStatefulWidget {
   const PreAuthenticationPage({
     super.key,
     required this.onTap,
-    required this.thisIsSignUp,
+    required this.enableAccountRecovery,
     required this.url,
     required this.exclamation,
     required this.question,
@@ -183,10 +183,12 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 controller: _usernameTextFieldController,
                 node: _usernameFocusNode,
                 textIsvalid: _usernameIsValid,
-                textIsError: widget.thisIsSignUp ? _errorOccurred : false,
+                textIsError:
+                    widget.enableAccountRecovery ? _errorOccurred : false,
                 invalidText: 'Username cannot be empty.',
-                errorText:
-                    widget.thisIsSignUp ? 'Username is already taken.' : '',
+                errorText: widget.enableAccountRecovery
+                    ? 'Username is already taken.'
+                    : '',
               ),
               const SizedBox(
                 height: 32,
@@ -197,14 +199,16 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 controller: _passwordTextFieldController,
                 node: _passwordFocusNode,
                 textIsvalid: _passwordIsValid,
-                textIsError: widget.thisIsSignUp ? false : _errorOccurred,
+                textIsError:
+                    widget.enableAccountRecovery ? false : _errorOccurred,
                 invalidText: 'Password cannot be empty.',
-                errorText: widget.thisIsSignUp ? '' : 'Password is wrong.',
+                errorText:
+                    widget.enableAccountRecovery ? '' : 'Password is wrong.',
               ),
               const SizedBox(
                 height: 8,
               ),
-              !widget.thisIsSignUp
+              !widget.enableAccountRecovery
                   ? Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
@@ -250,7 +254,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                         ),
                       )
                     : Text(
-                        widget.thisIsSignUp ? 'Sign Up' : 'Sign In',
+                        widget.enableAccountRecovery ? 'Sign Up' : 'Sign In',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -271,7 +275,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      widget.onTap(widget.thisIsSignUp ? 1 : 0);
+                      widget.onTap(widget.enableAccountRecovery ? 1 : 0);
                     },
                     child: Text(
                       widget.action,

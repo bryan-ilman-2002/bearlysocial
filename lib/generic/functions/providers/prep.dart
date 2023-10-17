@@ -24,9 +24,9 @@ class PreparationStateNotifier extends StateNotifier<bool> {
   }
 
   void validateSavedMainAccessNumber() async {
-    final Isar? dbConnection = Isar.getInstance();
-
     await _createDatabaseConnection();
+
+    final Isar? dbConnection = Isar.getInstance();
 
     final Extra? savedId =
         await dbConnection?.extras.get(crc32code(DatabaseKey.id.string));

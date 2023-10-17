@@ -14,7 +14,7 @@ class SignUp extends StatelessWidget {
   Widget build(BuildContext context) {
     return PreAuthenticationPage(
       onTap: onTap,
-      thisIsSignUp: true,
+      enableAccountRecovery: true,
       url: API.signUp,
       exclamation: 'Get onboard!',
       question: 'Already have an account?',

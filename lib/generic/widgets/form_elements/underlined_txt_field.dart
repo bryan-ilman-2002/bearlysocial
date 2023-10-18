@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class UnderlinedTextField extends StatefulWidget {
   final String label;
   final bool obscureText;
-  final TextEditingController controller;
+  final TextEditingController userInputController;
   final FocusNode node;
   final bool textIsvalid;
   final bool textIsError;
@@ -15,7 +15,7 @@ class UnderlinedTextField extends StatefulWidget {
     super.key,
     required this.label,
     required this.obscureText,
-    required this.controller,
+    required this.userInputController,
     required this.node,
     required this.textIsvalid,
     required this.textIsError,
@@ -34,7 +34,7 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
     return TextField(
       obscureText: widget.obscureText ? _obscureText : false,
       focusNode: widget.node,
-      controller: widget.controller,
+      controller: widget.userInputController,
       decoration: InputDecoration(
         labelText: widget.label,
         labelStyle: TextStyle(

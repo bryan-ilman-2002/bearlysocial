@@ -95,7 +95,7 @@ class _SignInState extends ConsumerState<SettingsPage> {
                         horizontalPadding: 48,
                         verticalPadding: 16,
                         buttonColor: Colors.white,
-                        borderRadius: 16,
+                        uniformBorderRadius: 16,
                         borderColor: Colors.transparent,
                         child: Text(
                           'Reset',
@@ -109,7 +109,7 @@ class _SignInState extends ConsumerState<SettingsPage> {
                         horizontalPadding: 48,
                         verticalPadding: 16,
                         buttonColor: heavyGray,
-                        borderRadius: 16,
+                        uniformBorderRadius: 16,
                         borderColor: Colors.transparent,
                         buttonShadow: moderateShadow,
                         child: const Text(

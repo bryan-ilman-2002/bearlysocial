@@ -50,10 +50,8 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
   final FocusNode _usernameFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
 
-  final TextEditingController _usernameTextFieldController =
-      TextEditingController();
-  final TextEditingController _passwordTextFieldController =
-      TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -77,13 +75,13 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
     setState(() {
       _inputIsBlocked = true;
 
-      _usernameIsValid = _usernameTextFieldController.text.isNotEmpty;
-      _passwordIsValid = _passwordTextFieldController.text.isNotEmpty;
+      _usernameIsValid = _usernameController.text.isNotEmpty;
+      _passwordIsValid = _passwordController.text.isNotEmpty;
     });
 
     if (_usernameIsValid && _passwordIsValid) {
-      String id = hash16(_usernameTextFieldController.text);
-      String token = hash32(_passwordTextFieldController.text);
+      String id = hash16(_usernameController.text);
+      String token = hash32(_passwordController.text);
 
       final Response httpResponse =
           await makeRequest(widget.url, {'id': id, 'token': token});
@@ -129,7 +127,6 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
   Widget build(BuildContext context) {
     return Center(
       child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 40,
@@ -180,7 +177,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
               UnderlinedTextField(
                 label: 'Username',
                 obscureText: false,
-                controller: _usernameTextFieldController,
+                userInputController: _usernameController,
                 node: _usernameFocusNode,
                 textIsvalid: _usernameIsValid,
                 textIsError:
@@ -196,7 +193,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
               UnderlinedTextField(
                 label: 'Password',
                 obscureText: true,
-                controller: _passwordTextFieldController,
+                userInputController: _passwordController,
                 node: _passwordFocusNode,
                 textIsvalid: _passwordIsValid,
                 textIsError:
@@ -236,7 +233,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 width: double.infinity,
                 verticalPadding: 16,
                 buttonColor: heavyGray,
-                borderRadius: 16,
+                uniformBorderRadius: 16,
                 callbackFunction: _inputIsBlocked
                     ? null
                     : () {

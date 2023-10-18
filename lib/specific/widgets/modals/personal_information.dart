@@ -1,6 +1,8 @@
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
+import 'package:bearlysocial/generic/functions/getters/lang_names_in_native_format.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/generic/widgets/form_elements/underlined_txt_field.dart';
+import 'package:bearlysocial/generic/widgets/selector.dart';
 import 'package:flutter/material.dart';
 
 class PersonalInformation extends StatefulWidget {
@@ -14,10 +16,8 @@ class _PersonalInformationState extends State<PersonalInformation> {
   final FocusNode _firstNameFocusNode = FocusNode();
   final FocusNode _lastNameFocusNode = FocusNode();
 
-  final TextEditingController _firstNameTextFieldController =
-      TextEditingController();
-  final TextEditingController _lastNameTextFieldController =
-      TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
           child: ColoredButton(
             horizontalPadding: 8,
             verticalPadding: 8,
-            borderRadius: 128,
+            uniformBorderRadius: 128,
             borderColor: moderateGray,
             child: Text(
               'Update Profile Picture',
@@ -73,7 +73,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
         UnderlinedTextField(
           label: 'First Name',
           obscureText: false,
-          controller: _firstNameTextFieldController,
+          userInputController: _firstNameController,
           node: _firstNameFocusNode,
           textIsvalid: true,
           textIsError: false,
@@ -83,12 +83,26 @@ class _PersonalInformationState extends State<PersonalInformation> {
         UnderlinedTextField(
           label: 'Last Name',
           obscureText: false,
-          controller: _lastNameTextFieldController,
+          userInputController: _lastNameController,
           node: _lastNameFocusNode,
           textIsvalid: true,
           textIsError: false,
           invalidText: '',
           errorText: '',
+        ),
+        Selector(
+          userInputController: TextEditingController(),
+          hint: 'Select languages.',
+          map: languageNamesInNativeFormat,
+          trailingIcon: Icons.keyboard_arrow_down,
+          callbackFunction: () {},
+        ),
+        Selector(
+          userInputController: TextEditingController(),
+          hint: 'Select interests.',
+          map: languageNamesInNativeFormat,
+          trailingIcon: Icons.keyboard_arrow_down,
+          callbackFunction: () {},
         ),
       ],
     );

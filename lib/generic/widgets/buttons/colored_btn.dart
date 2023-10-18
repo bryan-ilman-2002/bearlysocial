@@ -10,7 +10,8 @@ class ColoredButton extends StatelessWidget {
   final Color? splashColor;
   final InteractiveInkFeatureFactory? splashFactory;
   final Color borderColor;
-  final double borderRadius;
+  final double uniformBorderRadius;
+  final BorderRadius? variableBorderRadius;
   final BoxShadow? buttonShadow;
   final Widget? child;
 
@@ -25,7 +26,8 @@ class ColoredButton extends StatelessWidget {
     this.splashColor,
     this.splashFactory,
     this.borderColor = Colors.black,
-    this.borderRadius = 8,
+    this.uniformBorderRadius = 8,
+    this.variableBorderRadius,
     this.buttonShadow,
     this.child,
   });
@@ -37,7 +39,8 @@ class ColoredButton extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.transparent),
-        borderRadius: BorderRadius.circular(borderRadius),
+        borderRadius:
+            variableBorderRadius ?? BorderRadius.circular(uniformBorderRadius),
         boxShadow: buttonShadow != null ? [buttonShadow!] : [],
       ),
       child: Material(
@@ -46,7 +49,8 @@ class ColoredButton extends StatelessWidget {
           side: BorderSide(
             color: borderColor,
           ),
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: variableBorderRadius ??
+              BorderRadius.circular(uniformBorderRadius),
         ),
         child: InkWell(
           onTap: () {
@@ -56,7 +60,8 @@ class ColoredButton extends StatelessWidget {
           },
           splashFactory: splashFactory,
           splashColor: splashColor,
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: variableBorderRadius ??
+              BorderRadius.circular(uniformBorderRadius),
           child: Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: horizontalPadding ?? 0,

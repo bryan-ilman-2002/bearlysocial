@@ -16,6 +16,14 @@ void main() {
   );
 }
 
+final TextStyle appTextStyle = TextStyle(
+  overflow: TextOverflow.ellipsis,
+  fontFamily: 'Mukta',
+  fontSize: 14,
+  fontWeight: FontWeight.normal,
+  color: moderateGray,
+);
+
 class App extends ConsumerStatefulWidget {
   const App({super.key});
 
@@ -24,16 +32,6 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> {
-  final TextTheme _mukta = TextTheme(
-    bodyMedium: TextStyle(
-      overflow: TextOverflow.ellipsis,
-      fontFamily: 'Mukta',
-      fontSize: 14,
-      fontWeight: FontWeight.normal,
-      color: moderateGray,
-    ),
-  );
-
   @override
   Widget build(BuildContext context) {
     if (!ref.watch(prep)) ref.read(validateSavedMainAccessNumber)();
@@ -48,7 +46,9 @@ class _AppState extends ConsumerState<App> {
     return MaterialApp(
       title: 'BearlySocial',
       theme: ThemeData(
-        textTheme: _mukta,
+        textTheme: TextTheme(
+          bodyMedium: appTextStyle,
+        ),
         iconTheme: IconThemeData(
           size: 24,
           color: moderateGray,
@@ -56,13 +56,44 @@ class _AppState extends ConsumerState<App> {
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: heavyGray,
         ),
+        dropdownMenuTheme: DropdownMenuThemeData(
+          inputDecorationTheme: InputDecorationTheme(
+            hintStyle: appTextStyle,
+          ),
+          menuStyle: MenuStyle(
+            shape: MaterialStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(16),
+                ),
+                side: BorderSide(
+                  color: moderateGray,
+                  width: 0.4,
+                ),
+              ),
+            ),
+            maximumSize: const MaterialStatePropertyAll(
+              Size(double.infinity, 240),
+            ),
+          ),
+        ),
         splashFactory: InkRipple.splashFactory,
       ),
+      scrollBehavior: const BouncingScroll(),
       home: ref.watch(prep)
           ? ref.read(auth) == true
               ? const PostAuthPageManager()
               : const PreAuthPageManager()
           : const PreparationPage(),
     );
+  }
+}
+
+class BouncingScroll extends ScrollBehavior {
+  const BouncingScroll();
+
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const BouncingScrollPhysics();
   }
 }

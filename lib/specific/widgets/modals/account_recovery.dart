@@ -139,7 +139,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                     width: 128,
                     verticalPadding: 16,
                     buttonColor: heavyGray,
-                    borderRadius: 16,
+                    uniformBorderRadius: 16,
                     callbackFunction: checkEmail,
                     borderColor: Colors.transparent,
                     buttonShadow: moderateShadow,

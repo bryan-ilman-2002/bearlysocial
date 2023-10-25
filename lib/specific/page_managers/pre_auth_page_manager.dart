@@ -1,5 +1,5 @@
-import 'package:bearlysocial/specific/pages/sign_in.dart';
-import 'package:bearlysocial/specific/pages/sign_up.dart';
+import 'package:bearlysocial/specific/pages/sign_in_page.dart';
+import 'package:bearlysocial/specific/pages/sign_up_page.dart';
 import 'package:flutter/material.dart';
 
 class PreAuthPageManager extends StatefulWidget {
@@ -12,10 +12,10 @@ class PreAuthPageManager extends StatefulWidget {
 class _PreAuthPageManager extends State<PreAuthPageManager> {
   List<Widget> _initPages() {
     return <Widget>[
-      SignUp(
+      SignUpPage(
         onTap: _onTab,
       ),
-      SignIn(
+      SignInPage(
         onTap: _onTab,
       ),
     ];

@@ -1,8 +1,8 @@
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
-import 'package:bearlysocial/generic/widgets/board.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
-import 'package:bearlysocial/generic/widgets/dropdown.dart';
-import 'package:bearlysocial/generic/widgets/tag.dart';
+import 'package:bearlysocial/generic/widgets/form_elements/board.dart';
+import 'package:bearlysocial/generic/widgets/form_elements/dropdown.dart';
+import 'package:bearlysocial/generic/widgets/buttons/tag.dart';
 import 'package:flutter/material.dart';
 
 class Selector extends StatelessWidget {

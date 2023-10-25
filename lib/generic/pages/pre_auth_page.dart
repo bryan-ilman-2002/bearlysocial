@@ -19,7 +19,7 @@ import 'package:isar/isar.dart';
 
 class PreAuthenticationPage extends ConsumerStatefulWidget {
   final Function(int) onTap;
-  final bool enableAccountRecovery;
+  final bool accountCreation;
   final API url;
   final String exclamation;
   final String question;
@@ -28,7 +28,7 @@ class PreAuthenticationPage extends ConsumerStatefulWidget {
   const PreAuthenticationPage({
     super.key,
     required this.onTap,
-    required this.enableAccountRecovery,
+    required this.accountCreation,
     required this.url,
     required this.exclamation,
     required this.question,
@@ -180,12 +180,10 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 userInputController: _usernameController,
                 node: _usernameFocusNode,
                 textIsvalid: _usernameIsValid,
-                textIsError:
-                    widget.enableAccountRecovery ? _errorOccurred : false,
+                textIsError: widget.accountCreation ? _errorOccurred : false,
                 invalidText: 'Username cannot be empty.',
-                errorText: widget.enableAccountRecovery
-                    ? 'Username is already taken.'
-                    : '',
+                errorText:
+                    widget.accountCreation ? 'Username is already taken.' : '',
               ),
               const SizedBox(
                 height: 32,
@@ -196,16 +194,33 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 userInputController: _passwordController,
                 node: _passwordFocusNode,
                 textIsvalid: _passwordIsValid,
-                textIsError:
-                    widget.enableAccountRecovery ? false : _errorOccurred,
+                textIsError: widget.accountCreation ? false : _errorOccurred,
                 invalidText: 'Password cannot be empty.',
-                errorText:
-                    widget.enableAccountRecovery ? '' : 'Password is wrong.',
+                errorText: widget.accountCreation ? '' : 'Password is wrong.',
               ),
+              widget.accountCreation
+                  ? const SizedBox(
+                      height: 32,
+                    )
+                  : const SizedBox(),
+              widget.accountCreation
+                  ? UnderlinedTextField(
+                      label: 'Password Reaffirmation',
+                      obscureText: true,
+                      userInputController: _passwordController,
+                      node: _passwordFocusNode,
+                      textIsvalid: _passwordIsValid,
+                      textIsError:
+                          widget.accountCreation ? false : _errorOccurred,
+                      invalidText: 'Password cannot be empty.',
+                      errorText:
+                          widget.accountCreation ? '' : 'Password is wrong.',
+                    )
+                  : const SizedBox(),
               const SizedBox(
                 height: 8,
               ),
-              !widget.enableAccountRecovery
+              !widget.accountCreation
                   ? Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
@@ -251,7 +266,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                         ),
                       )
                     : Text(
-                        widget.enableAccountRecovery ? 'Sign Up' : 'Sign In',
+                        widget.accountCreation ? 'Sign Up' : 'Sign In',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -272,7 +287,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      widget.onTap(widget.enableAccountRecovery ? 1 : 0);
+                      widget.onTap(widget.accountCreation ? 1 : 0);
                     },
                     child: Text(
                       widget.action,

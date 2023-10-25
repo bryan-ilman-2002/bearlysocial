@@ -2,10 +2,10 @@ import 'package:bearlysocial/generic/enums/api.dart';
 import 'package:bearlysocial/generic/pages/pre_auth_page.dart';
 import 'package:flutter/material.dart';
 
-class SignUp extends StatelessWidget {
+class SignInPage extends StatelessWidget {
   final Function(int) onTap;
 
-  const SignUp({
+  const SignInPage({
     super.key,
     required this.onTap,
   });
@@ -14,11 +14,11 @@ class SignUp extends StatelessWidget {
   Widget build(BuildContext context) {
     return PreAuthenticationPage(
       onTap: onTap,
-      enableAccountRecovery: true,
-      url: API.signUp,
-      exclamation: 'Get onboard!',
-      question: 'Already have an account?',
-      action: 'Sign in instead!',
+      accountCreation: false,
+      url: API.signIn,
+      exclamation: 'Welcome Back!',
+      question: 'Don\'t have an account?',
+      action: 'Sign up first!',
     );
   }
 }

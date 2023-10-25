@@ -2,11 +2,11 @@ import 'package:bearlysocial/generic/enums/social_media.dart';
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/lang_names_in_native_format.dart';
 import 'package:bearlysocial/generic/functions/nav_to_some_page.dart';
+import 'package:bearlysocial/generic/pages/front_cam_page.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/generic/widgets/form_elements/selector.dart';
 import 'package:bearlysocial/generic/widgets/form_elements/social_media_links.dart';
 import 'package:bearlysocial/generic/widgets/form_elements/underlined_txt_field.dart';
-import 'package:bearlysocial/specific/pages/selfie_capture_page.dart';
 import 'package:flutter/material.dart';
 
 class PersonalInformation extends StatefulWidget {
@@ -66,7 +66,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
             verticalPadding: 8,
             callbackFunction: () => navigateToSomePage(
               context: context,
-              somePage: const SelfieCapturePage(),
+              somePage: const FrontCameraPage(),
             ),
             uniformBorderRadius: 128,
             borderColor: moderateGray,

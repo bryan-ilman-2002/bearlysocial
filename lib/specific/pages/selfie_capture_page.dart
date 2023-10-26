@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
-import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/specific/functions/detect_face_in_selfie.dart';
 import 'package:bearlysocial/specific/widgets/painter/rect_painter.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 
 class SelfieCapturePage extends StatefulWidget {
@@ -38,7 +38,7 @@ class _SelfieCapturePage extends State<SelfieCapturePage>
 
   late AnimationController _animationController;
 
-  Face? detectedFace;
+  Face? _trackedFace;
 
   @override
   void initState() {
@@ -56,12 +56,25 @@ class _SelfieCapturePage extends State<SelfieCapturePage>
       _deviceCameraController.startImageStream((CameraImage selfie) async {
         if (!_detectingFaceInSelfie) {
           _detectingFaceInSelfie = true;
-          detectedFace = await detectFaceInSelfie(
+
+          final Face? bestShotFace = await detectFaceInSelfie(
             screenSize: MediaQuery.of(context).size,
             selfie: selfie,
             sensorOrientation: widget.deviceCamera.sensorOrientation,
             uprightFaceDetector: _uprightFaceDetector,
           );
+
+          if (_trackedFace?.trackingId == bestShotFace?.trackingId &&
+              bestShotFace != null) {
+            final double? smilingProbability = _trackedFace?.smilingProbability;
+
+            if (smilingProbability != null && smilingProbability >= 0.98) {
+              Future<XFile> newSelfie = _deviceCameraController.takePicture();
+            }
+          }
+
+          _trackedFace = bestShotFace;
+
           _detectingFaceInSelfie = false;
         }
       });
@@ -165,13 +178,14 @@ class _SelfieCapturePage extends State<SelfieCapturePage>
                       padding: const EdgeInsets.all(20),
                       child: Row(
                         children: [
-                          const UnconstrainedBox(
+                          UnconstrainedBox(
                             child: ColoredButton(
                               horizontalPadding: 8,
                               verticalPadding: 8,
+                              callbackFunction: () => Navigator.pop(context),
                               borderColor: Colors.transparent,
                               uniformBorderRadius: 128,
-                              child: Icon(
+                              child: const Icon(
                                 Icons.arrow_back,
                                 size: 24,
                               ),

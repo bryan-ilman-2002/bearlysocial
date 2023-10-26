@@ -43,32 +43,46 @@ Future<Face?> detectFaceInSelfie({
   final List<Face> detectedFaces =
       await uprightFaceDetector.processImage(selfieInBytes);
 
-  Face? largestDetectedFace;
+  Face? bestShotFace;
+
+  final Offset selfieCenter = Offset(
+    screenSize.width / 2,
+    screenSize.height / 2,
+  );
   double largestArea = 0.0;
 
   for (final Face detectedFace in detectedFaces) {
-    final Rect transformedRect = transformRectangle(
-      rect: detectedFace.boundingBox,
-      imageSize: selfieSize,
-      previewSize: screenSize,
+    final detectedFaceCenter = Offset(
+      detectedFace.boundingBox.left + detectedFace.boundingBox.width / 2,
+      detectedFace.boundingBox.top + detectedFace.boundingBox.height / 2,
     );
 
-    final double area = transformedRect.width * transformedRect.height;
-    if (area > largestArea) {
-      largestArea = area;
-      largestDetectedFace = Face(
-        boundingBox: transformedRect,
-        landmarks: detectedFace.landmarks,
-        contours: detectedFace.contours,
-        headEulerAngleY: detectedFace.headEulerAngleY,
-        headEulerAngleZ: detectedFace.headEulerAngleZ,
-        leftEyeOpenProbability: detectedFace.leftEyeOpenProbability,
-        rightEyeOpenProbability: detectedFace.rightEyeOpenProbability,
-        smilingProbability: detectedFace.smilingProbability,
-        trackingId: detectedFace.trackingId,
+    if ((selfieCenter.dx - detectedFaceCenter.dx).abs() <= 12 &&
+        (selfieCenter.dy - detectedFaceCenter.dy).abs() <= 12) {
+      final Rect transformedRect = transformRectangle(
+        rect: detectedFace.boundingBox,
+        imageSize: selfieSize,
+        previewSize: screenSize,
       );
+
+      final double area = transformedRect.width * transformedRect.height;
+      if (area > largestArea) {
+        largestArea = area;
+
+        bestShotFace = Face(
+          boundingBox: transformedRect,
+          landmarks: detectedFace.landmarks,
+          contours: detectedFace.contours,
+          headEulerAngleY: detectedFace.headEulerAngleY,
+          headEulerAngleZ: detectedFace.headEulerAngleZ,
+          leftEyeOpenProbability: detectedFace.leftEyeOpenProbability,
+          rightEyeOpenProbability: detectedFace.rightEyeOpenProbability,
+          smilingProbability: detectedFace.smilingProbability,
+          trackingId: detectedFace.trackingId,
+        );
+      }
     }
   }
 
-  return largestDetectedFace;
+  return bestShotFace;
 }

@@ -23,3 +23,11 @@ BoxShadow get lightShadow {
     spreadRadius: 2,
   );
 }
+
+BoxShadow get innerShadow {
+  return BoxShadow(
+    color: Colors.red.withOpacity(0.4),
+    blurRadius: 16,
+    spreadRadius: -5,
+  );
+}

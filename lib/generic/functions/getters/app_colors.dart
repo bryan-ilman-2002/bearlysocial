@@ -7,6 +7,6 @@ Color get lightGray => const Color.fromRGBO(236, 236, 236, 4);
 Color get moderateRed => const Color.fromARGB(255, 180, 4, 4);
 Color get lightRed => const Color.fromARGB(255, 255, 226, 224);
 
-Color get lightYellow => const Color.fromARGB(252, 255, 252, 178);
+Color get lightYellow => const Color.fromRGBO(255, 252, 156, 4);
 
 Color get moderateBlue => const Color.fromRGBO(14, 108, 192, 4);

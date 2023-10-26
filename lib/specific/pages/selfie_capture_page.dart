@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
+import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
+import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/specific/functions/detect_face_in_selfie.dart';
 import 'package:bearlysocial/specific/widgets/painter/rect_painter.dart';
 import 'package:camera/camera.dart';
@@ -19,8 +21,10 @@ class SelfieCapturePage extends StatefulWidget {
   State<SelfieCapturePage> createState() => _SelfieCapturePage();
 }
 
-class _SelfieCapturePage extends State<SelfieCapturePage> {
+class _SelfieCapturePage extends State<SelfieCapturePage>
+    with SingleTickerProviderStateMixin {
   bool _focusIsSet = false;
+  Timer? _focusTimer;
 
   late CameraController _deviceCameraController;
   late Future<void> _deviceCameraInitialization;
@@ -31,6 +35,8 @@ class _SelfieCapturePage extends State<SelfieCapturePage> {
     enableTracking: true,
   ));
   bool _detectingFaceInSelfie = false;
+
+  late AnimationController _animationController;
 
   Face? detectedFace;
 
@@ -60,12 +66,19 @@ class _SelfieCapturePage extends State<SelfieCapturePage> {
         }
       });
     });
+
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    )..repeat(reverse: true);
   }
 
   @override
   void dispose() {
     _deviceCameraController.dispose();
     _uprightFaceDetector.close();
+    _animationController.dispose();
+
     super.dispose();
   }
 
@@ -89,8 +102,10 @@ class _SelfieCapturePage extends State<SelfieCapturePage> {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
+                      stops: const [0, 0.2, 0.4],
                       colors: <Color>[
-                        heavyGray.withOpacity(0.8),
+                        Colors.black.withOpacity(0.4),
+                        Colors.black.withOpacity(0.16),
                         Colors.transparent,
                       ],
                     ),
@@ -111,17 +126,6 @@ class _SelfieCapturePage extends State<SelfieCapturePage> {
                     ),
                   ),
                 ),
-                // detectedFace != null
-                //     ? Positioned.fill(
-                //         child: CustomPaint(
-                //           painter:
-                //               BoundingBoxPainter(detectedFace: detectedFace!),
-                //         ),
-                //       )
-                //     : Positioned(
-                //         child: Container(),
-                //       ),
-                // Add a marker at the focus point
                 Positioned.fill(
                   child: GestureDetector(
                     onTapUp: (TapUpDetails details) {
@@ -140,7 +144,10 @@ class _SelfieCapturePage extends State<SelfieCapturePage> {
                         _focusIsSet = true;
                       });
 
-                      Timer(const Duration(milliseconds: 2000), () {
+                      _focusTimer?.cancel();
+
+                      _focusTimer =
+                          Timer(const Duration(milliseconds: 2000), () {
                         setState(() {
                           _focusIsSet = false;
                         });
@@ -151,11 +158,62 @@ class _SelfieCapturePage extends State<SelfieCapturePage> {
                     ),
                   ),
                 ),
-                const SafeArea(
+                SafeArea(
                   child: Align(
                     alignment: Alignment.topCenter,
-                    child: Row(
-                      children: [],
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          const UnconstrainedBox(
+                            child: ColoredButton(
+                              horizontalPadding: 8,
+                              verticalPadding: 8,
+                              borderColor: Colors.transparent,
+                              uniformBorderRadius: 128,
+                              child: Icon(
+                                Icons.arrow_back,
+                                size: 24,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: AnimatedBuilder(
+                              animation: _animationController,
+                              builder: (a, b) {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'Scanning facial features ',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    ...List.generate(4, (index) {
+                                      return Transform.translate(
+                                        offset: Offset(
+                                          _animationController.value *
+                                              ((index + 2) * -2),
+                                          0,
+                                        ),
+                                        child: const Text(
+                                          '.',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

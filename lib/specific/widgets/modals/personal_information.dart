@@ -2,21 +2,26 @@ import 'package:bearlysocial/generic/enums/social_media.dart';
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/lang_names_in_native_format.dart';
 import 'package:bearlysocial/generic/functions/nav_to_some_page.dart';
+import 'package:bearlysocial/generic/functions/providers/profile.dart';
 import 'package:bearlysocial/generic/pages/front_cam_page.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/generic/widgets/form_elements/selector.dart';
 import 'package:bearlysocial/generic/widgets/form_elements/social_media_links.dart';
 import 'package:bearlysocial/generic/widgets/form_elements/underlined_txt_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image/image.dart' as img;
 
-class PersonalInformation extends StatefulWidget {
+class PersonalInformation extends ConsumerStatefulWidget {
   const PersonalInformation({super.key});
 
   @override
-  State<PersonalInformation> createState() => _PersonalInformationState();
+  ConsumerState<PersonalInformation> createState() =>
+      _PersonalInformationState();
 }
 
-class _PersonalInformationState extends State<PersonalInformation> {
+class _PersonalInformationState extends ConsumerState<PersonalInformation> {
   final FocusNode _firstNameFocusNode = FocusNode();
   final FocusNode _lastNameFocusNode = FocusNode();
 
@@ -46,18 +51,20 @@ class _PersonalInformationState extends State<PersonalInformation> {
     return Column(
       children: [
         Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
+          width: 120,
+          height: 120,
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(
-              color: moderateGray,
-            ),
           ),
-          child: const Center(
-            child: Icon(
-              Icons.no_photography,
-            ),
+          child: Center(
+            child: ref.watch(profile).picture == null
+                ? const Icon(
+                    Icons.no_photography,
+                  )
+                : ClipOval(
+                    child: Image.memory(Uint8List.fromList(
+                        img.encodePng(ref.watch(profile).picture!))),
+                  ),
           ),
         ),
         UnconstrainedBox(

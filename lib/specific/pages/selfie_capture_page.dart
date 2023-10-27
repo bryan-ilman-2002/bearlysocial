@@ -3,13 +3,17 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
+import 'package:bearlysocial/generic/functions/providers/profile.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/specific/functions/detect_face_in_selfie.dart';
+import 'package:bearlysocial/specific/functions/profile_pic_maker.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:image/image.dart' as img;
 
-class SelfieCapturePage extends StatefulWidget {
+class SelfieCapturePage extends ConsumerStatefulWidget {
   final CameraDescription deviceCamera;
 
   const SelfieCapturePage({
@@ -18,10 +22,10 @@ class SelfieCapturePage extends StatefulWidget {
   });
 
   @override
-  State<SelfieCapturePage> createState() => _SelfieCapturePage();
+  ConsumerState<SelfieCapturePage> createState() => _SelfieCapturePage();
 }
 
-class _SelfieCapturePage extends State<SelfieCapturePage>
+class _SelfieCapturePage extends ConsumerState<SelfieCapturePage>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -47,6 +51,7 @@ class _SelfieCapturePage extends State<SelfieCapturePage>
   @override
   void initState() {
     super.initState();
+
     _deviceCameraController = CameraController(
       widget.deviceCamera,
       ResolutionPreset.ultraHigh,
@@ -57,6 +62,7 @@ class _SelfieCapturePage extends State<SelfieCapturePage>
         _deviceCameraController.initialize().then((_) {
       if (!mounted) return;
 
+      final Size screenSize = MediaQuery.of(context).size;
       _deviceCameraController.startImageStream((CameraImage selfie) async {
         if (!_detectingFaceInSelfie) {
           _detectingFaceInSelfie = true;
@@ -86,11 +92,9 @@ class _SelfieCapturePage extends State<SelfieCapturePage>
               );
 
               Overlay.of(_scaffoldKey.currentContext!).insert(overlayEntry);
-
               await Future.delayed(const Duration(
                 milliseconds: 100,
               ));
-
               overlayEntry.remove();
 
               await _deviceCameraController.stopImageStream();
@@ -103,6 +107,13 @@ class _SelfieCapturePage extends State<SelfieCapturePage>
                   Navigator.pop(context);
                 },
               );
+
+              final img.Image? profilePicture = await ProfilePictureMaker(
+                imagePath: newSelfie!.path,
+                screenSize: screenSize,
+              );
+
+              ref.watch(profile).setPicture(profilePicture: profilePicture);
             }
           }
 

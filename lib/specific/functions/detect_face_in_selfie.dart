@@ -52,19 +52,26 @@ Future<Face?> detectFaceInSelfie({
   double largestArea = 0.0;
 
   for (final Face detectedFace in detectedFaces) {
-    final detectedFaceCenter = Offset(
-      detectedFace.boundingBox.left + detectedFace.boundingBox.width / 2,
-      detectedFace.boundingBox.top + detectedFace.boundingBox.height / 2,
+    final Rect transformedRect = transformRectangle(
+      rect: detectedFace.boundingBox,
+      imageSize: selfieSize,
+      previewSize: screenSize,
     );
 
-    if ((selfieCenter.dx - detectedFaceCenter.dx).abs() <= 12 &&
-        (selfieCenter.dy - detectedFaceCenter.dy).abs() <= 12) {
-      final Rect transformedRect = transformRectangle(
-        rect: detectedFace.boundingBox,
-        imageSize: selfieSize,
-        previewSize: screenSize,
-      );
+    final detectedFaceCenter = Offset(
+      transformedRect.left + transformedRect.width / 2,
+      transformedRect.top + transformedRect.height / 2,
+    );
 
+    final double headTilt = detectedFace.headEulerAngleX ?? double.infinity;
+    final double headTurn = detectedFace.headEulerAngleY ?? double.infinity;
+    final double headRotation = detectedFace.headEulerAngleZ ?? double.infinity;
+
+    if ((selfieCenter.dx - detectedFaceCenter.dx).abs() <= 40 &&
+        (selfieCenter.dy - detectedFaceCenter.dy).abs() <= 40 &&
+        headTilt.abs() <= 20 &&
+        headTurn.abs() <= 10 &&
+        headRotation.abs() <= 20) {
       final double area = transformedRect.width * transformedRect.height;
       if (area > largestArea) {
         largestArea = area;

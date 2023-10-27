@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
-import 'package:bearlysocial/generic/functions/providers/profile.dart';
+import 'package:bearlysocial/generic/functions/providers/profile_pic.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/specific/functions/detect_face_in_selfie.dart';
 import 'package:bearlysocial/specific/functions/profile_pic_maker.dart';
@@ -113,7 +113,7 @@ class _SelfieCapturePage extends ConsumerState<SelfieCapturePage>
                 screenSize: screenSize,
               );
 
-              ref.watch(profile).setPicture(profilePicture: profilePicture);
+              ref.read(setProfilePicture)(profilePicture: profilePicture);
             }
           }
 

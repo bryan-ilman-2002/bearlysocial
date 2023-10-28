@@ -1,8 +1,9 @@
+import 'package:bearlysocial/generic/widgets/form_elements/tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Board extends ConsumerStatefulWidget {
-  final List<Widget>? children;
+  final List<Tag>? children;
   final WrapAlignment horizontalAlignment;
   final WrapAlignment verticalAlignment;
   final double horizontalSpacing;

@@ -23,6 +23,17 @@ class SocialMediaLink extends StatelessWidget {
           Clipboard.setData(ClipboardData(text: platform.domain)),
       child: Column(
         children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'Unverified',
+                ),
+              ],
+            ),
+          ),
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(

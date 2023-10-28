@@ -1,8 +1,9 @@
+import 'package:bearlysocial/generic/functions/create_tag_list.dart';
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
+import 'package:bearlysocial/generic/functions/getters/design_tokens.dart';
 import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
 import 'package:bearlysocial/generic/widgets/form_elements/board.dart';
 import 'package:bearlysocial/generic/widgets/form_elements/dropdown.dart';
-import 'package:bearlysocial/generic/widgets/buttons/tag.dart';
 import 'package:flutter/material.dart';
 
 class Selector extends StatelessWidget {
@@ -12,7 +13,8 @@ class Selector extends StatelessWidget {
   final bool? enableFilter;
   final IconData? trailingIcon;
   final Function callbackFunction;
-  final List<Tag>? tags;
+  final List<String> labels;
+  final dynamic type;
 
   const Selector({
     super.key,
@@ -22,7 +24,8 @@ class Selector extends StatelessWidget {
     this.enableFilter,
     this.trailingIcon,
     required this.callbackFunction,
-    this.tags,
+    required this.labels,
+    this.type,
   });
 
   @override
@@ -40,7 +43,7 @@ class Selector extends StatelessWidget {
               trailingIcon: trailingIcon,
             ),
             const SizedBox(
-              width: 2,
+              width: AppSpacing.extraSmall,
             ),
             ColoredButton(
               width: 58,
@@ -56,12 +59,15 @@ class Selector extends StatelessWidget {
             ),
           ],
         ),
+        if (labels.isNotEmpty) const SizedBox(height: 16),
+        if (labels.isNotEmpty) const Text('Tap to remove.'),
         const SizedBox(
-          height: 24,
+          height: AppSpacing.small,
         ),
         Board(
-          children: tags,
+          children: createTagList(labels: labels, type: type),
         ),
+        if (labels.isNotEmpty) const SizedBox(height: AppSpacing.medium),
       ],
     );
   }

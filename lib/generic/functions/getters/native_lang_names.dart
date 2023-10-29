@@ -1,6 +1,6 @@
 import 'package:bearlysocial/generic/enums/language.dart';
 
-Map<String, Language> get languageNamesInNativeFormat => {
+Map<String, Language> get nativeLanguageNames => {
       'English': Language.english,
       'Español': Language.spanish,
       'Français': Language.french,

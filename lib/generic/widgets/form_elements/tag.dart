@@ -1,6 +1,7 @@
 import 'package:bearlysocial/generic/enums/interest.dart';
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
-import 'package:bearlysocial/generic/functions/providers/language_tags.dart';
+import 'package:bearlysocial/generic/functions/providers/interest_labels.dart';
+import 'package:bearlysocial/generic/functions/providers/lang_labels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,7 +20,7 @@ class Tag extends ConsumerWidget {
     return GestureDetector(
       onTap: () => type != null
           ? type == Interest
-              ? {}
+              ? ref.read(removeInterestLabel)(label)
               : ref.read(removeLangLabel)(label)
           : {},
       child: Container(

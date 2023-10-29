@@ -6,7 +6,6 @@ class Dropdown extends StatelessWidget {
   final TextEditingController userInputController;
   final String? hint;
   final Map<String, dynamic> map;
-  final bool? enableFilter;
   final IconData? trailingIcon;
 
   const Dropdown({
@@ -14,7 +13,6 @@ class Dropdown extends StatelessWidget {
     required this.userInputController,
     this.hint,
     required this.map,
-    this.enableFilter,
     this.trailingIcon,
   });
 
@@ -36,19 +34,12 @@ class Dropdown extends StatelessWidget {
     });
 
     return DropdownMenu(
+      width: 240,
       controller: userInputController,
       hintText: hint ?? 'Tap here.',
       dropdownMenuEntries: entries,
-      enableFilter: enableFilter ?? false,
-      requestFocusOnTap: enableFilter,
-      inputDecorationTheme: InputDecorationTheme(
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
-            color: moderateGray,
-          ),
-        ),
-      ),
+      enableFilter: true,
+      requestFocusOnTap: true,
       trailingIcon: Icon(trailingIcon),
     );
   }

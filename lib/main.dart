@@ -61,8 +61,22 @@ class _AppState extends ConsumerState<App> {
         dropdownMenuTheme: DropdownMenuThemeData(
           inputDecorationTheme: InputDecorationTheme(
             hintStyle: appTextStyle,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: moderateGray,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                width: 2,
+                color: heavyGray,
+              ),
+            ),
           ),
           menuStyle: MenuStyle(
+            elevation: const MaterialStatePropertyAll(2),
             shape: MaterialStatePropertyAll(
               RoundedRectangleBorder(
                 borderRadius: const BorderRadius.all(
@@ -79,6 +93,9 @@ class _AppState extends ConsumerState<App> {
             ),
           ),
         ),
+        colorScheme: ThemeData.light().colorScheme.copyWith(
+              primary: heavyGray,
+            ),
         splashFactory: InkRipple.splashFactory,
       ),
       scrollBehavior: const BouncingScroll(),

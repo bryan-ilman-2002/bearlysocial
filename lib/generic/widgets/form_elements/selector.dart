@@ -10,7 +10,6 @@ class Selector extends StatelessWidget {
   final TextEditingController userInputController;
   final String? hint;
   final Map<String, dynamic> map;
-  final bool? enableFilter;
   final IconData? trailingIcon;
   final Function callbackFunction;
   final List<String> labels;
@@ -21,7 +20,6 @@ class Selector extends StatelessWidget {
     required this.userInputController,
     this.hint,
     required this.map,
-    this.enableFilter,
     this.trailingIcon,
     required this.callbackFunction,
     required this.labels,
@@ -39,7 +37,6 @@ class Selector extends StatelessWidget {
               userInputController: userInputController,
               hint: hint,
               map: map,
-              enableFilter: enableFilter,
               trailingIcon: trailingIcon,
             ),
             const SizedBox(
@@ -59,7 +56,10 @@ class Selector extends StatelessWidget {
             ),
           ],
         ),
-        if (labels.isNotEmpty) const SizedBox(height: 16),
+        if (labels.isNotEmpty) const SizedBox(height: AppSpacing.verySmall),
+        if (labels.isNotEmpty) const SizedBox(height: AppSpacing.verySmall),
+        if (labels.isNotEmpty) const SizedBox(height: AppSpacing.verySmall),
+        if (labels.isNotEmpty) const SizedBox(height: AppSpacing.verySmall),
         if (labels.isNotEmpty) const Text('Tap to remove.'),
         const SizedBox(
           height: AppSpacing.small,

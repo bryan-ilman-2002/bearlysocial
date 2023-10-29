@@ -1,25 +1,12 @@
-import 'package:bearlysocial/generic/functions/getters/lang_names_in_native_format.dart';
+import 'package:bearlysocial/generic/functions/getters/native_lang_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LanguageStateNotifier extends StateNotifier<TextEditingController> {
   LanguageStateNotifier() : super(TextEditingController());
 
-  @override
-  void dispose() {
-    state.dispose();
-    super.dispose();
-  }
-
-  String validateSelection() {
-    final String lowercaseInput = state.text.toLowerCase();
-    final String matchingKey = languageNamesInNativeFormat.keys.firstWhere(
-      (key) => key.toLowerCase() == lowercaseInput,
-      orElse: () => '',
-    );
-
-    return matchingKey;
-  }
+  String validateSelection() =>
+      nativeLanguageNames.containsKey(state.text) ? state.text : '';
 
   void resetController() => state.clear();
 }
@@ -33,7 +20,7 @@ final selectedLang = Provider((ref) {
   return ref.watch(languageStateNotifierProvider);
 });
 
-final validateLangSelection = Provider((ref) {
+final validateSelectedLang = Provider((ref) {
   return ref.read(languageStateNotifierProvider.notifier).validateSelection;
 });
 

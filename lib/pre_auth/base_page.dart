@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bearlysocial/constants.dart';
 import 'package:bearlysocial/generic/enums/api.dart';
 import 'package:bearlysocial/generic/enums/db_key.dart';
 import 'package:bearlysocial/generic/functions/generate_hash.dart';
@@ -7,10 +8,9 @@ import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
 import 'package:bearlysocial/generic/functions/make_request.dart';
 import 'package:bearlysocial/generic/functions/providers/auth.dart';
-import 'package:bearlysocial/generic/schemas/extra.dart';
-import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
-import 'package:bearlysocial/generic/widgets/form_elements/underlined_txt_field.dart';
-import 'package:bearlysocial/specific/widgets/modals/account_recovery.dart';
+import 'package:bearlysocial/buttons/splash_btn.dart';
+import 'package:bearlysocial/form_elements/underlined_txt_field.dart';
+import 'package:bearlysocial/acc_recovery/account_recovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hashlib/hashlib.dart';
@@ -41,17 +41,20 @@ class PreAuthenticationPage extends ConsumerStatefulWidget {
 }
 
 class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
-  bool _inputIsBlocked = false;
-  bool _errorOccurred = false;
+  bool _blockInput = false;
 
-  bool _usernameIsValid = true;
-  bool _passwordIsValid = true;
+  String? _usernameError = null;
+  String? _passwordError = null;
+  String? _passwordAffirmationError = null;
 
   final FocusNode _usernameFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _passwordAffirmationFocusNode = FocusNode();
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordAffirmationController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -62,18 +65,22 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
     _passwordFocusNode.addListener(() {
       setState(() {});
     });
+    _passwordAffirmationFocusNode.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
     _usernameFocusNode.dispose();
     _passwordFocusNode.dispose();
+    _passwordAffirmationFocusNode.dispose();
     super.dispose();
   }
 
   void _authenticate() async {
     setState(() {
-      _inputIsBlocked = true;
+      _blockInput = true;
 
       _usernameIsValid = _usernameController.text.isNotEmpty;
       _passwordIsValid = _passwordController.text.isNotEmpty;
@@ -83,8 +90,10 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
       String id = hash16(_usernameController.text);
       String token = hash32(_passwordController.text);
 
-      final Response httpResponse =
-          await makeRequest(widget.url, {'id': id, 'token': token});
+      final Response httpResponse = await makeRequest(widget.url, {
+        'id': id,
+        'token': token,
+      });
 
       if (mounted) {
         if (httpResponse.statusCode == 200) {
@@ -129,15 +138,15 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 40,
+            horizontal: PaddingSize.medium,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 64,
-                height: 64,
+                width: SideSize.medium,
+                height: SideSize.medium,
                 decoration: BoxDecoration(
                   image: const DecorationImage(
                     image: AssetImage('assets/images/bearlysocial.png'),
@@ -149,7 +158,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 ),
               ),
               const SizedBox(
-                height: 24,
+                height: WhiteSpaceSize.small,
               ),
               Row(
                 children: [
@@ -158,11 +167,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                     child: Text(
                       widget.exclamation,
                       maxLines: 2,
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: heavyGray,
-                      ),
+                      style: Theme.of(context).textTheme.displayLarge,
                     ),
                   ),
                   const Expanded(
@@ -172,55 +177,42 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 ],
               ),
               const SizedBox(
-                height: 80,
+                height: WhiteSpaceSize.veryLarge,
               ),
               UnderlinedTextField(
                 label: 'Username',
-                obscureText: false,
-                userInputController: _usernameController,
-                node: _usernameFocusNode,
-                textIsvalid: _usernameIsValid,
-                textIsError: widget.accountCreation ? _errorOccurred : false,
-                invalidText: 'Username cannot be empty.',
-                errorText:
-                    widget.accountCreation ? 'Username is already taken.' : '',
+                controller: _usernameController,
+                focusNode: _usernameFocusNode,
+                errorText: _usernameError,
               ),
               const SizedBox(
-                height: 32,
+                height: WhiteSpaceSize.medium,
               ),
               UnderlinedTextField(
                 label: 'Password',
                 obscureText: true,
-                userInputController: _passwordController,
-                node: _passwordFocusNode,
-                textIsvalid: _passwordIsValid,
-                textIsError: widget.accountCreation ? false : _errorOccurred,
-                invalidText: 'Password cannot be empty.',
-                errorText: widget.accountCreation ? '' : 'Password is wrong.',
+                controller: _passwordController,
+                focusNode: _passwordFocusNode,
+                errorText: _passwordError,
               ),
               widget.accountCreation
                   ? const SizedBox(
-                      height: 32,
+                      height: WhiteSpaceSize.medium,
                     )
                   : const SizedBox(),
               widget.accountCreation
                   ? UnderlinedTextField(
                       label: 'Password Reaffirmation',
                       obscureText: true,
-                      userInputController: _passwordController,
-                      node: _passwordFocusNode,
-                      textIsvalid: _passwordIsValid,
-                      textIsError:
-                          widget.accountCreation ? false : _errorOccurred,
-                      invalidText: 'Password cannot be empty.',
-                      errorText:
-                          widget.accountCreation ? '' : 'Password is wrong.',
+                      controller: _passwordAffirmationController,
+                      focusNode: _passwordAffirmationFocusNode,
+                      errorText: _passwordAffirmationError,
                     )
                   : const SizedBox(),
               const SizedBox(
-                height: 8,
+                height: WhiteSpaceSize.verySmall,
               ),
-              !widget.accountCreation
+              widget.accountCreation
                   ? Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
@@ -234,47 +226,43 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                             },
                           );
                         },
-                        child: const Text(
+                        child: Text(
                           'Forgot password?',
-                          style: TextStyle(),
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
                     )
                   : const SizedBox(),
               const SizedBox(
-                height: 40,
+                height: WhiteSpaceSize.large,
               ),
-              ColoredButton(
+              SplashButton(
                 width: double.infinity,
-                verticalPadding: 16,
-                buttonColor: heavyGray,
-                uniformBorderRadius: 16,
-                callbackFunction: _inputIsBlocked
-                    ? null
-                    : () {
-                        _authenticate();
-                      },
-                borderColor: Colors.transparent,
-                buttonShadow: moderateShadow,
-                child: _inputIsBlocked
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
+                verticalPadding: PaddingSize.small,
+                borderRadius: BorderRadius.circular(
+                  CurvatureSize.large,
+                ),
+                callbackFunction: _blockInput ? null : _authenticate,
+                shadow: moderateShadow,
+                child: _blockInput
+                    ? SizedBox(
+                        width: SideSize.verySmall,
+                        height: SideSize.verySmall,
                         child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
+                          strokeWidth: ThicknessSize.large,
+                          color: Theme.of(context).backgroundColor,
                         ),
                       )
                     : Text(
                         widget.accountCreation ? 'Sign Up' : 'Sign In',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.displaySmall?.copyWith(
+                                  color: Theme.of(context).backgroundColor,
+                                ),
                       ),
               ),
               const SizedBox(
-                height: 6,
+                height: WhiteSpaceSize.verySmall,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -283,7 +271,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                     widget.question,
                   ),
                   const SizedBox(
-                    width: 4,
+                    width: WhiteSpaceSize.verySmall,
                   ),
                   GestureDetector(
                     onTap: () {
@@ -291,10 +279,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                     },
                     child: Text(
                       widget.action,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: heavyGray,
-                      ),
+                      style: Theme.of(context).textTheme.displaySmall,
                     ),
                   ),
                 ],

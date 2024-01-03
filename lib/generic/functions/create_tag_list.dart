@@ -1,4 +1,4 @@
-import 'package:bearlysocial/generic/widgets/form_elements/tag.dart';
+import 'package:bearlysocial/form_elements/tag.dart';
 
 List<Tag> createTagList({required List<String> labels, dynamic type}) {
   List<Tag> tags = [];

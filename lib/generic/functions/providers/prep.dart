@@ -3,7 +3,7 @@ import 'package:bearlysocial/generic/enums/db_key.dart';
 import 'package:bearlysocial/generic/functions/empty_db.dart';
 import 'package:bearlysocial/generic/functions/make_request.dart';
 import 'package:bearlysocial/generic/functions/providers/auth.dart';
-import 'package:bearlysocial/generic/schemas/extra.dart';
+// import 'package:bearlysocial/generic/schemas/extra.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hashlib/hashlib.dart';
 import 'package:http/http.dart';
@@ -15,46 +15,46 @@ class PreparationStateNotifier extends StateNotifier<bool> {
   final Ref _providerRef;
 
   Future<void> _createDatabaseConnection() async {
-    final Isar? dbConnection = Isar.getInstance();
+    // final Isar? dbConnection = Isar.getInstance();
 
-    if (dbConnection == null || !dbConnection.isOpen) {
-      final dir = await getApplicationDocumentsDirectory();
-      await Isar.open([ExtraSchema], directory: dir.path);
-    }
+    // if (dbConnection == null || !dbConnection.isOpen) {
+    //   final dir = await getApplicationDocumentsDirectory();
+    //   await Isar.open([ExtraSchema], directory: dir.path);
+    // }
   }
 
   void validateSavedMainAccessNumber() async {
-    await _createDatabaseConnection();
+    // await _createDatabaseConnection();
 
-    final Isar? dbConnection = Isar.getInstance();
+    // final Isar? dbConnection = Isar.getInstance();
 
-    final Extra? savedId =
-        await dbConnection?.extras.get(crc32code(DatabaseKey.id.string));
-    final Extra? savedMainAccessNumber = await dbConnection?.extras
-        .get(crc32code(DatabaseKey.mainAccessNumber.string));
+    // final Extra? savedId =
+    //     await dbConnection?.extras.get(crc32code(DatabaseKey.id.string));
+    // final Extra? savedMainAccessNumber = await dbConnection?.extras
+    //     .get(crc32code(DatabaseKey.mainAccessNumber.string));
 
-    if (savedId != null && savedMainAccessNumber != null) {
-      final Response httpResponse = await makeRequest(
-        API.checkMainAccessNumber,
-        {
-          'id': savedId.value,
-          'mainAccessNumber': savedMainAccessNumber.value,
-        },
-      );
+    // if (savedId != null && savedMainAccessNumber != null) {
+    //   final Response httpResponse = await makeRequest(
+    //     API.checkMainAccessNumber,
+    //     {
+    //       'id': savedId.value,
+    //       'mainAccessNumber': savedMainAccessNumber.value,
+    //     },
+    //   );
 
-      if (httpResponse.statusCode == 200) {
-        _providerRef.read(setAuth)(true);
-      } else {
-        await emptyDatabase();
-        _providerRef.read(setAuth)(false);
-      }
-    } else {
-      await emptyDatabase();
-      _providerRef.read(setAuth)(false);
-    }
+    //   if (httpResponse.statusCode == 200) {
+    //     _providerRef.read(setAuth)(true);
+    //   } else {
+    //     await emptyDatabase();
+    //     _providerRef.read(setAuth)(false);
+    //   }
+    // } else {
+    //   await emptyDatabase();
+    //   _providerRef.read(setAuth)(false);
+    // }
 
-    await _createDatabaseConnection();
-    state = true;
+    // await _createDatabaseConnection();
+    // state = true;
   }
 
   void prepApp() {

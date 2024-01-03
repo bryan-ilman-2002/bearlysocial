@@ -1,9 +1,9 @@
 import 'package:bearlysocial/generic/functions/create_tag_list.dart';
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/design_tokens.dart';
-import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
-import 'package:bearlysocial/generic/widgets/form_elements/board.dart';
-import 'package:bearlysocial/generic/widgets/form_elements/dropdown.dart';
+import 'package:bearlysocial/buttons/splash_btn.dart';
+import 'package:bearlysocial/form_elements/board.dart';
+import 'package:bearlysocial/form_elements/dropdown.dart';
 import 'package:flutter/material.dart';
 
 class Selector extends StatelessWidget {
@@ -42,13 +42,13 @@ class Selector extends StatelessWidget {
             const SizedBox(
               width: AppSpacing.extraSmall,
             ),
-            ColoredButton(
+            SplashButton(
               width: 58,
               height: 58,
               callbackFunction: callbackFunction,
               buttonColor: heavyGray,
               borderColor: Colors.transparent,
-              uniformBorderRadius: 128,
+              // uniformBorderRadius: 128,
               child: const Icon(
                 Icons.add,
                 color: Colors.white,

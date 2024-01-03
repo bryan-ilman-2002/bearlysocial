@@ -24,7 +24,7 @@ class Dropdown extends StatelessWidget {
       entries.add(
         DropdownMenuEntry(
           style: ButtonStyle(
-            textStyle: MaterialStatePropertyAll(appTextStyle),
+            // textStyle: MaterialStatePropertyAll(appTextStyle),
             foregroundColor: MaterialStatePropertyAll(moderateGray),
           ),
           value: value,

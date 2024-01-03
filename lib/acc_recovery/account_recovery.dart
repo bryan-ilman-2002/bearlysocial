@@ -1,6 +1,6 @@
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
-import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
+import 'package:bearlysocial/buttons/splash_btn.dart';
 import 'package:bearlysocial/generic/widgets/sheets/bottom_sheet.dart'
     as app_bottom_sheet;
 import 'package:flutter/material.dart';
@@ -135,14 +135,14 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                 ),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: ColoredButton(
+                  child: SplashButton(
                     width: 128,
                     verticalPadding: 16,
                     buttonColor: heavyGray,
-                    uniformBorderRadius: 16,
+                    // uniformBorderRadius: 16,
                     callbackFunction: checkEmail,
                     borderColor: Colors.transparent,
-                    buttonShadow: moderateShadow,
+                    // buttonShadow: moderateShadow,
                     child: const Text(
                       'Submit',
                       style: TextStyle(

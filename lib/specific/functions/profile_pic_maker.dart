@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 
-Future<img.Image?> ProfilePictureMaker({
+Future<img.Image?> profilePictureMaker({
   required String imagePath,
   required Size screenSize,
 }) async {

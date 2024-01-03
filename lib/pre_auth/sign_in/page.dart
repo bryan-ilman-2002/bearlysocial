@@ -1,5 +1,5 @@
 import 'package:bearlysocial/generic/enums/api.dart';
-import 'package:bearlysocial/generic/pages/pre_auth_page.dart';
+import 'package:bearlysocial/pre_auth/base_page.dart';
 import 'package:flutter/material.dart';
 
 class SignInPage extends StatelessWidget {

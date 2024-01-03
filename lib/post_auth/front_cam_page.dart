@@ -1,6 +1,4 @@
 import 'package:bearlysocial/generic/functions/getters/cam_permission.dart';
-import 'package:bearlysocial/generic/pages/blank_page.dart';
-import 'package:bearlysocial/specific/pages/selfie_capture_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +10,7 @@ class FrontCameraPage extends StatefulWidget {
 }
 
 class _FrontCameraPage extends State<FrontCameraPage> {
-  Widget _page = const BlankPage();
+  // Widget _page = const BlankPage();
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +22,12 @@ class _FrontCameraPage extends State<FrontCameraPage> {
         );
 
         setState(() {
-          _page = SelfieCapturePage(deviceCamera: frontCamera);
+          // _page = SelfieCapturePage(deviceCamera: frontCamera);
         });
       }
     });
 
-    return _page;
+    return SizedBox();
+    // return _page;
   }
 }

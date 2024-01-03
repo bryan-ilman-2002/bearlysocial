@@ -70,7 +70,7 @@ class SocialMediaLink extends StatelessWidget {
                             fillColor: Colors.transparent,
                             filled: true,
                             hintText: 'Type your username here.',
-                            hintStyle: appTextStyle,
+                            // hintStyle: appTextStyle,
                             border: InputBorder.none,
                           ),
                         ),

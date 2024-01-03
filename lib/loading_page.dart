@@ -1,4 +1,4 @@
-import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
+import 'package:bearlysocial/constants.dart';
 import 'package:flutter/material.dart';
 
 class PreparationPage extends StatelessWidget {
@@ -7,15 +7,15 @@ class PreparationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: const SafeArea(
         child: Center(
           child: SizedBox(
-            width: 32,
-            height: 32,
+            width: SideSize.small,
+            height: SideSize.small,
             child: CircularProgressIndicator(
-              strokeWidth: 4,
-              color: heavyGray,
+              strokeWidth: ThicknessSize.veryLarge,
+              color: AppColor.heavyGray,
             ),
           ),
         ),

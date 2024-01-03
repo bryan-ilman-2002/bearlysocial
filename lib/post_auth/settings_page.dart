@@ -2,8 +2,8 @@ import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
 import 'package:bearlysocial/generic/functions/providers/auth.dart';
 import 'package:bearlysocial/generic/functions/show_modal_bottom_sheet.dart';
-import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
-import 'package:bearlysocial/generic/widgets/buttons/setting_button.dart';
+import 'package:bearlysocial/buttons/splash_btn.dart';
+import 'package:bearlysocial/buttons/setting_button.dart';
 import 'package:bearlysocial/generic/widgets/lines/horizontal_thin_line.dart';
 import 'package:bearlysocial/generic/widgets/sheets/bottom_sheet.dart'
     as app_bottom_sheet;
@@ -89,13 +89,14 @@ class _SignInState extends ConsumerState<SettingsPage> {
                   context: context,
                   body: app_bottom_sheet.BottomSheet(
                     title: 'Personal Information',
-                    content: const PersonalInformation(),
+                    content: SizedBox(),
+                    // content: const PersonalInformation(),
                     closure: [
-                      ColoredButton(
+                      SplashButton(
                         horizontalPadding: 48,
                         verticalPadding: 16,
                         buttonColor: Colors.white,
-                        uniformBorderRadius: 16,
+                        // uniformBorderRadius: 16,
                         borderColor: Colors.transparent,
                         child: Text(
                           'Reset',
@@ -105,13 +106,13 @@ class _SignInState extends ConsumerState<SettingsPage> {
                           ),
                         ),
                       ),
-                      ColoredButton(
+                      SplashButton(
                         horizontalPadding: 48,
                         verticalPadding: 16,
                         buttonColor: heavyGray,
-                        uniformBorderRadius: 16,
+                        // uniformBorderRadius: 16,
                         borderColor: Colors.transparent,
-                        buttonShadow: moderateShadow,
+                        // buttonShadow: moderateShadow,
                         child: const Text(
                           'Apply',
                           style: TextStyle(

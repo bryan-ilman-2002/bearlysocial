@@ -1,4 +1,4 @@
-import 'package:bearlysocial/generic/widgets/form_elements/tag.dart';
+import 'package:bearlysocial/form_elements/tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/specific/functions/providers/profile_pic.dart';
-import 'package:bearlysocial/generic/widgets/buttons/colored_btn.dart';
+import 'package:bearlysocial/buttons/splash_btn.dart';
 import 'package:bearlysocial/specific/functions/detect_face_in_selfie.dart';
 import 'package:bearlysocial/specific/functions/profile_pic_maker.dart';
 import 'package:camera/camera.dart';
@@ -108,7 +108,7 @@ class _SelfieCapturePage extends ConsumerState<SelfieCapturePage>
                 },
               );
 
-              final img.Image? profilePicture = await ProfilePictureMaker(
+              final img.Image? profilePicture = await profilePictureMaker(
                 imagePath: newSelfie!.path,
                 screenSize: screenSize,
               );
@@ -237,7 +237,7 @@ class _SelfieCapturePage extends ConsumerState<SelfieCapturePage>
                           child: Row(
                             children: [
                               UnconstrainedBox(
-                                child: ColoredButton(
+                                child: SplashButton(
                                   horizontalPadding: 8,
                                   verticalPadding: 8,
                                   callbackFunction: () =>
@@ -246,7 +246,7 @@ class _SelfieCapturePage extends ConsumerState<SelfieCapturePage>
                                           ConnectionState.done
                                       ? Colors.white
                                       : moderateGray,
-                                  uniformBorderRadius: 128,
+                                  // uniformBorderRadius: 128,
                                   child: const Icon(
                                     Icons.arrow_back,
                                     size: 24,

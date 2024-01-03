@@ -1,10 +1,5 @@
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/specific/nav_bars/main_nav_bar.dart';
-import 'package:bearlysocial/specific/pages/chats_page.dart';
-import 'package:bearlysocial/specific/pages/explore_page.dart';
-import 'package:bearlysocial/specific/pages/favorites_page.dart';
-import 'package:bearlysocial/specific/pages/sessions_page.dart';
-import 'package:bearlysocial/specific/pages/settings_page.dart';
 import 'package:flutter/material.dart';
 
 class PostAuthPageManager extends StatefulWidget {
@@ -46,21 +41,21 @@ class _PostAuthPageManager extends State<PostAuthPageManager> {
   List<Widget> initPostAuthPages(
       Function(bool, ScrollController) scrollListener) {
     return <Widget>[
-      ExplorePage(
-        controller: _createPageScrollController(scrollListener),
-      ),
-      FavoritesPage(
-        controller: _createPageScrollController(scrollListener),
-      ),
-      SessionsPage(
-        controller: _createPageScrollController(scrollListener),
-      ),
-      ChatsPage(
-        controller: _createPageScrollController(scrollListener),
-      ),
-      SettingsPage(
-        controller: _createPageScrollController(scrollListener),
-      ),
+      // ExplorePage(
+      //   controller: _createPageScrollController(scrollListener),
+      // ),
+      // FavoritesPage(
+      //   controller: _createPageScrollController(scrollListener),
+      // ),
+      // SessionsPage(
+      //   controller: _createPageScrollController(scrollListener),
+      // ),
+      // ChatsPage(
+      //   controller: _createPageScrollController(scrollListener),
+      // ),
+      // SettingsPage(
+      //   controller: _createPageScrollController(scrollListener),
+      // ),
     ];
   }
 

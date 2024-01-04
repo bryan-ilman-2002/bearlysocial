@@ -4,12 +4,11 @@ import 'package:bearlysocial/constants.dart';
 import 'package:bearlysocial/database/schemas/transaction.dart';
 import 'package:bearlysocial/api_call/enums/endpoint.dart';
 import 'package:bearlysocial/database/db_key.dart';
-import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
 import 'package:bearlysocial/api_call/make_request.dart';
 import 'package:bearlysocial/generic/functions/providers/auth.dart';
 import 'package:bearlysocial/buttons/splash_btn.dart';
 import 'package:bearlysocial/form_elements/underlined_txt_field.dart';
-import 'package:bearlysocial/acc_recovery/account_recovery.dart';
+import 'package:bearlysocial/pre_auth/account_recovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hashlib/hashlib.dart';
@@ -224,7 +223,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                     fit: BoxFit.cover,
                   ),
                   boxShadow: [
-                    lightShadow,
+                    Shadow.medium,
                   ],
                 ),
               ),
@@ -291,6 +290,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                           showModalBottomSheet(
                             context: context,
                             useSafeArea: true,
+                            isScrollControlled: true,
                             backgroundColor: Colors.transparent,
                             builder: (BuildContext context) {
                               return const AccountRecovery();
@@ -313,7 +313,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                   CurvatureSize.large,
                 ),
                 callbackFunction: _blockInput ? null : _getAccess,
-                shadow: moderateShadow,
+                shadow: Shadow.medium,
                 child: _blockInput
                     ? SizedBox(
                         width: SideSize.verySmall,

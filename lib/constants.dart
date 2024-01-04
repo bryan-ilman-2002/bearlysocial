@@ -15,7 +15,7 @@ class AppColor {
   static const Color heavyBlue = Color(0xFF0E6CC0);
 
   static const Color lightRed = Color(0xFFFF6D60);
-  static const Color heavyRed = Color(0xFFDC0028);
+  static const Color heavyRed = Color(0xFFEE002C);
 
   static const Color lightYellow = Color(0xFFFFFC9C);
   static const Color heavyYellow = Color(0xFFF7DE3A);
@@ -24,6 +24,14 @@ class AppColor {
   static const Color heavyGreen = Color(0xFF339800);
 
   static const Color primary = Color(0xFFBF8450);
+}
+
+class Shadow {
+  static BoxShadow medium = BoxShadow(
+    color: Colors.grey.withOpacity(0.4),
+    blurRadius: 16,
+    spreadRadius: 2,
+  );
 }
 
 const String appFontFamily = 'Mukta';

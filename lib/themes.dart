@@ -13,6 +13,7 @@ TextStyle _appTextStyle({
     fontSize: fontSize,
     fontWeight: fontWeight,
     color: textColor,
+    letterSpacing: 0.4,
   );
 }
 

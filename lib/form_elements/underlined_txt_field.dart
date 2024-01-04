@@ -29,6 +29,7 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
       obscureText: widget.obscureText ? _obscureState : false,
       focusNode: widget.focusNode,
       controller: widget.controller,
+      style: Theme.of(context).textTheme.bodyMedium,
       decoration: InputDecoration(
         labelText: widget.label,
         labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(

@@ -1,35 +1,31 @@
 enum DatabaseKey {
   id,
-  mainAccessNumber,
-  profilePicture,
+  token,
   firstName,
   lastName,
-  interests,
   languages,
+  interests,
   instagramUsername,
   facebookUsername,
   linkedInUsername,
   email,
-  completeProfile,
 }
 
-final Map<DatabaseKey, String> databaseKeyValues = {
+final Map<DatabaseKey, String> dbKeyToString = {
   DatabaseKey.id: 'id',
-  DatabaseKey.mainAccessNumber: 'mainAccessNumber',
-  DatabaseKey.profilePicture: 'profilePicture',
+  DatabaseKey.token: 'token',
   DatabaseKey.firstName: 'firstName',
   DatabaseKey.lastName: 'lastName',
-  DatabaseKey.interests: 'interests',
   DatabaseKey.languages: 'languages',
+  DatabaseKey.interests: 'interests',
   DatabaseKey.instagramUsername: 'instagramUsername',
   DatabaseKey.facebookUsername: 'facebookUsername',
   DatabaseKey.linkedInUsername: 'linkedInUsername',
   DatabaseKey.email: 'email',
-  DatabaseKey.completeProfile: 'completeProfile',
 };
 
 extension GetString on DatabaseKey {
   String get string {
-    return databaseKeyValues[this]!;
+    return dbKeyToString[this]!;
   }
 }

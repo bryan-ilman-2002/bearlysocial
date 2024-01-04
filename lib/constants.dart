@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+class URL {
+  static const String domain =
+      'https://zd0d10d8p2.execute-api.us-east-1.amazonaws.com/';
+  static const String apiSubFolder = '';
+}
+
 class AppColor {
   static const Color lightGray = Color(0xFFBABABA);
   static const Color moderateGray = Color(0xFF727272);
@@ -27,6 +33,7 @@ class TextSize {
   static const double small = 12.0;
   static const double medium = 14.0;
   static const double large = 18.0;
+  static const double veryLarge = 32.0;
 }
 
 class IconSize {

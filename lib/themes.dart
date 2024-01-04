@@ -26,13 +26,23 @@ TextTheme _appTextTheme({
       fontWeight: FontWeight.normal,
       textColor: defaultColor,
     ),
+    labelSmall: _appTextStyle(
+      fontSize: TextSize.small,
+      fontWeight: FontWeight.normal,
+      textColor: AppColor.heavyRed,
+    ),
+    labelMedium: _appTextStyle(
+      fontSize: TextSize.large,
+      fontWeight: FontWeight.normal,
+      textColor: defaultColor,
+    ),
     displaySmall: _appTextStyle(
       fontSize: TextSize.medium,
       fontWeight: FontWeight.bold,
       textColor: focusColor,
     ),
     displayLarge: _appTextStyle(
-      fontSize: 40.0,
+      fontSize: TextSize.veryLarge,
       fontWeight: FontWeight.bold,
       textColor: focusColor,
     ),

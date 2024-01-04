@@ -31,21 +31,16 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
       controller: widget.controller,
       decoration: InputDecoration(
         labelText: widget.label,
-        labelStyle: TextStyle(
-          fontFamily: appFontFamily,
-          fontSize: TextSize.large,
-          fontWeight:
-              widget.focusNode.hasFocus ? FontWeight.bold : FontWeight.normal,
-          color: widget.focusNode.hasFocus
-              ? AppColor.heavyGray
-              : AppColor.moderateGray,
-        ),
+        labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
+              fontWeight: widget.focusNode.hasFocus
+                  ? FontWeight.bold
+                  : FontWeight.normal,
+              color: widget.focusNode.hasFocus
+                  ? Theme.of(context).focusColor
+                  : Theme.of(context).primaryColor,
+            ),
         errorText: widget.errorText,
-        errorStyle: const TextStyle(
-          fontFamily: appFontFamily,
-          fontSize: TextSize.small,
-          color: AppColor.heavyRed,
-        ),
+        errorStyle: Theme.of(context).textTheme.labelSmall,
         errorBorder: const UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.heavyRed,

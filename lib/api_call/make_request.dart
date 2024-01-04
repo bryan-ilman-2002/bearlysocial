@@ -1,10 +1,13 @@
 import 'dart:convert';
 
-import 'package:bearlysocial/generic/enums/api.dart';
+import 'package:bearlysocial/api_call/enums/endpoint.dart';
 import 'package:http/http.dart' as http;
 
-Future<http.Response> makeRequest(API api, Map body) async {
-  var url = Uri.parse(api.string);
+Future<http.Response> makeRequest({
+  required Endpoint endpoint,
+  required Map body,
+}) async {
+  var url = Uri.parse(endpoint.string);
   var response = await http.post(
     url,
     headers: <String, String>{

@@ -1,12 +1,11 @@
 import 'dart:convert';
 
 import 'package:bearlysocial/constants.dart';
-import 'package:bearlysocial/generic/enums/api.dart';
-import 'package:bearlysocial/generic/enums/db_key.dart';
-import 'package:bearlysocial/generic/functions/generate_hash.dart';
-import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
+import 'package:bearlysocial/database/schemas/transaction.dart';
+import 'package:bearlysocial/api_call/enums/endpoint.dart';
+import 'package:bearlysocial/database/db_key.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
-import 'package:bearlysocial/generic/functions/make_request.dart';
+import 'package:bearlysocial/api_call/make_request.dart';
 import 'package:bearlysocial/generic/functions/providers/auth.dart';
 import 'package:bearlysocial/buttons/splash_btn.dart';
 import 'package:bearlysocial/form_elements/underlined_txt_field.dart';
@@ -20,7 +19,7 @@ import 'package:isar/isar.dart';
 class PreAuthenticationPage extends ConsumerStatefulWidget {
   final Function(int) onTap;
   final bool accountCreation;
-  final API url;
+  final Endpoint url;
   final String exclamation;
   final String question;
   final String action;
@@ -43,17 +42,17 @@ class PreAuthenticationPage extends ConsumerStatefulWidget {
 class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
   bool _blockInput = false;
 
-  String? _usernameError = null;
-  String? _passwordError = null;
-  String? _passwordAffirmationError = null;
+  String? _usernameErrorText;
+  String? _passwordErrorText;
+  String? _passwordConfirmationErrorText;
 
   final FocusNode _usernameFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
-  final FocusNode _passwordAffirmationFocusNode = FocusNode();
+  final FocusNode _passwordConfirmationFocusNode = FocusNode();
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _passwordAffirmationController =
+  final TextEditingController _passwordConfirmationController =
       TextEditingController();
 
   @override
@@ -65,7 +64,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
     _passwordFocusNode.addListener(() {
       setState(() {});
     });
-    _passwordAffirmationFocusNode.addListener(() {
+    _passwordConfirmationFocusNode.addListener(() {
       setState(() {});
     });
   }
@@ -74,62 +73,134 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
   void dispose() {
     _usernameFocusNode.dispose();
     _passwordFocusNode.dispose();
-    _passwordAffirmationFocusNode.dispose();
+    _passwordConfirmationFocusNode.dispose();
     super.dispose();
   }
 
-  void _authenticate() async {
-    setState(() {
-      _blockInput = true;
+  void _getAccess() async {
+    _validateInput();
 
-      _usernameIsValid = _usernameController.text.isNotEmpty;
-      _passwordIsValid = _passwordController.text.isNotEmpty;
-    });
+    if (_usernameController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
+      if (widget.accountCreation &&
+          _passwordController.text != _passwordConfirmationController.text) {
+        _showError(
+          message: 'Passwords don\'t match.',
+          field: 'passwordConfirmation',
+        );
+      } else {
+        String hashedUsername = _sha256(
+          input: _usernameController.text,
+        );
+        String hashedPassword = _sha256(
+          input: _passwordController.text,
+        );
 
-    if (_usernameIsValid && _passwordIsValid) {
-      String id = hash16(_usernameController.text);
-      String token = hash32(_passwordController.text);
+        final Response httpResponse = await makeRequest(
+          endpoint: widget.url,
+          body: {
+            'id': hashedUsername,
+            'secret': hashedPassword,
+          },
+        );
 
-      final Response httpResponse = await makeRequest(widget.url, {
-        'id': id,
-        'token': token,
-      });
-
-      if (mounted) {
         if (httpResponse.statusCode == 200) {
-          final Isar? dbConnection = Isar.getInstance();
-
-          final Extra savedId = Extra()
-            ..key = crc32code(DatabaseKey.id.string)
-            ..value = id;
-
-          final Extra savedMainAccessNumber = Extra()
-            ..key = crc32code(DatabaseKey.mainAccessNumber.string)
-            ..value = jsonDecode(httpResponse.body)['mainAccessNumber'];
-
-          await dbConnection?.writeTxn(() async {
-            await dbConnection.extras.put(savedId);
-            await dbConnection.extras.put(savedMainAccessNumber);
-          });
-
-          setState(() {
-            _errorOccurred = false;
-            _inputIsBlocked = false;
-          });
-
+          _storeAccessNumber(
+            id: hashedUsername,
+            responseBody: httpResponse.body,
+          );
           ref.watch(enterApp)();
         } else {
-          setState(() {
-            _errorOccurred = true;
-            _inputIsBlocked = false;
-          });
+          widget.accountCreation
+              ? _showError(
+                  message: 'Username is already taken.',
+                  field: 'username',
+                )
+              : _showError(
+                  message: 'Password is wrong.',
+                  field: 'password',
+                );
         }
       }
     } else {
       setState(() {
-        _inputIsBlocked = false;
+        _blockInput = false;
       });
     }
+  }
+
+  void _validateInput() {
+    setState(() {
+      _blockInput = true;
+
+      _usernameErrorText =
+          _usernameController.text.isEmpty ? 'Username cannot be empty!' : null;
+      _passwordErrorText =
+          _passwordController.text.isEmpty ? 'Password cannot be empty!' : null;
+    });
+  }
+
+  void _showError({
+    required String message,
+    required String field,
+  }) {
+    setState(() {
+      switch (field) {
+        case 'username':
+          _usernameErrorText = message;
+          break;
+        case 'password':
+          _passwordErrorText = message;
+          break;
+        case 'passwordConfirmation':
+          _passwordConfirmationErrorText = message;
+          break;
+      }
+      _blockInput = false;
+    });
+  }
+
+  String _sha256({
+    required String input,
+  }) {
+    var bytes = utf8.encode(input);
+    var digest = sha256.convert(bytes);
+    return digest.toString();
+  }
+
+  void _storeAccessNumber({
+    required String id,
+    required String responseBody,
+  }) async {
+    final Isar? dbConnection = Isar.getInstance();
+
+    final Transaction txnId = Transaction()
+      ..key = crc32code(
+        DatabaseKey.id.string,
+      )
+      ..value = id;
+
+    final Transaction txnToken = Transaction()
+      ..key = crc32code(
+        DatabaseKey.token.string,
+      )
+      ..value = jsonDecode(responseBody)['token'];
+
+    await dbConnection?.writeTxn(() async {
+      await dbConnection.transactions.putAll(
+        [
+          txnId,
+          txnToken,
+        ],
+      );
+    });
+
+    setState(() {
+      _usernameErrorText = null;
+      _passwordErrorText = null;
+      if (widget.accountCreation) _passwordConfirmationErrorText = null;
+      _blockInput = false;
+    });
   }
 
   @override
@@ -183,7 +254,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 label: 'Username',
                 controller: _usernameController,
                 focusNode: _usernameFocusNode,
-                errorText: _usernameError,
+                errorText: _usernameErrorText,
               ),
               const SizedBox(
                 height: WhiteSpaceSize.medium,
@@ -193,7 +264,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 obscureText: true,
                 controller: _passwordController,
                 focusNode: _passwordFocusNode,
-                errorText: _passwordError,
+                errorText: _passwordErrorText,
               ),
               widget.accountCreation
                   ? const SizedBox(
@@ -202,11 +273,11 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                   : const SizedBox(),
               widget.accountCreation
                   ? UnderlinedTextField(
-                      label: 'Password Reaffirmation',
+                      label: 'Password Confirmation',
                       obscureText: true,
-                      controller: _passwordAffirmationController,
-                      focusNode: _passwordAffirmationFocusNode,
-                      errorText: _passwordAffirmationError,
+                      controller: _passwordConfirmationController,
+                      focusNode: _passwordConfirmationFocusNode,
+                      errorText: _passwordConfirmationErrorText,
                     )
                   : const SizedBox(),
               const SizedBox(
@@ -226,9 +297,8 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                             },
                           );
                         },
-                        child: Text(
+                        child: const Text(
                           'Forgot password?',
-                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
                     )
@@ -242,7 +312,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 borderRadius: BorderRadius.circular(
                   CurvatureSize.large,
                 ),
-                callbackFunction: _blockInput ? null : _authenticate,
+                callbackFunction: _blockInput ? null : _getAccess,
                 shadow: moderateShadow,
                 child: _blockInput
                     ? SizedBox(

@@ -1,7 +1,7 @@
-import 'package:bearlysocial/generic/enums/api.dart';
-import 'package:bearlysocial/generic/enums/db_key.dart';
+import 'package:bearlysocial/api_call/enums/endpoint.dart';
+import 'package:bearlysocial/database/db_key.dart';
 import 'package:bearlysocial/generic/functions/empty_db.dart';
-import 'package:bearlysocial/generic/functions/make_request.dart';
+import 'package:bearlysocial/api_call/make_request.dart';
 import 'package:bearlysocial/generic/functions/providers/auth.dart';
 // import 'package:bearlysocial/generic/schemas/extra.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

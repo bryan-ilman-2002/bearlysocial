@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
-import 'package:bearlysocial/specific/functions/providers/profile_pic.dart';
+import 'package:bearlysocial/providers/profile_pic.dart';
 import 'package:bearlysocial/buttons/splash_btn.dart';
 import 'package:bearlysocial/specific/functions/detect_face_in_selfie.dart';
 import 'package:bearlysocial/specific/functions/profile_pic_maker.dart';

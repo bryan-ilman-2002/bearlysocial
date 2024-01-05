@@ -47,27 +47,32 @@ class TextSize {
 class IconSize {
   // static const double small = ;
   static const double medium = 24.0;
-  // static const double large = ;
+  static const double large = 48.0;
 }
 
 class SideSize {
+  static const double zero = 0.0;
   static const double verySmall = 16.0;
   static const double small = 32.0;
   static const double medium = 64.0;
-  // static const double large = ;
+  static const double large = 128.0;
   static const double veryLarge = 240.0;
+  static const double infinity = double.infinity;
 }
 
 class PaddingSize {
   static const double small = 16.0;
-  static const double medium = 32.0;
-  // static const double large = ;
+  static const double medium = 24.0;
+  static const double large = 32.0;
 }
 
 class MarginSize {
-  // static const double small = ;
-  // static const double medium = ;
-  // static const double large = ;
+  static const double zero = 0.0;
+  static const double verySmall = 2.0;
+  static const double small = 4.0;
+  static const double medium = 8.0;
+  static const double large = 12.0;
+  static const double veryLarge = 16.0;
 }
 
 class ThicknessSize {

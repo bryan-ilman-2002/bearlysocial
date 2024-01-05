@@ -1,12 +1,11 @@
 import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
 import 'package:bearlysocial/generic/functions/getters/app_shadows.dart';
-import 'package:bearlysocial/generic/functions/providers/auth.dart';
+import 'package:bearlysocial/providers/auth.dart';
 import 'package:bearlysocial/generic/functions/show_modal_bottom_sheet.dart';
 import 'package:bearlysocial/buttons/splash_btn.dart';
 import 'package:bearlysocial/buttons/setting_button.dart';
-import 'package:bearlysocial/generic/widgets/lines/horizontal_thin_line.dart';
-import 'package:bearlysocial/generic/widgets/sheets/bottom_sheet.dart'
-    as app_bottom_sheet;
+import 'package:bearlysocial/lines/horizontal_line.dart';
+import 'package:bearlysocial/sheets/bottom_sheet.dart' as app_bottom_sheet;
 import 'package:bearlysocial/specific/widgets/modals/personal_information.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -126,28 +125,28 @@ class _SignInState extends ConsumerState<SettingsPage> {
                 );
               },
             ),
-            const HorizontalThinLine(
+            const HorizontalLine(
               height: 0.12,
             ),
             const SettingButton(
               icon: Icons.translate,
               label: 'Translation',
             ),
-            const HorizontalThinLine(
+            const HorizontalLine(
               height: 0.12,
             ),
             const SettingButton(
               icon: Icons.notifications,
               label: 'Notifications',
             ),
-            const HorizontalThinLine(
+            const HorizontalLine(
               height: 0.12,
             ),
             const SettingButton(
               icon: Icons.cloud_download,
               label: 'Request Personal Data',
             ),
-            const HorizontalThinLine(
+            const HorizontalLine(
               height: 0.12,
             ),
             SettingButton(
@@ -157,7 +156,7 @@ class _SignInState extends ConsumerState<SettingsPage> {
               labelColor: moderateRed,
               splashColor: lightRed,
             ),
-            const HorizontalThinLine(
+            const HorizontalLine(
               height: 0.12,
             ),
             const SizedBox(height: 80),
@@ -165,21 +164,21 @@ class _SignInState extends ConsumerState<SettingsPage> {
               icon: Icons.help,
               label: 'Help Center',
             ),
-            const HorizontalThinLine(
+            const HorizontalLine(
               height: 0.12,
             ),
             const SettingButton(
               icon: Icons.menu_book,
               label: 'Terms of Service',
             ),
-            const HorizontalThinLine(
+            const HorizontalLine(
               height: 0.12,
             ),
             const SettingButton(
               icon: Icons.menu_book,
               label: 'Privacy Policy',
             ),
-            const HorizontalThinLine(
+            const HorizontalLine(
               height: 0.12,
             ),
             const SizedBox(

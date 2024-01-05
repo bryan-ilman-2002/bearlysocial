@@ -1,9 +1,8 @@
-import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
-import 'package:bearlysocial/generic/widgets/lines/horizontal_thin_line.dart';
+import 'package:bearlysocial/constants.dart';
+import 'package:bearlysocial/lines/horizontal_line.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BottomSheet extends ConsumerWidget {
+class BottomSheet extends StatelessWidget {
   final String title;
   final Widget content;
   final List<Widget>? closure;
@@ -16,19 +15,22 @@ class BottomSheet extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).backgroundColor,
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(
+            CurvatureSize.large,
+          ),
         ),
       ),
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(
+              PaddingSize.medium,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -37,43 +39,35 @@ class BottomSheet extends ConsumerWidget {
                   onTap: () {
                     Navigator.pop(context);
                   },
-                  child: Icon(
+                  child: const Icon(
                     Icons.close_rounded,
-                    size: 24,
-                    color: moderateGray,
                   ),
                 ),
                 const SizedBox(
-                  width: 20,
+                  width: WhiteSpaceSize.small,
                 ),
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: heavyGray,
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),
           ),
-          const HorizontalThinLine(
-            horizontalMargin: 0,
-          ),
+          const HorizontalLine(),
           Expanded(
             child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.all(20),
+              // physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.all(
+                PaddingSize.medium,
+              ),
               child: content,
             ),
           ),
           if (closure != null) ...[
-            const HorizontalThinLine(
-              horizontalMargin: 0,
-            ),
+            const HorizontalLine(),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 20,
+              padding: const EdgeInsets.all(
+                PaddingSize.medium,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

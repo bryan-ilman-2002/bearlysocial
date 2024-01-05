@@ -1,19 +1,17 @@
 import 'dart:convert';
 
-import 'package:bearlysocial/constants.dart';
-import 'package:bearlysocial/database/schemas/transaction.dart';
 import 'package:bearlysocial/api_call/enums/endpoint.dart';
-import 'package:bearlysocial/database/db_key.dart';
 import 'package:bearlysocial/api_call/make_request.dart';
-import 'package:bearlysocial/generic/functions/providers/auth.dart';
 import 'package:bearlysocial/buttons/splash_btn.dart';
+import 'package:bearlysocial/constants.dart';
+import 'package:bearlysocial/database/db_key.dart';
+import 'package:bearlysocial/database/db_operations.dart';
 import 'package:bearlysocial/form_elements/underlined_txt_field.dart';
 import 'package:bearlysocial/pre_auth/account_recovery.dart';
+import 'package:bearlysocial/providers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hashlib/hashlib.dart';
 import 'package:http/http.dart';
-import 'package:isar/isar.dart';
 
 class PreAuthenticationPage extends ConsumerStatefulWidget {
   final Function(int) onTap;
@@ -88,10 +86,10 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
           field: 'passwordConfirmation',
         );
       } else {
-        String hashedUsername = _sha256(
+        String hashedUsername = DatabaseOperations.getHash(
           input: _usernameController.text,
         );
-        String hashedPassword = _sha256(
+        String hashedPassword = DatabaseOperations.getHash(
           input: _passwordController.text,
         );
 
@@ -108,6 +106,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
             id: hashedUsername,
             responseBody: httpResponse.body,
           );
+
           ref.watch(enterApp)();
         } else {
           widget.accountCreation
@@ -159,40 +158,16 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
     });
   }
 
-  String _sha256({
-    required String input,
-  }) {
-    var bytes = utf8.encode(input);
-    var digest = sha256.convert(bytes);
-    return digest.toString();
-  }
-
   void _storeAccessNumber({
     required String id,
     required String responseBody,
   }) async {
-    final Isar? dbConnection = Isar.getInstance();
-
-    final Transaction txnId = Transaction()
-      ..key = crc32code(
-        DatabaseKey.id.string,
-      )
-      ..value = id;
-
-    final Transaction txnToken = Transaction()
-      ..key = crc32code(
-        DatabaseKey.token.string,
-      )
-      ..value = jsonDecode(responseBody)['token'];
-
-    await dbConnection?.writeTxn(() async {
-      await dbConnection.transactions.putAll(
-        [
-          txnId,
-          txnToken,
-        ],
-      );
-    });
+    await DatabaseOperations.insertTransactions(
+      pairs: {
+        DatabaseKey.id.string: id,
+        DatabaseKey.token.string: jsonDecode(responseBody)['token'],
+      },
+    );
 
     setState(() {
       _usernameErrorText = null;
@@ -208,7 +183,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: PaddingSize.medium,
+            horizontal: PaddingSize.large,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -297,8 +272,9 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                             },
                           );
                         },
-                        child: const Text(
+                        child: Text(
                           'Forgot password?',
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
                     )
@@ -325,10 +301,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                       )
                     : Text(
                         widget.accountCreation ? 'Sign Up' : 'Sign In',
-                        style:
-                            Theme.of(context).textTheme.displaySmall?.copyWith(
-                                  color: Theme.of(context).backgroundColor,
-                                ),
+                        style: Theme.of(context).textTheme.button,
                       ),
               ),
               const SizedBox(
@@ -339,6 +312,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 children: [
                   Text(
                     widget.question,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(
                     width: WhiteSpaceSize.verySmall,

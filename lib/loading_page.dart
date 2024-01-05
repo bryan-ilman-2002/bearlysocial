@@ -1,8 +1,8 @@
 import 'package:bearlysocial/constants.dart';
 import 'package:flutter/material.dart';
 
-class PreparationPage extends StatelessWidget {
-  const PreparationPage({super.key});
+class LoadingPage extends StatelessWidget {
+  const LoadingPage({super.key});
 
   @override
   Widget build(BuildContext context) {

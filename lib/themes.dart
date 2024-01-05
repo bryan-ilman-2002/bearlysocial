@@ -18,6 +18,7 @@ TextStyle _appTextStyle({
 }
 
 TextTheme _appTextTheme({
+  required Color backgroundColor,
   required Color defaultColor,
   required Color focusColor,
 }) {
@@ -26,6 +27,16 @@ TextTheme _appTextTheme({
       fontSize: TextSize.medium,
       fontWeight: FontWeight.normal,
       textColor: defaultColor,
+    ),
+    button: _appTextStyle(
+      fontSize: TextSize.medium,
+      fontWeight: FontWeight.bold,
+      textColor: backgroundColor,
+    ),
+    titleMedium: _appTextStyle(
+      fontSize: TextSize.large,
+      fontWeight: FontWeight.bold,
+      textColor: focusColor,
     ),
     labelSmall: _appTextStyle(
       fontSize: TextSize.small,
@@ -127,6 +138,7 @@ ThemeData _appThemeData({
       ),
     ),
     textTheme: _appTextTheme(
+      backgroundColor: backgroundColor,
       defaultColor: defaultColor,
       focusColor: focusColor,
     ),

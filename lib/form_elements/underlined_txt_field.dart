@@ -45,7 +45,7 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
         errorBorder: const UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.heavyRed,
-            width: ThicknessSize.verySmall,
+            width: ThicknessSize.small,
           ),
         ),
         focusedErrorBorder: const UnderlineInputBorder(
@@ -57,7 +57,7 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).primaryColor,
-            width: ThicknessSize.verySmall,
+            width: ThicknessSize.small,
           ),
         ),
         focusedBorder: UnderlineInputBorder(

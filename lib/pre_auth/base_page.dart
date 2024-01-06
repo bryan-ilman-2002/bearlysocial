@@ -296,12 +296,12 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                         height: SideSize.verySmall,
                         child: CircularProgressIndicator(
                           strokeWidth: ThicknessSize.large,
-                          color: Theme.of(context).backgroundColor,
+                          color: Theme.of(context).scaffoldBackgroundColor,
                         ),
                       )
                     : Text(
                         widget.accountCreation ? 'Sign Up' : 'Sign In',
-                        style: Theme.of(context).textTheme.button,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
               ),
               const SizedBox(

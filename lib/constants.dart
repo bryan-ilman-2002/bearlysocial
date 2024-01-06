@@ -95,6 +95,10 @@ class ElevationSize {
   static const double large = 2.0;
 }
 
+class AnimationDuration {
+  static const int long = 320;
+}
+
 class WhiteSpaceSize {
   static const double verySmall = 8.0;
   static const double small = 24.0;

@@ -7,15 +7,15 @@ class LoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: const SafeArea(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(
         child: Center(
           child: SizedBox(
             width: SideSize.small,
             height: SideSize.small,
             child: CircularProgressIndicator(
               strokeWidth: ThicknessSize.veryLarge,
-              color: AppColor.heavyGray,
+              color: Theme.of(context).focusColor,
             ),
           ),
         ),

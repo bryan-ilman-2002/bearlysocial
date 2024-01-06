@@ -25,25 +25,31 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> {
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    ref.read(validateToken)().then((_) {
+      setState(() {
+        _loading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: ref.read(validateToken)(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const LoadingPage();
-        } else {
-          return MaterialApp(
-            title: 'BearlySocial',
-            theme: lightTheme,
-            darkTheme: darkTheme,
-            scrollBehavior: const BouncingScroll(),
-            home: ref.read(auth)
-                ? const PostAuthPageManager()
-                : const PreAuthPageManager(),
-          );
-        }
-      },
+    return MaterialApp(
+      title: 'BearlySocial',
+      theme: light,
+      darkTheme: dark,
+      scrollBehavior: const BouncingScroll(),
+      home: _loading
+          ? const LoadingPage()
+          : ref.watch(auth)
+              ? const PostAuthPageManager()
+              : const PreAuthPageManager(),
     );
   }
 }

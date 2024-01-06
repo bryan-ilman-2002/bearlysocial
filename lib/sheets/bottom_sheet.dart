@@ -18,7 +18,7 @@ class BottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(
             CurvatureSize.large,
@@ -48,7 +48,7 @@ class BottomSheet extends StatelessWidget {
                 ),
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
             ),

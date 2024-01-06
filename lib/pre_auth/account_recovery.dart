@@ -104,7 +104,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                     shadow: Shadow.medium,
                     child: Text(
                       'Submit',
-                      style: Theme.of(context).textTheme.button,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
                 )

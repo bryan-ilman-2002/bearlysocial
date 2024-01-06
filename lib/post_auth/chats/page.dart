@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 
-class SessionsPage extends StatefulWidget {
+class ChatsPage extends StatefulWidget {
   final ScrollController controller;
 
-  const SessionsPage({
+  const ChatsPage({
     super.key,
     required this.controller,
   });
 
   @override
-  State<SessionsPage> createState() => _SessionsPageState();
+  State<ChatsPage> createState() => _ChatsPageState();
 }
 
-class _SessionsPageState extends State<SessionsPage> {
+class _ChatsPageState extends State<ChatsPage> {
   final List<Widget> _children = [];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: ListView.builder(
           controller: widget.controller,
           itemCount: _children.length,

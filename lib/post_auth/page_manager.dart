@@ -1,5 +1,10 @@
-import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
-import 'package:bearlysocial/specific/nav_bars/main_nav_bar.dart';
+import 'package:bearlysocial/constants.dart';
+import 'package:bearlysocial/post_auth/chats/page.dart';
+import 'package:bearlysocial/post_auth/explore/page.dart';
+import 'package:bearlysocial/post_auth/favorites/page.dart';
+import 'package:bearlysocial/post_auth/bars/nav_bar.dart' as app_nav_bar;
+import 'package:bearlysocial/post_auth/sessions/page.dart';
+import 'package:bearlysocial/post_auth/settings/page.dart';
 import 'package:flutter/material.dart';
 
 class PostAuthPageManager extends StatefulWidget {
@@ -10,98 +15,126 @@ class PostAuthPageManager extends StatefulWidget {
 }
 
 class _PostAuthPageManager extends State<PostAuthPageManager> {
-  bool _scrollButtonIsShown = false;
-  late ScrollController _scrollController;
+  bool _showingScrollButton = false;
+  late ScrollController _controller;
 
-  void _scrollListener(bool condition, ScrollController pageScrollController) {
-    setState(() {
-      _scrollButtonIsShown = condition;
-      _scrollController = pageScrollController;
+  int _selectedIndex = 0;
+  List<Widget> _pages = [];
+
+  ScrollController _createController() {
+    final ScrollController scrollController = ScrollController();
+
+    scrollController.addListener(() {
+      setState(() {
+        _showingScrollButton = scrollController.offset > 0.0;
+      });
     });
+
+    return scrollController;
   }
 
   void _scrollToTop() {
-    _scrollController.animateTo(
-      0,
-      duration: const Duration(milliseconds: 320),
+    _controller.animateTo(
+      0.0,
+      duration: const Duration(
+        milliseconds: AnimationDuration.long,
+      ),
       curve: Curves.easeInOut,
     );
   }
 
-  int _selectedIndex = 0;
-
-  void _onTab(int index) {
+  void _onTab({
+    required int index,
+    required ScrollController controller,
+  }) {
     setState(() {
       _selectedIndex = index;
+      _controller = controller;
+
+      _showingScrollButton = _controller.offset > 0.0;
     });
   }
 
-  List<Widget> _pages = [];
-
-  List<Widget> initPostAuthPages(
-      Function(bool, ScrollController) scrollListener) {
+  List<Widget> initPostAuthPages() {
     return <Widget>[
-      // ExplorePage(
-      //   controller: _createPageScrollController(scrollListener),
-      // ),
-      // FavoritesPage(
-      //   controller: _createPageScrollController(scrollListener),
-      // ),
-      // SessionsPage(
-      //   controller: _createPageScrollController(scrollListener),
-      // ),
-      // ChatsPage(
-      //   controller: _createPageScrollController(scrollListener),
-      // ),
-      // SettingsPage(
-      //   controller: _createPageScrollController(scrollListener),
-      // ),
+      ExplorePage(
+        controller: _createController(),
+      ),
+      FavoritesPage(
+        controller: _createController(),
+      ),
+      SessionsPage(
+        controller: _createController(),
+      ),
+      ChatsPage(
+        controller: _createController(),
+      ),
+      SettingsPage(
+        controller: _createController(),
+      ),
     ];
-  }
-
-  ScrollController _createPageScrollController(
-      Function(bool, ScrollController) scrollListener) {
-    final scrollController = ScrollController();
-    scrollController.addListener(
-      () => scrollListener(scrollController.offset > 0, scrollController),
-    );
-    return scrollController;
   }
 
   @override
   Widget build(BuildContext context) {
-    _pages = _pages.isEmpty ? initPostAuthPages(_scrollListener) : _pages;
+    _pages = _pages.isEmpty ? initPostAuthPages() : _pages;
+
+    var navItems = {
+      'Explore': {
+        'normalIcon': Icons.explore_outlined,
+        'highlightedIcon': Icons.explore,
+      },
+      'Favorites': {
+        'normalIcon': Icons.favorite_border,
+        'highlightedIcon': Icons.favorite,
+      },
+      'Sessions': {
+        'normalIcon': Icons.calendar_today_outlined,
+        'highlightedIcon': Icons.calendar_today,
+      },
+      'Chats': {
+        'normalIcon': Icons.chat_outlined,
+        'highlightedIcon': Icons.chat,
+      },
+      'Settings': {
+        'normalIcon': Icons.settings_outlined,
+        'highlightedIcon': Icons.settings,
+      },
+    }.map((key, value) {
+      var index = _pages.indexWhere(
+        (page) => page.runtimeType.toString() == '${key}Page',
+      );
+
+      return MapEntry(key, {
+        ...value,
+        'controller': (_pages[index] as dynamic).controller,
+        'index': index,
+      });
+    });
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      bottomNavigationBar: MainNavigationBar(
-        navItems: const [
-          ['Explore', Icons.explore, Icons.explore_outlined],
-          ['Favorites', Icons.favorite, Icons.favorite_border],
-          ['Sessions', Icons.calendar_today, Icons.calendar_today_outlined],
-          ['Chats', Icons.chat, Icons.chat_outlined],
-          ['Settings', Icons.settings, Icons.settings_outlined],
-        ],
-        selectedIndex: _selectedIndex,
-        onTap: _onTab,
-      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: IndexedStack(
         index: _selectedIndex,
         children: _pages,
       ),
-      floatingActionButton: _scrollButtonIsShown
+      floatingActionButton: _showingScrollButton
           ? FloatingActionButton(
               onPressed: _scrollToTop,
-              elevation: 1.6,
-              backgroundColor: Colors.white,
+              elevation: ElevationSize.small,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               mini: true,
               child: Icon(
                 Icons.arrow_upward,
-                size: 24,
-                color: moderateGray,
+                color: Theme.of(context).primaryColor,
               ),
             )
           : null,
+      bottomNavigationBar: app_nav_bar.NavigationBar(
+        navItems: navItems,
+        selectedIndex: _selectedIndex,
+        onTap: _onTab,
+      ),
     );
   }
 }

@@ -23,22 +23,22 @@ TextTheme _appTextTheme({
   required Color focusColor,
 }) {
   return TextTheme(
+    titleLarge: _appTextStyle(
+      fontSize: TextSize.large,
+      fontWeight: FontWeight.bold,
+      textColor: focusColor,
+    ),
+    titleMedium: _appTextStyle(
+      fontSize: TextSize.medium,
+      fontWeight: FontWeight.bold,
+      textColor: backgroundColor,
+    ),
     bodyMedium: _appTextStyle(
       fontSize: TextSize.medium,
       fontWeight: FontWeight.normal,
       textColor: defaultColor,
     ),
-    button: _appTextStyle(
-      fontSize: TextSize.medium,
-      fontWeight: FontWeight.bold,
-      textColor: backgroundColor,
-    ),
-    titleMedium: _appTextStyle(
-      fontSize: TextSize.large,
-      fontWeight: FontWeight.bold,
-      textColor: focusColor,
-    ),
-    labelSmall: _appTextStyle(
+    bodySmall: _appTextStyle(
       fontSize: TextSize.small,
       fontWeight: FontWeight.normal,
       textColor: AppColor.heavyRed,
@@ -130,7 +130,7 @@ ThemeData _appThemeData({
   return ThemeData(
     primaryColor: defaultColor,
     focusColor: focusColor,
-    backgroundColor: backgroundColor,
+    scaffoldBackgroundColor: backgroundColor,
     appBarTheme: AppBarTheme(
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -158,14 +158,14 @@ ThemeData _appThemeData({
   );
 }
 
-final ThemeData lightTheme = _appThemeData(
+final ThemeData light = _appThemeData(
   statusBarIconBrightness: Brightness.dark,
   defaultColor: AppColor.moderateGray,
   focusColor: AppColor.heavyGray,
   backgroundColor: Colors.white,
 );
 
-final ThemeData darkTheme = _appThemeData(
+final ThemeData dark = _appThemeData(
   statusBarIconBrightness: Brightness.light,
   defaultColor: AppColor.lightGray,
   focusColor: Colors.white,

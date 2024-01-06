@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 
-class FavoritesPage extends StatefulWidget {
+class ExplorePage extends StatefulWidget {
   final ScrollController controller;
 
-  const FavoritesPage({
+  const ExplorePage({
     super.key,
     required this.controller,
   });
 
   @override
-  State<FavoritesPage> createState() => _FavoritesPageState();
+  State<ExplorePage> createState() => _ExplorePageState();
 }
 
-class _FavoritesPageState extends State<FavoritesPage> {
+class _ExplorePageState extends State<ExplorePage> {
   final List<Widget> _children = [];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: ListView.builder(
           controller: widget.controller,
           itemCount: _children.length,

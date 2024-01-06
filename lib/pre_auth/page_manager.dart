@@ -40,7 +40,7 @@ class _PreAuthPageManager extends State<PreAuthPageManager> {
         index: _selectedIndex,
         children: _pages,
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );
   }
 }

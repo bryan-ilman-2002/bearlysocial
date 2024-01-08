@@ -1,12 +1,11 @@
-import 'package:bearlysocial/generic/functions/getters/interests.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class InterestStateNotifier extends StateNotifier<TextEditingController> {
   InterestStateNotifier() : super(TextEditingController());
 
-  String validateSelection() =>
-      interests.containsKey(state.text) ? state.text : '';
+  String validateSelection() => '';
+  // interests.containsKey(state.text) ? state.text : '';
 
   void resetController() => state.clear();
 }

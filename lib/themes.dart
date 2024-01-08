@@ -1,6 +1,5 @@
 import 'package:bearlysocial/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 TextStyle _appTextStyle({
   required double fontSize,
@@ -17,42 +16,63 @@ TextStyle _appTextStyle({
   );
 }
 
+TextStyle _bodyMedium({
+  required Color textColor,
+}) {
+  return _appTextStyle(
+    fontSize: TextSize.medium,
+    fontWeight: FontWeight.normal,
+    textColor: textColor,
+  );
+}
+
 TextTheme _appTextTheme({
   required Color backgroundColor,
-  required Color defaultColor,
+  required Color normalColor,
   required Color focusColor,
 }) {
   return TextTheme(
+    /// Large title text style. Generally used for page/sheet title.
     titleLarge: _appTextStyle(
       fontSize: TextSize.large,
       fontWeight: FontWeight.bold,
       textColor: focusColor,
     ),
+
+    /// Medium title text style. Mainly used for text inside buttons.
     titleMedium: _appTextStyle(
       fontSize: TextSize.medium,
       fontWeight: FontWeight.bold,
       textColor: backgroundColor,
     ),
-    bodyMedium: _appTextStyle(
-      fontSize: TextSize.medium,
-      fontWeight: FontWeight.normal,
-      textColor: defaultColor,
+
+    /// Medium body text style. Used for standard body text.
+    bodyMedium: _bodyMedium(
+      textColor: normalColor,
     ),
+
+    /// Small body text style. Mainly used for error text.
     bodySmall: _appTextStyle(
       fontSize: TextSize.small,
       fontWeight: FontWeight.normal,
       textColor: AppColor.heavyRed,
     ),
+
+    /// Medium label text style. Used for labels.
     labelMedium: _appTextStyle(
       fontSize: TextSize.large,
       fontWeight: FontWeight.normal,
-      textColor: defaultColor,
+      textColor: normalColor,
     ),
+
+    /// Small display text style. Used for smaller headings.
     displaySmall: _appTextStyle(
       fontSize: TextSize.medium,
       fontWeight: FontWeight.bold,
       textColor: focusColor,
     ),
+
+    /// Large display text style. Used for larger headings.
     displayLarge: _appTextStyle(
       fontSize: TextSize.veryLarge,
       fontWeight: FontWeight.bold,
@@ -62,17 +82,17 @@ TextTheme _appTextTheme({
 }
 
 IconThemeData _appIconThemeData({
-  required Color defaultColor,
+  required Color iconColor,
 }) {
   return IconThemeData(
     size: IconSize.medium,
-    color: defaultColor,
+    color: iconColor,
   );
 }
 
 DropdownMenuThemeData _appDropdownMenuThemeData({
   required TextStyle hintStyle,
-  required Color defaultColor,
+  required Color normalColor,
   required Color focusColor,
 }) {
   return DropdownMenuThemeData(
@@ -83,7 +103,7 @@ DropdownMenuThemeData _appDropdownMenuThemeData({
           CurvatureSize.large,
         ),
         borderSide: BorderSide(
-          color: defaultColor,
+          color: normalColor,
         ),
       ),
       focusedBorder: OutlineInputBorder(
@@ -106,7 +126,7 @@ DropdownMenuThemeData _appDropdownMenuThemeData({
             CurvatureSize.large,
           ),
           side: BorderSide(
-            color: defaultColor,
+            color: normalColor,
             width: ThicknessSize.verySmall,
           ),
         ),
@@ -122,36 +142,28 @@ DropdownMenuThemeData _appDropdownMenuThemeData({
 }
 
 ThemeData _appThemeData({
-  required Brightness statusBarIconBrightness,
   required Color backgroundColor,
-  required Color defaultColor,
+  required Color normalColor,
   required Color focusColor,
 }) {
   return ThemeData(
-    primaryColor: defaultColor,
+    primaryColor: AppColor.primary,
+    dividerColor: normalColor,
     focusColor: focusColor,
     scaffoldBackgroundColor: backgroundColor,
-    appBarTheme: AppBarTheme(
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: statusBarIconBrightness,
-      ),
-    ),
     textTheme: _appTextTheme(
       backgroundColor: backgroundColor,
-      defaultColor: defaultColor,
+      normalColor: normalColor,
       focusColor: focusColor,
     ),
     iconTheme: _appIconThemeData(
-      defaultColor: defaultColor,
+      iconColor: focusColor,
     ),
     dropdownMenuTheme: _appDropdownMenuThemeData(
-      hintStyle: _appTextStyle(
-        fontSize: TextSize.medium,
-        fontWeight: FontWeight.normal,
-        textColor: defaultColor,
+      hintStyle: _bodyMedium(
+        textColor: normalColor,
       ),
-      defaultColor: defaultColor,
+      normalColor: normalColor,
       focusColor: focusColor,
     ),
     splashFactory: InkRipple.splashFactory,
@@ -159,15 +171,13 @@ ThemeData _appThemeData({
 }
 
 final ThemeData light = _appThemeData(
-  statusBarIconBrightness: Brightness.dark,
-  defaultColor: AppColor.moderateGray,
+  normalColor: AppColor.moderateGray,
   focusColor: AppColor.heavyGray,
   backgroundColor: Colors.white,
 );
 
 final ThemeData dark = _appThemeData(
-  statusBarIconBrightness: Brightness.light,
-  defaultColor: AppColor.lightGray,
+  normalColor: AppColor.lightGray,
   focusColor: Colors.white,
   backgroundColor: AppColor.heavyGray,
 );

@@ -3,6 +3,8 @@ import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/components/form_elements/underlined_txt_field.dart';
 import 'package:bearlysocial/base_designs/sheets/bottom_sheet.dart'
     as app_bottom_sheet;
+import 'package:bearlysocial/constants/translation_key.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class AccountRecovery extends StatefulWidget {
@@ -41,7 +43,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
         _submitted = true;
         _emailErrorText = null;
       } else {
-        _emailErrorText = 'Please enter a valid email.';
+        _emailErrorText = TranslationKey.invalidEmail.tr();
       }
     });
   }
@@ -49,7 +51,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
   @override
   Widget build(BuildContext context) {
     return app_bottom_sheet.BottomSheet(
-      title: 'Account Recovery',
+      title: TranslationKey.accountRecoveryTitle.tr(),
       content: _submitted
           ? Column(
               children: [
@@ -62,9 +64,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                   height: WhiteSpaceSize.small,
                 ),
                 Text(
-                  'We have sent a link to reset your password to your email. '
-                  'Please check your inbox for our message. '
-                  'If you do not see it in your inbox, we recommend checking your spam or junk folder as well.',
+                  TranslationKey.checkEmail.tr(),
                   maxLines: 128,
                   textAlign: TextAlign.justify,
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -74,7 +74,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
           : Column(
               children: [
                 UnderlinedTextField(
-                  label: 'Email',
+                  label: TranslationKey.emailLabel.tr(),
                   controller: _emailController,
                   focusNode: _emailFocusNode,
                   errorText: _emailErrorText,
@@ -83,9 +83,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                   height: WhiteSpaceSize.small,
                 ),
                 Text(
-                  'To secure your account, please provide your associated email. '
-                  'A password reset link will be sent to this email. '
-                  'Follow the link to reset your password.',
+                  TranslationKey.provideEmail.tr(),
                   maxLines: 128,
                   textAlign: TextAlign.justify,
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -104,7 +102,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                     callbackFunction: _checkEmail,
                     shadow: Shadow.medium,
                     child: Text(
-                      'Submit',
+                      TranslationKey.submitButton.tr(),
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),

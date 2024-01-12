@@ -1,0 +1,33 @@
+part of 'package:bearlysocial/utilities/inline_translation_loader.dart';
+
+Map<String, String> _enTranslation = {
+  TranslationKey.accountRecoveryTitle: _Title.accountRecovery,
+  TranslationKey.usernameLabel: _Label.username,
+  TranslationKey.passwordLabel: _Label.password,
+  TranslationKey.passwordConfirmationLabel: _Label.passwordConfirmation,
+  TranslationKey.emailLabel: _Label.email,
+  TranslationKey.exploreLabel: _Label.explore,
+  TranslationKey.favoritesLabel: _Label.favorites,
+  TranslationKey.sessionsLabel: _Label.sessions,
+  TranslationKey.chatsLabel: _Label.chats,
+  TranslationKey.settingsLabel: _Label.settings,
+  TranslationKey.signUpButton: _Button.signUp,
+  TranslationKey.signInButton: _Button.signIn,
+  TranslationKey.submitButton: _Button.submit,
+  TranslationKey.signUpExclamation: _SignUp.exclamation,
+  TranslationKey.signUpQuestion: _SignUp.question,
+  TranslationKey.signUpAction: _SignUp.action,
+  TranslationKey.signInExclamation: _SignIn.exclamation,
+  TranslationKey.signInQuestion: _SignIn.question,
+  TranslationKey.signInAction: _SignIn.action,
+  TranslationKey.forgotPassword: _SignIn.forgotPassword,
+  TranslationKey.invalidUsername: _ErrorText.invalidUsername,
+  TranslationKey.invalidPassword: _ErrorText.invalidPassword,
+  TranslationKey.invalidEmail: _ErrorText.invalidEmail,
+  TranslationKey.errorUsername: _ErrorText.errorUsername,
+  TranslationKey.errorPassword: _ErrorText.errorPassword,
+  TranslationKey.errorPasswordConfirmation:
+      _ErrorText.errorPasswordConfirmation,
+  TranslationKey.provideEmail: _Instruction.provideEmail,
+  TranslationKey.checkEmail: _Instruction.checkEmail,
+};

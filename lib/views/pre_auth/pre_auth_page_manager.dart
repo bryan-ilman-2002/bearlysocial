@@ -1,5 +1,4 @@
-import 'package:bearlysocial/views/pre_auth/sign_in/sign_in_page.dart';
-import 'package:bearlysocial/views/pre_auth/sign_up/sign_up_page.dart';
+import 'package:bearlysocial/views/pre_auth/pre_auth_page.dart';
 import 'package:flutter/material.dart';
 
 class PreAuthPageManager extends StatefulWidget {
@@ -12,16 +11,19 @@ class PreAuthPageManager extends StatefulWidget {
 class _PreAuthPageManager extends State<PreAuthPageManager> {
   List<Widget> _initPages() {
     return <Widget>[
-      SignUpPage(
+      PreAuthenticationPage(
         onTap: _onTab,
+        accountCreation: true, // sign up page
       ),
-      SignInPage(
+      PreAuthenticationPage(
         onTap: _onTab,
+        accountCreation: false, // sign in page
       ),
     ];
   }
 
   int _selectedIndex = 0;
+  List<Widget> _pages = [];
 
   void _onTab(int index) {
     setState(() {
@@ -29,12 +31,15 @@ class _PreAuthPageManager extends State<PreAuthPageManager> {
     });
   }
 
-  List<Widget> _pages = [];
+  @override
+  void initState() {
+    super.initState();
+
+    _pages = _initPages();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _pages = _pages.isEmpty ? _initPages() : _pages;
-
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,

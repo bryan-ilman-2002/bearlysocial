@@ -2,13 +2,15 @@ import 'dart:convert';
 
 import 'package:bearlysocial/constants/db_key.dart';
 import 'package:bearlysocial/constants/endpoint.dart';
+import 'package:bearlysocial/constants/translation_key.dart';
 import 'package:bearlysocial/utilities/make_request.dart';
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/utilities/db_operations.dart';
 import 'package:bearlysocial/components/form_elements/underlined_txt_field.dart';
-import 'package:bearlysocial/views/pre_auth/sign_in/acc_recovery_sheet.dart';
+import 'package:bearlysocial/views/pre_auth/acc_recovery_sheet.dart';
 import 'package:bearlysocial/providers/auth_state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
@@ -16,17 +18,11 @@ import 'package:http/http.dart';
 class PreAuthenticationPage extends ConsumerStatefulWidget {
   final Function(int) onTap;
   final bool accountCreation;
-  final String exclamation;
-  final String question;
-  final String action;
 
   const PreAuthenticationPage({
     super.key,
     required this.onTap,
     required this.accountCreation,
-    required this.exclamation,
-    required this.question,
-    required this.action,
   });
 
   @override
@@ -79,10 +75,11 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
         _passwordController.text.isNotEmpty) {
       if (widget.accountCreation &&
           _passwordController.text != _passwordConfirmationController.text) {
-        _showError(
-          message: 'Passwords don\'t match.',
-          field: 'passwordConfirmation',
-        );
+        setState(() {
+          _passwordConfirmationErrorText =
+              TranslationKey.errorPasswordConfirmation.tr();
+        });
+        _blockInput = false;
       } else {
         String hashedUsername = DatabaseOperations.getHash(
           input: _usernameController.text,
@@ -108,51 +105,30 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
           ref.watch(enterApp)();
         } else {
           widget.accountCreation
-              ? _showError(
-                  message: 'Username is already taken.',
-                  field: 'username',
-                )
-              : _showError(
-                  message: 'Password is wrong.',
-                  field: 'password',
-                );
+              ? setState(() {
+                  _usernameErrorText = TranslationKey.errorUsername.tr();
+                })
+              : setState(() {
+                  _passwordErrorText = TranslationKey.errorPassword.tr();
+                });
+          _blockInput = false;
         }
       }
     } else {
-      setState(() {
-        _blockInput = false;
-      });
+      _blockInput = false;
     }
   }
 
   void _validateInput() {
-    setState(() {
-      _blockInput = true;
+    _blockInput = true;
 
-      _usernameErrorText =
-          _usernameController.text.isEmpty ? 'Username cannot be empty!' : null;
-      _passwordErrorText =
-          _passwordController.text.isEmpty ? 'Password cannot be empty!' : null;
-    });
-  }
-
-  void _showError({
-    required String message,
-    required String field,
-  }) {
     setState(() {
-      switch (field) {
-        case 'username':
-          _usernameErrorText = message;
-          break;
-        case 'password':
-          _passwordErrorText = message;
-          break;
-        case 'passwordConfirmation':
-          _passwordConfirmationErrorText = message;
-          break;
-      }
-      _blockInput = false;
+      _usernameErrorText = _usernameController.text.isEmpty
+          ? TranslationKey.invalidUsername.tr()
+          : null;
+      _passwordErrorText = _passwordController.text.isEmpty
+          ? TranslationKey.invalidPassword.tr()
+          : null;
     });
   }
 
@@ -163,7 +139,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
     await DatabaseOperations.insertTransactions(
       pairs: {
         DatabaseKey.id: id,
-        DatabaseKey.token: jsonDecode(responseBody)['token'],
+        DatabaseKey.token: jsonDecode(responseBody)[DatabaseKey.token],
       },
     );
 
@@ -171,8 +147,9 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
       _usernameErrorText = null;
       _passwordErrorText = null;
       if (widget.accountCreation) _passwordConfirmationErrorText = null;
-      _blockInput = false;
     });
+
+    _blockInput = false;
   }
 
   @override
@@ -208,7 +185,9 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                   Expanded(
                     flex: 75,
                     child: Text(
-                      widget.exclamation,
+                      widget.accountCreation
+                          ? TranslationKey.signUpExclamation.tr()
+                          : TranslationKey.signInExclamation.tr(),
                       maxLines: 2,
                       style: Theme.of(context).textTheme.displayLarge,
                     ),
@@ -223,7 +202,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 height: WhiteSpaceSize.veryLarge,
               ),
               UnderlinedTextField(
-                label: 'Username',
+                label: TranslationKey.usernameLabel.tr(),
                 controller: _usernameController,
                 focusNode: _usernameFocusNode,
                 errorText: _usernameErrorText,
@@ -232,7 +211,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 height: WhiteSpaceSize.medium,
               ),
               UnderlinedTextField(
-                label: 'Password',
+                label: TranslationKey.passwordLabel.tr(),
                 obscureText: true,
                 controller: _passwordController,
                 focusNode: _passwordFocusNode,
@@ -245,7 +224,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                   : const SizedBox(),
               widget.accountCreation
                   ? UnderlinedTextField(
-                      label: 'Password Confirmation',
+                      label: TranslationKey.passwordConfirmationLabel.tr(),
                       obscureText: true,
                       controller: _passwordConfirmationController,
                       focusNode: _passwordConfirmationFocusNode,
@@ -256,7 +235,8 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 height: WhiteSpaceSize.verySmall,
               ),
               widget.accountCreation
-                  ? Align(
+                  ? const SizedBox()
+                  : Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: () {
@@ -271,12 +251,11 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                           );
                         },
                         child: Text(
-                          'Forgot password?',
+                          TranslationKey.forgotPassword.tr(),
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
-                    )
-                  : const SizedBox(),
+                    ),
               const SizedBox(
                 height: WhiteSpaceSize.large,
               ),
@@ -298,7 +277,9 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                         ),
                       )
                     : Text(
-                        widget.accountCreation ? 'Sign Up' : 'Sign In',
+                        widget.accountCreation
+                            ? TranslationKey.signUpButton.tr()
+                            : TranslationKey.signInButton.tr(),
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
               ),
@@ -309,7 +290,9 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    widget.question,
+                    widget.accountCreation
+                        ? TranslationKey.signUpQuestion.tr()
+                        : TranslationKey.signInQuestion.tr(),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(
@@ -320,8 +303,12 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                       widget.onTap(widget.accountCreation ? 1 : 0);
                     },
                     child: Text(
-                      widget.action,
-                      style: Theme.of(context).textTheme.displaySmall,
+                      widget.accountCreation
+                          ? TranslationKey.signUpAction.tr()
+                          : TranslationKey.signInAction.tr(),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: Theme.of(context).focusColor,
+                          ),
                     ),
                   ),
                 ],

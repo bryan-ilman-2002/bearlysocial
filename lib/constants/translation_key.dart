@@ -1,0 +1,30 @@
+class TranslationKey {
+  static const String accountRecoveryTitle = 'account_recovery_title';
+  static const String usernameLabel = 'username_label';
+  static const String passwordLabel = 'password_label';
+  static const String passwordConfirmationLabel = 'password_confirmation_label';
+  static const String emailLabel = 'email_label';
+  static const String exploreLabel = 'explore_label';
+  static const String favoritesLabel = 'favorites_label';
+  static const String sessionsLabel = 'sessions_label';
+  static const String chatsLabel = 'chats_label';
+  static const String settingsLabel = 'settings_label';
+  static const String signUpButton = 'sign_up_btn';
+  static const String signInButton = 'sign_in_btn';
+  static const String submitButton = 'submit_btn';
+  static const String signUpExclamation = 'sign_up_exclamation';
+  static const String signUpQuestion = 'sign_up_question';
+  static const String signUpAction = 'sign_up_action';
+  static const String signInExclamation = 'sign_in_exclamation';
+  static const String signInQuestion = 'sign_in_question';
+  static const String signInAction = 'sign_in_action';
+  static const String forgotPassword = 'forgot_password';
+  static const String invalidUsername = 'invalid_username';
+  static const String invalidPassword = 'invalid_password';
+  static const String invalidEmail = 'invalid_email';
+  static const String errorUsername = 'error_username';
+  static const String errorPassword = 'error_password';
+  static const String errorPasswordConfirmation = 'error_password_confirmation';
+  static const String provideEmail = 'provide_email';
+  static const String checkEmail = 'check_email';
+}

@@ -14,7 +14,7 @@ class UnderlinedTextField extends StatefulWidget {
     this.obscureText = false,
     required this.controller,
     required this.focusNode,
-    required this.errorText,
+    this.errorText,
   });
   @override
   State<UnderlinedTextField> createState() => _UnderlinedTextFieldState();
@@ -32,14 +32,14 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
       style: Theme.of(context).textTheme.bodyMedium,
       decoration: InputDecoration(
         labelText: widget.label,
-        labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
+        labelStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
               height: 0.8,
               fontWeight: widget.focusNode.hasFocus
                   ? FontWeight.bold
                   : FontWeight.normal,
               color: widget.focusNode.hasFocus
                   ? Theme.of(context).focusColor
-                  : Theme.of(context).textTheme.labelMedium?.color,
+                  : Theme.of(context).textTheme.titleLarge?.color,
             ),
         errorText: widget.errorText,
         errorStyle: Theme.of(context).textTheme.bodySmall,

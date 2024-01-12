@@ -1,12 +1,10 @@
 import 'package:bearlysocial/constants/design_tokens.dart';
-import 'package:bearlysocial/constants/translation_key.dart';
 import 'package:bearlysocial/views/post_auth/chats/page.dart';
 import 'package:bearlysocial/views/post_auth/explore/page.dart';
 import 'package:bearlysocial/views/post_auth/favorites/page.dart';
 import 'package:bearlysocial/components/bars/nav_bar.dart' as app_nav_bar;
 import 'package:bearlysocial/views/post_auth/sessions/page.dart';
 import 'package:bearlysocial/views/post_auth/settings/settings_page.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class PostAuthPageManager extends StatefulWidget {
@@ -86,23 +84,23 @@ class _PostAuthPageManager extends State<PostAuthPageManager> {
     _pages = _initPages();
 
     _navItems = {
-      TranslationKey.exploreLabel.tr(): {
+      'Explore': {
         'normalIcon': Icons.explore_outlined,
         'highlightedIcon': Icons.explore,
       },
-      TranslationKey.favoritesLabel.tr(): {
+      'Favorites': {
         'normalIcon': Icons.favorite_border,
         'highlightedIcon': Icons.favorite,
       },
-      TranslationKey.sessionsLabel.tr(): {
+      'Sessions': {
         'normalIcon': Icons.calendar_today_outlined,
         'highlightedIcon': Icons.calendar_today,
       },
-      TranslationKey.chatsLabel.tr(): {
+      'Chats': {
         'normalIcon': Icons.chat_outlined,
         'highlightedIcon': Icons.chat,
       },
-      TranslationKey.settingsLabel.tr(): {
+      'Settings': {
         'normalIcon': Icons.settings_outlined,
         'highlightedIcon': Icons.settings,
       },

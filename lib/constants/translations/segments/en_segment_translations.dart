@@ -22,17 +22,21 @@ class _Label {
   static const String password = 'Password';
   static const String passwordConfirmation = 'Password Confirmation';
   static const String email = 'Email';
-  static const String explore = 'Explore';
-  static const String favorites = 'favorites';
-  static const String sessions = 'sessions';
-  static const String chats = 'chats';
-  static const String settings = 'settings';
 }
 
 class _Button {
   static const String signUp = 'Sign Up';
   static const String signIn = 'Sign In';
+  static const String signOut = 'Sign Out';
   static const String submit = 'Submit';
+  static const String personalInformation = 'Personal information';
+  static const String translation = 'Translation';
+  static const String notifications = 'Notifications';
+  static const String requestPersonalData = 'Request Personal Data';
+  static const String deleteAccount = 'Delete Account';
+  static const String helpCenter = 'Help Center';
+  static const String termsOfService = 'Terms of Service';
+  static const String privacyPolicy = 'Privacy Policy';
 }
 
 class _ErrorText {

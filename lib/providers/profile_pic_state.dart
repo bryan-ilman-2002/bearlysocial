@@ -35,7 +35,8 @@ class ProfilePictureStateNotifier extends StateNotifier<img.Image?> {
                 )
               : ClipOval(
                   child:
-                      Image.memory(Uint8List.fromList(img.encodePng(state!)))),
+                      Image.memory(Uint8List.fromList(img.encodePng(state!))),
+                ),
         ),
       );
 }

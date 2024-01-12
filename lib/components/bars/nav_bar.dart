@@ -65,15 +65,15 @@ class NavigationBar extends StatelessWidget {
               ),
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: TextSize.verySmall,
-                  fontWeight: selectedIndex == index
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: selectedIndex == index
-                      ? Theme.of(context).focusColor
-                      : Theme.of(context).textTheme.bodyMedium?.color,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: TextSize.verySmall,
+                      fontWeight: selectedIndex == index
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: selectedIndex == index
+                          ? Theme.of(context).focusColor
+                          : Theme.of(context).textTheme.bodyMedium?.color,
+                    ),
               ),
             ],
           ),

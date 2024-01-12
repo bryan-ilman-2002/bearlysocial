@@ -1,4 +1,5 @@
 import 'package:bearlysocial/constants/design_tokens.dart';
+import 'package:bearlysocial/constants/translation_key.dart';
 import 'package:bearlysocial/providers/auth_state.dart';
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/components/buttons/setting_btn.dart';
@@ -25,7 +26,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     return SafeArea(
       child: SingleChildScrollView(
         controller: widget.controller,
-        // physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(
           PaddingSize.medium,
         ),
@@ -55,7 +55,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
             SettingButton(
               icon: Icons.person_outlined,
-              label: 'Personal Information',
+              label: TranslationKey.personalInformationButton,
               callbackFunction: () {
                 showModalBottomSheet(
                   context: context,
@@ -70,22 +70,22 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
             SettingButton(
               icon: Icons.translate,
-              label: 'Translation',
+              label: TranslationKey.translationButton,
               callbackFunction: () {},
             ),
             SettingButton(
               icon: Icons.notifications_outlined,
-              label: 'Notifications',
+              label: TranslationKey.notificationsButton,
               callbackFunction: () {},
             ),
             SettingButton(
               icon: Icons.cloud_download_outlined,
-              label: 'Request Personal Data',
+              label: TranslationKey.requestPersonalDataButton,
               callbackFunction: () {},
             ),
             SettingButton(
               icon: Icons.delete_outlined,
-              label: 'Delete Account',
+              label: TranslationKey.deleteAccountButton,
               callbackFunction: () {},
               splashColor: AppColor.lightRed,
               contentColor: AppColor.heavyRed,
@@ -95,17 +95,17 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
             SettingButton(
               icon: Icons.help_outline_outlined,
-              label: 'Help Center',
+              label: TranslationKey.helpCenterButton,
               callbackFunction: () {},
             ),
             SettingButton(
               icon: Icons.menu_book,
-              label: 'Terms of Service',
+              label: TranslationKey.termsOfServiceButton,
               callbackFunction: () {},
             ),
             SettingButton(
               icon: Icons.menu_book,
-              label: 'Privacy Policy',
+              label: TranslationKey.privacyPolicyButton,
               callbackFunction: () {},
             ),
             const SizedBox(
@@ -121,7 +121,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ),
               splashColor: AppColor.lightRed,
               child: Text(
-                'Sign Out',
+                TranslationKey.signOutButton,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: AppColor.heavyRed,
                     ),

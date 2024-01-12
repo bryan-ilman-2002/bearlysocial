@@ -1,127 +1,86 @@
 import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:flutter/material.dart';
 
-final ThemeData light = _appThemeData(
-  normalColor: AppColor.moderateGray,
-  focusColor: AppColor.heavyGray,
-  backgroundColor: Colors.white,
-);
+Color? _backgroundColor;
+Color? _normalColor;
+Color? _focusColor;
 
-final ThemeData dark = _appThemeData(
-  normalColor: AppColor.lightGray,
-  focusColor: Colors.white,
-  backgroundColor: AppColor.heavyGray,
-);
+ThemeData buildAppThemeData({required bool lightMode}) {
+  _backgroundColor = lightMode ? Colors.white : AppColor.heavyGray;
+  _normalColor = lightMode ? AppColor.moderateGray : AppColor.lightGray;
+  _focusColor = lightMode ? AppColor.heavyGray : Colors.white;
 
-ThemeData _appThemeData({
-  required Color backgroundColor,
-  required Color normalColor,
-  required Color focusColor,
-}) {
   return ThemeData(
     primaryColor: AppColor.primary,
-    dividerColor: normalColor,
-    focusColor: focusColor,
-    scaffoldBackgroundColor: backgroundColor,
-    textTheme: _appTextTheme(
-      backgroundColor: backgroundColor,
-      normalColor: normalColor,
-      focusColor: focusColor,
-    ),
-    iconTheme: _appIconThemeData(
-      iconColor: normalColor,
-    ),
-    dropdownMenuTheme: _appDropdownMenuThemeData(
-      hintStyle: _bodyMedium(
-        textColor: normalColor,
-      ),
-      normalColor: normalColor,
-      focusColor: focusColor,
-    ),
+    scaffoldBackgroundColor: _backgroundColor,
+    dividerColor: _normalColor,
+    focusColor: _focusColor,
+    textTheme: _textTheme,
+    iconTheme: _iconTheme,
+    dropdownMenuTheme: _dropdownMenuTheme,
     splashFactory: InkRipple.splashFactory,
   );
 }
 
-TextTheme _appTextTheme({
-  required Color backgroundColor,
-  required Color normalColor,
-  required Color focusColor,
-}) {
+TextTheme get _textTheme {
   return TextTheme(
-    titleLarge: _appTextStyle(
-      fontSize: TextSize.large,
-      fontWeight: FontWeight.bold,
-      textColor: focusColor,
-    ),
-    titleMedium: _appTextStyle(
-      fontSize: TextSize.medium,
-      fontWeight: FontWeight.bold,
-      textColor: backgroundColor,
-    ),
-    bodyMedium: _bodyMedium(
-      textColor: normalColor,
-    ),
-    bodySmall: _appTextStyle(
-      fontSize: TextSize.small,
-      fontWeight: FontWeight.normal,
-      textColor: AppColor.heavyRed,
-    ),
-    displayLarge: _appTextStyle(
+    displayLarge: _bodyMedium.copyWith(
       fontSize: TextSize.veryLarge,
       fontWeight: FontWeight.bold,
-      textColor: focusColor,
+      color: _focusColor,
     ),
+    titleSmall: _bodyMedium.copyWith(
+      fontSize: TextSize.small,
+      fontWeight: FontWeight.bold,
+      color: _focusColor,
+    ),
+    titleMedium: _bodyMedium.copyWith(
+      fontSize: TextSize.medium,
+      fontWeight: FontWeight.bold,
+      color: _backgroundColor,
+    ),
+    titleLarge: _bodyMedium.copyWith(
+      fontSize: TextSize.large,
+      fontWeight: FontWeight.bold,
+      color: _focusColor,
+    ),
+    bodySmall: _bodyMedium.copyWith(
+      fontSize: TextSize.small,
+      fontWeight: FontWeight.normal,
+      color: AppColor.heavyRed,
+    ),
+    bodyMedium: _bodyMedium,
   );
 }
 
-TextStyle _appTextStyle({
-  required double fontSize,
-  required FontWeight fontWeight,
-  required Color textColor,
-}) {
+TextStyle get _bodyMedium {
   return TextStyle(
     overflow: TextOverflow.ellipsis,
     fontFamily: appFontFamily,
-    fontSize: fontSize,
-    fontWeight: fontWeight,
-    color: textColor,
+    fontSize: TextSize.medium,
+    fontWeight: FontWeight.normal,
+    color: _normalColor,
     letterSpacing: 0.4,
   );
 }
 
-TextStyle _bodyMedium({
-  required Color textColor,
-}) {
-  return _appTextStyle(
-    fontSize: TextSize.medium,
-    fontWeight: FontWeight.normal,
-    textColor: textColor,
-  );
-}
-
-IconThemeData _appIconThemeData({
-  required Color iconColor,
-}) {
+IconThemeData get _iconTheme {
   return IconThemeData(
     size: IconSize.medium,
-    color: iconColor,
+    color: _normalColor,
   );
 }
 
-DropdownMenuThemeData _appDropdownMenuThemeData({
-  required TextStyle hintStyle,
-  required Color normalColor,
-  required Color focusColor,
-}) {
+DropdownMenuThemeData get _dropdownMenuTheme {
   return DropdownMenuThemeData(
     inputDecorationTheme: InputDecorationTheme(
-      hintStyle: hintStyle,
+      hintStyle: _bodyMedium,
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(
           CurvatureSize.large,
         ),
         borderSide: BorderSide(
-          color: normalColor,
+          color: _normalColor as Color,
         ),
       ),
       focusedBorder: OutlineInputBorder(
@@ -130,7 +89,7 @@ DropdownMenuThemeData _appDropdownMenuThemeData({
         ),
         borderSide: BorderSide(
           width: ThicknessSize.large,
-          color: focusColor,
+          color: _focusColor as Color,
         ),
       ),
     ),
@@ -144,7 +103,7 @@ DropdownMenuThemeData _appDropdownMenuThemeData({
             CurvatureSize.large,
           ),
           side: BorderSide(
-            color: normalColor,
+            color: _normalColor as Color,
             width: ThicknessSize.verySmall,
           ),
         ),

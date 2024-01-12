@@ -1,6 +1,7 @@
 import 'package:bearlysocial/providers/auth_state.dart';
 import 'package:bearlysocial/themes.dart';
 import 'package:bearlysocial/utilities/db_operations.dart';
+import 'package:bearlysocial/utilities/inline_translation_loader.dart';
 import 'package:bearlysocial/views/loading_page.dart';
 import 'package:bearlysocial/views/post_auth/post_auth_page_manager.dart';
 import 'package:bearlysocial/views/pre_auth/pre_auth_page_manager.dart';
@@ -21,8 +22,9 @@ void main() async {
         supportedLocales: const [
           Locale('en'),
         ],
-        path: 'assets/jsons/translations',
+        path: 'assets/l10n',
         fallbackLocale: const Locale('en'),
+        assetLoader: InlineTranslationLoader(),
         child: const App(),
       ),
     ),
@@ -61,8 +63,8 @@ class _AppState extends ConsumerState<App> {
 
     return MaterialApp(
       title: 'BearlySocial',
-      theme: light,
-      darkTheme: dark,
+      theme: buildAppThemeData(lightMode: true),
+      darkTheme: buildAppThemeData(lightMode: false),
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,

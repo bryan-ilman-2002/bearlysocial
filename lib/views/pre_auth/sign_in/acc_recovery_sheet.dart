@@ -1,5 +1,5 @@
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
-import 'package:bearlysocial/constants.dart';
+import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/components/form_elements/underlined_txt_field.dart';
 import 'package:bearlysocial/base_designs/sheets/bottom_sheet.dart'
     as app_bottom_sheet;

@@ -1,10 +1,10 @@
-import 'package:bearlysocial/constants.dart';
+import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/views/post_auth/chats/page.dart';
 import 'package:bearlysocial/views/post_auth/explore/page.dart';
 import 'package:bearlysocial/views/post_auth/favorites/page.dart';
 import 'package:bearlysocial/components/bars/nav_bar.dart' as app_nav_bar;
 import 'package:bearlysocial/views/post_auth/sessions/page.dart';
-import 'package:bearlysocial/views/post_auth/settings/page.dart';
+import 'package:bearlysocial/views/post_auth/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 
 class PostAuthPageManager extends StatefulWidget {

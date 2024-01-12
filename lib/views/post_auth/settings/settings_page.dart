@@ -1,10 +1,9 @@
-import 'package:bearlysocial/constants.dart';
-import 'package:bearlysocial/providers/auth.dart';
+import 'package:bearlysocial/constants/design_tokens.dart';
+import 'package:bearlysocial/providers/auth_state.dart';
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/components/buttons/setting_btn.dart';
-import 'package:bearlysocial/base_designs/sheets/bottom_sheet.dart'
-    as app_bottom_sheet;
-import 'package:bearlysocial/views/post_auth/settings/personal_information.dart';
+import 'package:bearlysocial/providers/profile_pic_state.dart';
+import 'package:bearlysocial/views/post_auth/settings/personal_info_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,10 +16,10 @@ class SettingsPage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<SettingsPage> createState() => _SignInState();
+  ConsumerState<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SignInState extends ConsumerState<SettingsPage> {
+class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -34,20 +33,9 @@ class _SignInState extends ConsumerState<SettingsPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              width: SideSize.large,
-              height: SideSize.large,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Theme.of(context).focusColor,
-                ),
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.no_photography,
-                ),
-              ),
+            ref.read(displayProfilePic)(
+              context: context,
+              enlarged: true,
             ),
             const SizedBox(
               height: WhiteSpaceSize.medium,
@@ -63,53 +51,22 @@ class _SignInState extends ConsumerState<SettingsPage> {
               ],
             ),
             const SizedBox(
-              height: 16.0,
+              height: WhiteSpaceSize.medium / 2,
             ),
             SettingButton(
-              icon: Icons.person,
+              icon: Icons.person_outlined,
               label: 'Personal Information',
-              callbackFunction: () {},
-              // callbackFunction: () {
-              //   showFullHeightModalBottomSheet(
-              //     context: context,
-              //     body: app_bottom_sheet.BottomSheet(
-              //       title: 'Personal Information',
-              //       content: SizedBox(),
-              //       // content: const PersonalInformation(),
-              //       closure: [
-              //         SplashButton(
-              //           horizontalPadding: 48,
-              //           verticalPadding: 16,
-              //           buttonColor: Colors.white,
-              //           // uniformBorderRadius: 16,
-              //           borderColor: Colors.transparent,
-              //           child: Text(
-              //             'Reset',
-              //             style: TextStyle(
-              //               fontWeight: FontWeight.bold,
-              //               color: heavyGray,
-              //             ),
-              //           ),
-              //         ),
-              //         SplashButton(
-              //           horizontalPadding: 48,
-              //           verticalPadding: 16,
-              //           buttonColor: heavyGray,
-              //           // uniformBorderRadius: 16,
-              //           borderColor: Colors.transparent,
-              //           // buttonShadow: moderateShadow,
-              //           child: const Text(
-              //             'Apply',
-              //             style: TextStyle(
-              //               fontWeight: FontWeight.bold,
-              //               color: Colors.white,
-              //             ),
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   );
-              // },
+              callbackFunction: () {
+                showModalBottomSheet(
+                  context: context,
+                  useSafeArea: true,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (BuildContext context) {
+                    return const PersonalInformation();
+                  },
+                );
+              },
             ),
             SettingButton(
               icon: Icons.translate,
@@ -117,17 +74,17 @@ class _SignInState extends ConsumerState<SettingsPage> {
               callbackFunction: () {},
             ),
             SettingButton(
-              icon: Icons.notifications,
+              icon: Icons.notifications_outlined,
               label: 'Notifications',
               callbackFunction: () {},
             ),
             SettingButton(
-              icon: Icons.cloud_download,
+              icon: Icons.cloud_download_outlined,
               label: 'Request Personal Data',
               callbackFunction: () {},
             ),
             SettingButton(
-              icon: Icons.delete,
+              icon: Icons.delete_outlined,
               label: 'Delete Account',
               callbackFunction: () {},
               splashColor: AppColor.lightRed,
@@ -137,7 +94,7 @@ class _SignInState extends ConsumerState<SettingsPage> {
               height: WhiteSpaceSize.veryLarge,
             ),
             SettingButton(
-              icon: Icons.help,
+              icon: Icons.help_outline_outlined,
               label: 'Help Center',
               callbackFunction: () {},
             ),

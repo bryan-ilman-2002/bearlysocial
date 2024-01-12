@@ -32,6 +32,7 @@ dependencies:
     sdk: flutter
 
   camera: 0.10.5+5
+  easy_localization: ^3.0.2
   flutter_image_compress: ^2.1.0
   flutter_riverpod: ^2.3.6
   flutter_svg: ^2.0.6
@@ -79,8 +80,9 @@ flutter:
 
   assets:
     - assets/fonts/
-    - assets/images/
+    - assets/pngs/
     - assets/svgs/
+    - assets/jsons/translations/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

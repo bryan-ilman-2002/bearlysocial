@@ -1,4 +1,4 @@
-import 'package:bearlysocial/constants.dart';
+import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:flutter/material.dart';
 
 class LoadingPage extends StatelessWidget {

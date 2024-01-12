@@ -1,15 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// URL constants for the application.
-class URL {
-  /// The domain for the API calls. Value: 'https://zd0d10d8p2.execute-api.us-east-1.amazonaws.com/'
-  static const String domain =
-      'https://zd0d10d8p2.execute-api.us-east-1.amazonaws.com/';
-
-  /// The subfolder for the API calls. Value: ''
-  static const String apiSubFolder = '';
-}
-
 /// Color constants for the application.
 class AppColor {
   /// Light gray color. Value: Color(0xFFBABABA)
@@ -28,7 +18,7 @@ class AppColor {
   static const Color heavyBlue = Color(0xFF0E6CC0);
 
   /// Light red color. Value: Color(0xFFFF6D60)
-  static const Color lightRed = Color(0xFFFDE4E0);
+  static const Color lightRed = Color(0xFFFEEFEC);
 
   /// Heavy red color. Value: Color(0xFFEE002C)
   static const Color heavyRed = Color(0xFFEE002C);
@@ -120,6 +110,9 @@ class PaddingSize {
   /// Zero padding size. Value: 0.0
   static const double zero = 0.0;
 
+  /// Very small padding size. Value: 8.0
+  static const double verySmall = 8.0;
+
   /// Small padding size. Value: 16.0
   static const double small = 16.0;
 
@@ -153,8 +146,8 @@ class MarginSize {
 
 /// Thickness size constants for the application.
 class ThicknessSize {
-  /// Very small thickness size. Value: 0.4
-  static const double verySmall = 0.4;
+  /// Very small thickness size. Value: 0.12
+  static const double verySmall = 0.12;
 
   /// Small thickness size. Value: 1.0
   static const double small = 1.0;
@@ -195,6 +188,9 @@ class ElevationSize {
 
 /// Animation duration constants for the application.
 class AnimationDuration {
+  /// Instant animation duration. Value: 0
+  static const int instant = 0;
+
   /// Medium animation duration. Value: 320
   static const int medium = 320;
 }

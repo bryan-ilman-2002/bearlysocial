@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-import 'package:bearlysocial/api_call/enums/endpoint.dart';
-import 'package:bearlysocial/api_call/make_request.dart';
+import 'package:bearlysocial/constants/db_key.dart';
+import 'package:bearlysocial/constants/endpoint.dart';
+import 'package:bearlysocial/utilities/make_request.dart';
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
-import 'package:bearlysocial/constants.dart';
-import 'package:bearlysocial/database/db_key.dart';
-import 'package:bearlysocial/database/db_operations.dart';
+import 'package:bearlysocial/constants/design_tokens.dart';
+import 'package:bearlysocial/utilities/db_operations.dart';
 import 'package:bearlysocial/components/form_elements/underlined_txt_field.dart';
-import 'package:bearlysocial/views/pre_auth/sign_in/sheets/account_recovery.dart';
-import 'package:bearlysocial/providers/auth.dart';
+import 'package:bearlysocial/views/pre_auth/sign_in/acc_recovery_sheet.dart';
+import 'package:bearlysocial/providers/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
@@ -16,7 +16,6 @@ import 'package:http/http.dart';
 class PreAuthenticationPage extends ConsumerStatefulWidget {
   final Function(int) onTap;
   final bool accountCreation;
-  final Endpoint url;
   final String exclamation;
   final String question;
   final String action;
@@ -25,7 +24,6 @@ class PreAuthenticationPage extends ConsumerStatefulWidget {
     super.key,
     required this.onTap,
     required this.accountCreation,
-    required this.url,
     required this.exclamation,
     required this.question,
     required this.action,
@@ -94,7 +92,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
         );
 
         final Response httpResponse = await makeRequest(
-          endpoint: widget.url,
+          endpoint: widget.accountCreation ? Endpoint.signUp : Endpoint.signIn,
           body: {
             'id': hashedUsername,
             'secret': hashedPassword,
@@ -164,8 +162,8 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
   }) async {
     await DatabaseOperations.insertTransactions(
       pairs: {
-        DatabaseKey.id.string: id,
-        DatabaseKey.token.string: jsonDecode(responseBody)['token'],
+        DatabaseKey.id: id,
+        DatabaseKey.token: jsonDecode(responseBody)['token'],
       },
     );
 
@@ -194,7 +192,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 height: SideSize.medium,
                 decoration: BoxDecoration(
                   image: const DecorationImage(
-                    image: AssetImage('assets/images/bearlysocial.png'),
+                    image: AssetImage('assets/pngs/bearlysocial_icon.png'),
                     fit: BoxFit.cover,
                   ),
                   boxShadow: [

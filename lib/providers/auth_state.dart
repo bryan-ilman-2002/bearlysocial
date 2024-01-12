@@ -1,8 +1,8 @@
-import 'package:bearlysocial/api_call/enums/endpoint.dart';
-import 'package:bearlysocial/api_call/make_request.dart';
-import 'package:bearlysocial/database/db_key.dart';
-import 'package:bearlysocial/database/db_operations.dart';
-import 'package:bearlysocial/database/schemas/transaction.dart';
+import 'package:bearlysocial/constants/db_key.dart';
+import 'package:bearlysocial/constants/endpoint.dart';
+import 'package:bearlysocial/schemas/transaction.dart';
+import 'package:bearlysocial/utilities/make_request.dart';
+import 'package:bearlysocial/utilities/db_operations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 
@@ -23,8 +23,8 @@ class AuthenticationStateNotifier extends StateNotifier<bool> {
 
     [txnId, txnToken] = await DatabaseOperations.retrieveTransactions(
       keys: [
-        DatabaseKey.id.string,
-        DatabaseKey.token.string,
+        DatabaseKey.id,
+        DatabaseKey.token,
       ],
     );
 

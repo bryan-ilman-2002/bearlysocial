@@ -1,5 +1,5 @@
 import 'package:bearlysocial/components/lines/horizontal_line.dart';
-import 'package:bearlysocial/constants.dart';
+import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:flutter/material.dart';
 
 class SettingButton extends StatelessWidget {
@@ -62,7 +62,7 @@ class SettingButton extends StatelessWidget {
           ),
         ),
         const HorizontalLine(
-          height: 0.12,
+          height: ThicknessSize.verySmall,
           horizontalMargin: MarginSize.medium,
         ),
       ],

@@ -1,5 +1,78 @@
-import 'package:bearlysocial/constants.dart';
+import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:flutter/material.dart';
+
+final ThemeData light = _appThemeData(
+  normalColor: AppColor.moderateGray,
+  focusColor: AppColor.heavyGray,
+  backgroundColor: Colors.white,
+);
+
+final ThemeData dark = _appThemeData(
+  normalColor: AppColor.lightGray,
+  focusColor: Colors.white,
+  backgroundColor: AppColor.heavyGray,
+);
+
+ThemeData _appThemeData({
+  required Color backgroundColor,
+  required Color normalColor,
+  required Color focusColor,
+}) {
+  return ThemeData(
+    primaryColor: AppColor.primary,
+    dividerColor: normalColor,
+    focusColor: focusColor,
+    scaffoldBackgroundColor: backgroundColor,
+    textTheme: _appTextTheme(
+      backgroundColor: backgroundColor,
+      normalColor: normalColor,
+      focusColor: focusColor,
+    ),
+    iconTheme: _appIconThemeData(
+      iconColor: normalColor,
+    ),
+    dropdownMenuTheme: _appDropdownMenuThemeData(
+      hintStyle: _bodyMedium(
+        textColor: normalColor,
+      ),
+      normalColor: normalColor,
+      focusColor: focusColor,
+    ),
+    splashFactory: InkRipple.splashFactory,
+  );
+}
+
+TextTheme _appTextTheme({
+  required Color backgroundColor,
+  required Color normalColor,
+  required Color focusColor,
+}) {
+  return TextTheme(
+    titleLarge: _appTextStyle(
+      fontSize: TextSize.large,
+      fontWeight: FontWeight.bold,
+      textColor: focusColor,
+    ),
+    titleMedium: _appTextStyle(
+      fontSize: TextSize.medium,
+      fontWeight: FontWeight.bold,
+      textColor: backgroundColor,
+    ),
+    bodyMedium: _bodyMedium(
+      textColor: normalColor,
+    ),
+    bodySmall: _appTextStyle(
+      fontSize: TextSize.small,
+      fontWeight: FontWeight.normal,
+      textColor: AppColor.heavyRed,
+    ),
+    displayLarge: _appTextStyle(
+      fontSize: TextSize.veryLarge,
+      fontWeight: FontWeight.bold,
+      textColor: focusColor,
+    ),
+  );
+}
 
 TextStyle _appTextStyle({
   required double fontSize,
@@ -23,61 +96,6 @@ TextStyle _bodyMedium({
     fontSize: TextSize.medium,
     fontWeight: FontWeight.normal,
     textColor: textColor,
-  );
-}
-
-TextTheme _appTextTheme({
-  required Color backgroundColor,
-  required Color normalColor,
-  required Color focusColor,
-}) {
-  return TextTheme(
-    /// Large title text style. Generally used for page/sheet title.
-    titleLarge: _appTextStyle(
-      fontSize: TextSize.large,
-      fontWeight: FontWeight.bold,
-      textColor: focusColor,
-    ),
-
-    /// Medium title text style. Mainly used for text inside buttons.
-    titleMedium: _appTextStyle(
-      fontSize: TextSize.medium,
-      fontWeight: FontWeight.bold,
-      textColor: backgroundColor,
-    ),
-
-    /// Medium body text style. Used for standard body text.
-    bodyMedium: _bodyMedium(
-      textColor: normalColor,
-    ),
-
-    /// Small body text style. Mainly used for error text.
-    bodySmall: _appTextStyle(
-      fontSize: TextSize.small,
-      fontWeight: FontWeight.normal,
-      textColor: AppColor.heavyRed,
-    ),
-
-    /// Medium label text style. Used for labels.
-    labelMedium: _appTextStyle(
-      fontSize: TextSize.large,
-      fontWeight: FontWeight.normal,
-      textColor: normalColor,
-    ),
-
-    /// Small display text style. Used for smaller headings.
-    displaySmall: _appTextStyle(
-      fontSize: TextSize.medium,
-      fontWeight: FontWeight.bold,
-      textColor: focusColor,
-    ),
-
-    /// Large display text style. Used for larger headings.
-    displayLarge: _appTextStyle(
-      fontSize: TextSize.veryLarge,
-      fontWeight: FontWeight.bold,
-      textColor: focusColor,
-    ),
   );
 }
 
@@ -140,44 +158,3 @@ DropdownMenuThemeData _appDropdownMenuThemeData({
     ),
   );
 }
-
-ThemeData _appThemeData({
-  required Color backgroundColor,
-  required Color normalColor,
-  required Color focusColor,
-}) {
-  return ThemeData(
-    primaryColor: AppColor.primary,
-    dividerColor: normalColor,
-    focusColor: focusColor,
-    scaffoldBackgroundColor: backgroundColor,
-    textTheme: _appTextTheme(
-      backgroundColor: backgroundColor,
-      normalColor: normalColor,
-      focusColor: focusColor,
-    ),
-    iconTheme: _appIconThemeData(
-      iconColor: focusColor,
-    ),
-    dropdownMenuTheme: _appDropdownMenuThemeData(
-      hintStyle: _bodyMedium(
-        textColor: normalColor,
-      ),
-      normalColor: normalColor,
-      focusColor: focusColor,
-    ),
-    splashFactory: InkRipple.splashFactory,
-  );
-}
-
-final ThemeData light = _appThemeData(
-  normalColor: AppColor.moderateGray,
-  focusColor: AppColor.heavyGray,
-  backgroundColor: Colors.white,
-);
-
-final ThemeData dark = _appThemeData(
-  normalColor: AppColor.lightGray,
-  focusColor: Colors.white,
-  backgroundColor: AppColor.heavyGray,
-);

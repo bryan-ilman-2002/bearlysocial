@@ -1,19 +1,31 @@
-import 'package:bearlysocial/database/db_operations.dart';
-import 'package:bearlysocial/providers/auth.dart';
-import 'package:bearlysocial/loading_page.dart';
-import 'package:bearlysocial/views/post_auth/page_manager.dart';
-import 'package:bearlysocial/views/pre_auth/page_manager.dart';
+import 'package:bearlysocial/providers/auth_state.dart';
 import 'package:bearlysocial/themes.dart';
+import 'package:bearlysocial/utilities/db_operations.dart';
+import 'package:bearlysocial/views/loading_page.dart';
+import 'package:bearlysocial/views/post_auth/post_auth_page_manager.dart';
+import 'package:bearlysocial/views/pre_auth/pre_auth_page_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await EasyLocalization.ensureInitialized();
   await DatabaseOperations.createConnection();
 
   runApp(
-    const ProviderScope(child: App()),
+    ProviderScope(
+      child: EasyLocalization(
+        supportedLocales: const [
+          Locale('en'),
+        ],
+        path: 'assets/jsons/translations',
+        fallbackLocale: const Locale('en'),
+        child: const App(),
+      ),
+    ),
   );
 }
 
@@ -51,6 +63,9 @@ class _AppState extends ConsumerState<App> {
       title: 'BearlySocial',
       theme: light,
       darkTheme: dark,
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       scrollBehavior: const _BouncingScroll(),
       home: _loading
           ? const LoadingPage()
@@ -65,7 +80,5 @@ class _BouncingScroll extends ScrollBehavior {
   const _BouncingScroll();
 
   @override
-  ScrollPhysics getScrollPhysics(BuildContext context) {
-    return const BouncingScrollPhysics();
-  }
+  ScrollPhysics getScrollPhysics(_) => const BouncingScrollPhysics();
 }

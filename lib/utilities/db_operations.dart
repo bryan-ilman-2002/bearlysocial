@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:bearlysocial/database/schemas/transaction.dart';
+import 'package:bearlysocial/schemas/transaction.dart';
 import 'package:hashlib/hashlib.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';

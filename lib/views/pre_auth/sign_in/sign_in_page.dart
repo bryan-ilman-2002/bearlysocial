@@ -1,5 +1,4 @@
-import 'package:bearlysocial/api_call/enums/endpoint.dart';
-import 'package:bearlysocial/base_designs/pages/pre_auth.dart';
+import 'package:bearlysocial/base_designs/pages/pre_auth_page.dart';
 import 'package:flutter/material.dart';
 
 class SignInPage extends StatelessWidget {
@@ -15,7 +14,6 @@ class SignInPage extends StatelessWidget {
     return PreAuthenticationPage(
       onTap: onTap,
       accountCreation: false,
-      url: Endpoint.signIn,
       exclamation: 'Welcome Back!',
       question: 'Don\'t have an account?',
       action: 'Sign up first!',

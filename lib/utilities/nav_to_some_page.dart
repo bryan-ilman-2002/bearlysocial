@@ -1,3 +1,4 @@
+import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:flutter/material.dart';
 
 void navigateToSomePage({
@@ -7,7 +8,7 @@ void navigateToSomePage({
   Navigator.of(context).push(
     PageRouteBuilder(
       pageBuilder: (x, y, z) => somePage,
-      transitionDuration: const Duration(seconds: 0),
+      transitionDuration: const Duration(seconds: AnimationDuration.instant),
     ),
   );
 }

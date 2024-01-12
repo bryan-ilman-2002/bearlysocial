@@ -1,4 +1,4 @@
-import 'package:bearlysocial/constants.dart';
+import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:flutter/material.dart';
 
 class UnderlinedTextField extends StatefulWidget {
@@ -33,6 +33,7 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
       decoration: InputDecoration(
         labelText: widget.label,
         labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
+              height: 0.8,
               fontWeight: widget.focusNode.hasFocus
                   ? FontWeight.bold
                   : FontWeight.normal,

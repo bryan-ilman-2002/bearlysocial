@@ -47,7 +47,7 @@ class SplashButton extends StatelessWidget {
         color: buttonColor ?? Theme.of(context).focusColor,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: borderColor ?? Theme.of(context).focusColor,
+            color: borderColor ?? Colors.transparent,
           ),
           borderRadius: borderRadius ?? BorderRadius.zero,
         ),

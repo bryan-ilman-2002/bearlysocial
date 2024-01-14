@@ -1,23 +1,33 @@
-/// Constants representing the base URLs for various social media platforms.
-class SocialMediaDomain {
-  /// Base URL for Instagram.
-  static const String instagram = 'https:/www.instagram.com';
-
-  /// Base URL for Facebook.
-  static const String facebook = 'https:/www.facebook.com';
-
-  /// Base URL for LinkedIn.
-  static const String linkedin = 'https:/www.linkedin.com';
+enum SocialMedia {
+  instagram,
+  facebook,
+  linkedin,
 }
 
-/// Constants representing the file paths for icons associated with social media platforms.
-class SocialMediaIconPath {
-  /// File path for the Instagram icon.
-  static const String instagram = 'instagram_icon.svg';
+extension Getter on SocialMedia {
+  String get domain {
+    switch (this) {
+      case SocialMedia.instagram:
+        return 'https:/www.instagram.com';
+      case SocialMedia.facebook:
+        return 'https:/www.facebook.com';
+      case SocialMedia.linkedin:
+        return 'https:/www.linkedin.com';
+      default:
+        return '';
+    }
+  }
 
-  /// File path for the Facebook icon.
-  static const String facebook = 'facebook_icon.svg';
-
-  /// File path for the LinkedIn icon.
-  static const String linkedin = 'linkedin_icon.svg';
+  String get icon {
+    switch (this) {
+      case SocialMedia.instagram:
+        return 'instagram_icon.svg';
+      case SocialMedia.facebook:
+        return 'facebook_icon.svg';
+      case SocialMedia.linkedin:
+        return 'linkedin_icon.svg';
+      default:
+        return '';
+    }
+  }
 }

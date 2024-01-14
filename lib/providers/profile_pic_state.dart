@@ -24,7 +24,7 @@ class ProfilePictureStateNotifier extends StateNotifier<img.Image?> {
           shape: BoxShape.circle,
           border: state == null
               ? Border.all(
-                  color: Theme.of(context).dividerColor,
+                  color: Theme.of(context).focusColor,
                 )
               : null,
         ),

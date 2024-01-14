@@ -2,19 +2,26 @@ import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:flutter/material.dart';
 
 Color? _backgroundColor;
+Color? _highlightColor;
 Color? _normalColor;
 Color? _focusColor;
+Color? _indicatorColor;
 
 ThemeData buildAppThemeData({required bool lightMode}) {
   _backgroundColor = lightMode ? Colors.white : AppColor.heavyGray;
+  _highlightColor = lightMode ? AppColor.lightGray : AppColor.moderateGray;
   _normalColor = lightMode ? AppColor.moderateGray : AppColor.lightGray;
   _focusColor = lightMode ? AppColor.heavyGray : Colors.white;
+
+  _indicatorColor = lightMode ? AppColor.heavyBlue : AppColor.lightBlue;
 
   return ThemeData(
     primaryColor: AppColor.primary,
     scaffoldBackgroundColor: _backgroundColor,
     dividerColor: _normalColor,
     focusColor: _focusColor,
+    highlightColor: _highlightColor,
+    indicatorColor: _indicatorColor,
     textTheme: _textTheme,
     iconTheme: _iconTheme,
     dropdownMenuTheme: _dropdownMenuTheme,

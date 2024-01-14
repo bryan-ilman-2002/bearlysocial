@@ -23,8 +23,8 @@ class AuthenticationStateNotifier extends StateNotifier<bool> {
 
     [txnId, txnToken] = await DatabaseOperations.retrieveTransactions(
       keys: [
-        DatabaseKey.id,
-        DatabaseKey.token,
+        DatabaseKey.id.name,
+        DatabaseKey.token.name,
       ],
     );
 

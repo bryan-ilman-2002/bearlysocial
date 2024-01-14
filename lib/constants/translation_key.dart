@@ -1,34 +1,102 @@
-class TranslationKey {
-  static const String accountRecoveryTitle = 'account_recovery_title';
-  static const String usernameLabel = 'username_label';
-  static const String passwordLabel = 'password_label';
-  static const String passwordConfirmationLabel = 'password_confirmation_label';
-  static const String emailLabel = 'email_label';
-  static const String signUpButton = 'sign_up_btn';
-  static const String signInButton = 'sign_in_btn';
-  static const String signOutButton = 'sign_out_btn';
-  static const String submitButton = 'submit_btn';
-  static const String personalInformationButton = 'personal_information_btn';
-  static const String translationButton = 'translation_btn';
-  static const String notificationsButton = 'notification_btn';
-  static const String requestPersonalDataButton = 'request_personal_data_btn';
-  static const String deleteAccountButton = 'delete_account_btn';
-  static const String helpCenterButton = 'help_center_btn';
-  static const String termsOfServiceButton = 'terms_of_service_btn';
-  static const String privacyPolicyButton = 'privacy_policy_btn';
-  static const String signUpExclamation = 'sign_up_exclamation';
-  static const String signUpQuestion = 'sign_up_question';
-  static const String signUpAction = 'sign_up_action';
-  static const String signInExclamation = 'sign_in_exclamation';
-  static const String signInQuestion = 'sign_in_question';
-  static const String signInAction = 'sign_in_action';
-  static const String forgotPassword = 'forgot_password';
-  static const String invalidUsername = 'invalid_username';
-  static const String invalidPassword = 'invalid_password';
-  static const String invalidEmail = 'invalid_email';
-  static const String errorUsername = 'error_username';
-  static const String errorPassword = 'error_password';
-  static const String errorPasswordConfirmation = 'error_password_confirmation';
-  static const String provideEmail = 'provide_email';
-  static const String checkEmail = 'check_email';
+enum TranslationKey {
+  /// buttons
+  signUpButton,
+  signInButton,
+  signOutButton,
+  submitButton,
+  resetButton,
+  applyButton,
+  personalInformationButton,
+  translationButton,
+  notificationsButton,
+  requestPersonalDataButton,
+  deleteAccountButton,
+  helpCenterButton,
+  termsOfServiceButton,
+  privacyPolicyButton,
+  forgotPasswordButton,
+
+  /// labels
+  usernameLabel,
+  passwordLabel,
+  passwordConfirmationLabel,
+  emailLabel,
+  artificialIntelligenceLabel,
+  astronomyLabel,
+  badmintonLabel,
+  baseballLabel,
+  basketballLabel,
+  birdwatchingLabel,
+  campingLabel,
+  chessLabel,
+  climateChangeLabel,
+  codingLabel,
+  collectingLabel,
+  comicBooksLabel,
+  cookingLabel,
+  cybersecurityLabel,
+  cyclingLabel,
+  dancingLabel,
+  diyProjectsLabel,
+  drawingLabel,
+  economyLabel,
+  fishingLabel,
+  footBallLabel,
+  gamingLabel,
+  gardeningLabel,
+  geneticEngineeringLabel,
+  golfLabel,
+  hikingLabel,
+  historyLabel,
+  iceHockeyLabel,
+  immigrationLabel,
+  lgbtRightsLabel,
+  martialArtsLabel,
+  mathematicsLabel,
+  meditationLabel,
+  mentalHealthLabel,
+  novelsLabel,
+  paintingLabel,
+  parkourLabel,
+  photographyLabel,
+  playingMusicalInstrumentsLabel,
+  politicsLabel,
+  quantumPhysicsLabel,
+  racialInequalityLabel,
+  rocketScienceLabel,
+  rugbyLabel,
+  runningLabel,
+  sewingLabel,
+  stockMarketLabel,
+  swimmingLabel,
+  tennisLabel,
+  travelingLabel,
+  volleyballLabel,
+  volunteeringLabel,
+  warfareLabel,
+  watchingMoviesLabel,
+  writingLabel,
+  yogaLabel,
+
+  /// error texts
+  invalidUsername,
+  invalidPassword,
+  invalidEmail,
+  errorUsername,
+  errorPassword,
+  errorPasswordConfirmation,
+
+  /// bodies
+  signUpExclamation,
+  signUpQuestion,
+  signUpAction,
+  signInExclamation,
+  signInQuestion,
+  signInAction,
+  provideEmail,
+  checkEmail,
+
+  /// titles
+  accountRecoveryTitle,
+  personalInformationTitle,
 }

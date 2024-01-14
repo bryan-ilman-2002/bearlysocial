@@ -56,7 +56,6 @@ class BottomSheet extends StatelessWidget {
           const HorizontalLine(),
           Expanded(
             child: SingleChildScrollView(
-              // physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.all(
                 PaddingSize.medium,
               ),

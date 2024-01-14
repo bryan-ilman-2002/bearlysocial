@@ -121,6 +121,9 @@ class PaddingSize {
 
   /// Large padding size. Value: 32.0.
   static const double large = 32.0;
+
+  /// Very large padding size. Value: 48.0.
+  static const double veryLarge = 48.0;
 }
 
 /// Margin size constants for the application.
@@ -174,7 +177,7 @@ class CurvatureSize {
   static const double large = 16.0;
 
   /// Infinity curvature size. Value: double.infinity.
-  static const double infinity = double.infinity;
+  static const double infinity = 1024.0;
 }
 
 /// Elevation size constants for the application.

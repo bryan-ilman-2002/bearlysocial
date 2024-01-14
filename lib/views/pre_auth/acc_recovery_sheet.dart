@@ -43,7 +43,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
         _submitted = true;
         _emailErrorText = null;
       } else {
-        _emailErrorText = TranslationKey.invalidEmail.tr();
+        _emailErrorText = TranslationKey.invalidEmail.name.tr();
       }
     });
   }
@@ -51,7 +51,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
   @override
   Widget build(BuildContext context) {
     return app_bottom_sheet.BottomSheet(
-      title: TranslationKey.accountRecoveryTitle.tr(),
+      title: TranslationKey.accountRecoveryTitle.name.tr(),
       content: _submitted
           ? Column(
               children: [
@@ -64,7 +64,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                   height: WhiteSpaceSize.small,
                 ),
                 Text(
-                  TranslationKey.checkEmail.tr(),
+                  TranslationKey.checkEmail.name.tr(),
                   maxLines: 128,
                   textAlign: TextAlign.justify,
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -74,7 +74,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
           : Column(
               children: [
                 UnderlinedTextField(
-                  label: TranslationKey.emailLabel.tr(),
+                  label: TranslationKey.emailLabel.name.tr(),
                   controller: _emailController,
                   focusNode: _emailFocusNode,
                   errorText: _emailErrorText,
@@ -83,7 +83,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                   height: WhiteSpaceSize.small,
                 ),
                 Text(
-                  TranslationKey.provideEmail.tr(),
+                  TranslationKey.provideEmail.name.tr(),
                   maxLines: 128,
                   textAlign: TextAlign.justify,
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -102,7 +102,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                     callbackFunction: _checkEmail,
                     shadow: Shadow.medium,
                     child: Text(
-                      TranslationKey.submitButton.tr(),
+                      TranslationKey.submitButton.name.tr(),
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),

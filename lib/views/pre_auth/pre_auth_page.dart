@@ -77,7 +77,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
           _passwordController.text != _passwordConfirmationController.text) {
         setState(() {
           _passwordConfirmationErrorText =
-              TranslationKey.errorPasswordConfirmation.tr();
+              TranslationKey.errorPasswordConfirmation.name.tr();
         });
         _blockInput = false;
       } else {
@@ -106,10 +106,10 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
         } else {
           widget.accountCreation
               ? setState(() {
-                  _usernameErrorText = TranslationKey.errorUsername.tr();
+                  _usernameErrorText = TranslationKey.errorUsername.name.tr();
                 })
               : setState(() {
-                  _passwordErrorText = TranslationKey.errorPassword.tr();
+                  _passwordErrorText = TranslationKey.errorPassword.name.tr();
                 });
           _blockInput = false;
         }
@@ -124,10 +124,10 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
 
     setState(() {
       _usernameErrorText = _usernameController.text.isEmpty
-          ? TranslationKey.invalidUsername.tr()
+          ? TranslationKey.invalidUsername.name.tr()
           : null;
       _passwordErrorText = _passwordController.text.isEmpty
-          ? TranslationKey.invalidPassword.tr()
+          ? TranslationKey.invalidPassword.name.tr()
           : null;
     });
   }
@@ -138,8 +138,9 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
   }) async {
     await DatabaseOperations.insertTransactions(
       pairs: {
-        DatabaseKey.id: id,
-        DatabaseKey.token: jsonDecode(responseBody)[DatabaseKey.token],
+        DatabaseKey.id.name: id,
+        DatabaseKey.token.name:
+            jsonDecode(responseBody)[DatabaseKey.token.name],
       },
     );
 
@@ -186,8 +187,8 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                     flex: 75,
                     child: Text(
                       widget.accountCreation
-                          ? TranslationKey.signUpExclamation.tr()
-                          : TranslationKey.signInExclamation.tr(),
+                          ? TranslationKey.signUpExclamation.name.tr()
+                          : TranslationKey.signInExclamation.name.tr(),
                       maxLines: 2,
                       style: Theme.of(context).textTheme.displayLarge,
                     ),
@@ -202,7 +203,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 height: WhiteSpaceSize.veryLarge,
               ),
               UnderlinedTextField(
-                label: TranslationKey.usernameLabel.tr(),
+                label: TranslationKey.usernameLabel.name.tr(),
                 controller: _usernameController,
                 focusNode: _usernameFocusNode,
                 errorText: _usernameErrorText,
@@ -211,7 +212,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 height: WhiteSpaceSize.medium,
               ),
               UnderlinedTextField(
-                label: TranslationKey.passwordLabel.tr(),
+                label: TranslationKey.passwordLabel.name.tr(),
                 obscureText: true,
                 controller: _passwordController,
                 focusNode: _passwordFocusNode,
@@ -224,7 +225,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                   : const SizedBox(),
               widget.accountCreation
                   ? UnderlinedTextField(
-                      label: TranslationKey.passwordConfirmationLabel.tr(),
+                      label: TranslationKey.passwordConfirmationLabel.name.tr(),
                       obscureText: true,
                       controller: _passwordConfirmationController,
                       focusNode: _passwordConfirmationFocusNode,
@@ -251,7 +252,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                           );
                         },
                         child: Text(
-                          TranslationKey.forgotPassword.tr(),
+                          TranslationKey.forgotPasswordButton.name.tr(),
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
@@ -278,8 +279,8 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                       )
                     : Text(
                         widget.accountCreation
-                            ? TranslationKey.signUpButton.tr()
-                            : TranslationKey.signInButton.tr(),
+                            ? TranslationKey.signUpButton.name.tr()
+                            : TranslationKey.signInButton.name.tr(),
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
               ),
@@ -291,8 +292,8 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                 children: [
                   Text(
                     widget.accountCreation
-                        ? TranslationKey.signUpQuestion.tr()
-                        : TranslationKey.signInQuestion.tr(),
+                        ? TranslationKey.signUpQuestion.name.tr()
+                        : TranslationKey.signInQuestion.name.tr(),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(
@@ -304,8 +305,8 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
                     },
                     child: Text(
                       widget.accountCreation
-                          ? TranslationKey.signUpAction.tr()
-                          : TranslationKey.signInAction.tr(),
+                          ? TranslationKey.signUpAction.name.tr()
+                          : TranslationKey.signInAction.name.tr(),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: Theme.of(context).focusColor,
                           ),

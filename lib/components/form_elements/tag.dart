@@ -1,53 +1,54 @@
-// import 'package:bearlysocial/generic/enums/interest.dart';
-// import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
-// import 'package:bearlysocial/providers/interest_labels.dart';
-// import 'package:bearlysocial/providers/lang_labels.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:bearlysocial/constants/design_tokens.dart';
+import 'package:flutter/material.dart';
 
-// class Tag extends ConsumerWidget {
-//   final String label;
-//   final dynamic type;
+class Tag extends StatelessWidget {
+  final String label;
+  final Function callbackFunction;
 
-//   const Tag({
-//     super.key,
-//     required this.label,
-//     this.type,
-//   });
+  const Tag({
+    super.key,
+    required this.label,
+    required this.callbackFunction,
+  });
 
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return GestureDetector(
-//       onTap: () => type != null
-//           ? type == Interest
-//               ? ref.read(removeInterestLabel)(label)
-//               : ref.read(removeLangLabel)(label)
-//           : {},
-//       child: Container(
-//         padding: const EdgeInsets.all(8),
-//         decoration: BoxDecoration(
-//           color: Colors.white,
-//           border: Border.all(
-//             color: moderateGray,
-//           ),
-//           borderRadius: BorderRadius.circular(8),
-//         ),
-//         child: Row(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             const Icon(
-//               Icons.circle,
-//               size: 7.2,
-//             ),
-//             const SizedBox(
-//               width: 4,
-//             ),
-//             Text(
-//               label,
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        callbackFunction(
+          labelToRemove: label,
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(
+          PaddingSize.verySmall,
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          border: Border.all(
+            color: Theme.of(context).dividerColor,
+          ),
+          borderRadius: BorderRadius.circular(
+            CurvatureSize.small,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.circle,
+              size: SideSize.verySmall / 2,
+            ),
+            const SizedBox(
+              width: WhiteSpaceSize.verySmall / 2,
+            ),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

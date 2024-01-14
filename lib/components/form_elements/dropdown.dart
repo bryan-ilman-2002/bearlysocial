@@ -1,46 +1,84 @@
-// import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
-// import 'package:bearlysocial/main.dart';
-// import 'package:flutter/material.dart';
+import 'package:bearlysocial/components/buttons/splash_btn.dart';
+import 'package:bearlysocial/constants/design_tokens.dart';
+import 'package:bearlysocial/utilities/dropdown_operations.dart';
+import 'package:flutter/material.dart';
 
-// class Dropdown extends StatelessWidget {
-//   final TextEditingController userInputController;
-//   final String? hint;
-//   final Map<String, dynamic> map;
-//   final IconData? trailingIcon;
+class Dropdown extends StatelessWidget {
+  final String hint;
+  final TextEditingController controller;
+  final List<DropdownMenuEntry> menu;
+  final List<String> collection;
+  final Function addLabel;
+  final Function removeLabel;
 
-//   const Dropdown({
-//     super.key,
-//     required this.userInputController,
-//     this.hint,
-//     required this.map,
-//     this.trailingIcon,
-//   });
+  const Dropdown({
+    super.key,
+    required this.hint,
+    required this.controller,
+    required this.menu,
+    required this.collection,
+    required this.addLabel,
+    required this.removeLabel,
+  });
 
-//   @override
-//   Widget build(BuildContext context) {
-//     final List<DropdownMenuEntry> entries = <DropdownMenuEntry>[];
-
-//     map.forEach((key, value) {
-//       entries.add(
-//         DropdownMenuEntry(
-//           style: ButtonStyle(
-//             // textStyle: MaterialStatePropertyAll(appTextStyle),
-//             foregroundColor: MaterialStatePropertyAll(moderateGray),
-//           ),
-//           value: value,
-//           label: key,
-//         ),
-//       );
-//     });
-
-//     return DropdownMenu(
-//       width: 240,
-//       controller: userInputController,
-//       hintText: hint ?? 'Tap here.',
-//       dropdownMenuEntries: entries,
-//       enableFilter: true,
-//       requestFocusOnTap: true,
-//       trailingIcon: Icon(trailingIcon),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            DropdownMenu(
+              width: SideSize.veryLarge,
+              hintText: hint,
+              controller: controller,
+              dropdownMenuEntries: menu,
+              enableFilter: true,
+              requestFocusOnTap: true,
+              trailingIcon: const Icon(
+                Icons.keyboard_arrow_down,
+              ),
+            ),
+            const SizedBox(
+              width: WhiteSpaceSize.verySmall,
+            ),
+            SplashButton(
+              width: 58.0,
+              height: 58.0,
+              callbackFunction: () => addLabel(),
+              borderRadius: BorderRadius.circular(
+                CurvatureSize.infinity,
+              ),
+              shadow: Shadow.medium,
+              child: Icon(
+                Icons.add,
+                color: Theme.of(context).scaffoldBackgroundColor,
+              ),
+            ),
+          ],
+        ),
+        if (collection.isNotEmpty) ...[
+          const SizedBox(
+            height: WhiteSpaceSize.small,
+          ),
+          const Text(
+            'Tap to remove.',
+          ),
+          const SizedBox(
+            height: WhiteSpaceSize.small / 2,
+          )
+        ],
+        Wrap(
+          alignment: WrapAlignment.center,
+          runAlignment: WrapAlignment.center,
+          spacing: MarginSize.veryLarge,
+          runSpacing: MarginSize.veryLarge,
+          children: DropdownOperations.buildTags(
+            collection: collection,
+            callbackFunction: removeLabel,
+          ),
+        )
+      ],
+    );
+  }
+}

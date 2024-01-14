@@ -1,40 +1,44 @@
+import 'package:bearlysocial/constants/lang_code.dart';
+
 class NativeLanguageName {
-  static const String english = 'English';
-  static const String spanish = 'Español';
-  static const String french = 'Français';
-  static const String german = 'Deutsch';
-  static const String italian = 'Italiano';
-  static const String japanese = '日本語';
-  static const String chinese = '中文';
-  static const String russian = 'Русский';
-  static const String arabic = 'العربية';
-  static const String portuguese = 'Português';
-  static const String hindi = 'हिन्दी';
-  static const String bengali = 'Bengali';
-  static const String korean = '한국어';
-  static const String vietnamese = 'Tiếng Việt';
-  static const String turkish = 'Türkçe';
-  static const String polish = 'Polski';
-  static const String indonesian = 'Bahasa Indonesia';
-  static const String dutch = 'Nederlands';
-  static const String swedish = 'Svenska';
-  static const String czech = 'Čeština';
-  static const String hebrew = 'עִבְרִית';
-  static const String hungarian = 'Magyar';
-  static const String danish = 'Dansk';
-  static const String ukrainian = 'Українська';
-  static const String thai = 'ภาษาไทย';
-  static const String greek = 'Ελληνικά';
-  static const String romanian = 'Română';
-  static const String norwegian = 'Norsk';
-  static const String slovak = 'Slovenský';
-  static const String finnish = 'Suomi';
-  static const String catalan = 'Català';
-  static const String croatian = 'Hrvatski';
-  static const String slovenian = 'Slovenščina';
-  static const String serbian = 'Српски';
-  static const String estonian = 'Eesti';
-  static const String lithuanian = 'Lietuvių';
-  static const String latvian = 'Latviešu';
-  static const String filipino = 'Filipino';
+  static const Map<String, LanguageCode> map = {
+    'English': LanguageCode.en,
+    'Español': LanguageCode.es,
+    'Français': LanguageCode.fr,
+    'Deutsch': LanguageCode.de,
+    'Italiano': LanguageCode.it,
+    '日本語': LanguageCode.ja,
+    '中文': LanguageCode.zh,
+    'Русский': LanguageCode.ru,
+    'العربية': LanguageCode.ar,
+    'Português': LanguageCode.pt,
+    'हिन्दी': LanguageCode.hi,
+    'Bengali': LanguageCode.bn,
+    '한국어': LanguageCode.ko,
+    'Tiếng Việt': LanguageCode.vi,
+    'Türkçe': LanguageCode.tr,
+    'Polski': LanguageCode.pl,
+    'Bahasa Indonesia': LanguageCode.id,
+    'Nederlands': LanguageCode.nl,
+    'Svenska': LanguageCode.sv,
+    'Čeština': LanguageCode.cs,
+    'עִבְרִית': LanguageCode.he,
+    'Magyar': LanguageCode.hu,
+    'Dansk': LanguageCode.da,
+    'Українська': LanguageCode.uk,
+    'ภาษาไทย': LanguageCode.th,
+    'Ελληνικά': LanguageCode.el,
+    'Română': LanguageCode.ro,
+    'Norsk': LanguageCode.no,
+    'Slovenský': LanguageCode.sk,
+    'Suomi': LanguageCode.fi,
+    'Català': LanguageCode.ca,
+    'Hrvatski': LanguageCode.hr,
+    'Slovenščina': LanguageCode.sl,
+    'Српски': LanguageCode.sr,
+    'Eesti': LanguageCode.et,
+    'Lietuvių': LanguageCode.lt,
+    'Latviešu': LanguageCode.lv,
+    'Filipino': LanguageCode.fil,
+  };
 }

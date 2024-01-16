@@ -221,3 +221,9 @@ class WhiteSpaceSize {
   /// Very large white space size. Value: 80.0.
   static const double veryLarge = 80.0;
 }
+
+class OpacitySize {
+  static const double small = 0.16;
+
+  static const double large = 0.4;
+}

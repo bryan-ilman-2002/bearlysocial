@@ -38,7 +38,7 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
 
   XFile? selfie;
 
-  bool _focusIsSet = false;
+  bool _settingFocus = false;
   Timer? _focusTimer;
 
   final FaceDetector _faceDetector = GoogleMlKit.vision.faceDetector(
@@ -52,14 +52,13 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
   @override
   void initState() {
     super.initState();
-    final Size screenSize = MediaQuery.of(context).size;
 
     _animationController = AnimationController(
       duration: const Duration(
         milliseconds: AnimationDuration.slow,
       ),
       vsync: this,
-    )..repeat();
+    )..repeat(reverse: true);
 
     _camController = CameraController(
       widget.frontCamera,
@@ -68,6 +67,8 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
     );
 
     _camInit = _camController.initialize().then((_) {
+      final Size screenSize = MediaQuery.of(context).size;
+
       _camController.startImageStream((CameraImage img) async {
         if (!_detecting) {
           _detecting = true;
@@ -155,179 +156,168 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
         future: _camInit,
         builder: (context, snapshot) {
           return Stack(
-            children: selfie != null
-                ? <Widget>[
-                    Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.rotationY(pi),
-                      child: Image.file(
-                        File(selfie!.path),
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        filterQuality: FilterQuality.high,
-                        fit: BoxFit.fill,
-                      ),
+            children: <Widget>[
+              // Transform(
+              //   alignment: Alignment.center,
+              //   transform: Matrix4.rotationY(pi),
+              //   child: Image.file(
+              //     File(selfie!.path),
+              //     width: MediaQuery.of(context).size.width,
+              //     height: MediaQuery.of(context).size.height,
+              //     filterQuality: FilterQuality.high,
+              //     fit: BoxFit.fill,
+              //   ),
+              // ),
+              if (snapshot.connectionState == ConnectionState.done)
+                Positioned.fill(
+                  child: AspectRatio(
+                    aspectRatio: _camController.value.aspectRatio,
+                    child: CameraPreview(_camController),
+                  ),
+                ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  gradient: snapshot.connectionState == ConnectionState.done
+                      ? LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          stops: const [0, 0.2, 0.4],
+                          colors: <Color>[
+                            Colors.black.withOpacity(OpacitySize.large),
+                            Colors.black.withOpacity(OpacitySize.small),
+                            Colors.transparent,
+                          ],
+                        )
+                      : null,
+                ),
+              ),
+              Center(
+                child: Container(
+                  width: SideSize.veryLarge,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.transparent,
+                    border: Border.all(
+                      width: _detectedFace == null
+                          ? ThicknessSize.medium
+                          : ThicknessSize.veryLarge,
+                      color: snapshot.connectionState == ConnectionState.done
+                          ? _settingFocus
+                              ? AppColor.lightYellow
+                              : Colors.white
+                          : AppColor.moderateGray,
                     ),
-                  ]
-                : <Widget>[
-                    if (snapshot.connectionState == ConnectionState.done)
-                      Positioned.fill(
-                        child: AspectRatio(
-                          aspectRatio: _camController.value.aspectRatio,
-                          child: CameraPreview(_camController),
-                        ),
-                      ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: snapshot.connectionState == ConnectionState.done
-                            ? Colors.transparent
-                            : Colors.white,
-                        gradient:
-                            snapshot.connectionState == ConnectionState.done
-                                ? LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    stops: const [0, 0.2, 0.4],
-                                    colors: <Color>[
-                                      Colors.black.withOpacity(0.4),
-                                      Colors.black.withOpacity(0.16),
-                                      Colors.transparent,
-                                    ],
-                                  )
-                                : null,
-                      ),
+                  ),
+                ),
+              ),
+              // Positioned.fill(
+              //   child: GestureDetector(
+              //     onTapUp: (TapUpDetails details) {
+              //       // Convert user's tap location to relative coordinates (between 0 and 1)
+              //       final RenderBox box =
+              //           context.findRenderObject() as RenderBox;
+              //       final Offset localPoint =
+              //           box.globalToLocal(details.globalPosition);
+              //       final Offset relativePoint = Offset(
+              //         localPoint.dx / box.size.width,
+              //         localPoint.dy / box.size.height,
+              //       );
+
+              //       _camController.setFocusPoint(relativePoint);
+
+              //       setState(() {
+              //         _settingFocus = true;
+              //       });
+
+              //       _focusTimer?.cancel();
+
+              //       _focusTimer = Timer(const Duration(milliseconds: 2000), () {
+              //         setState(() {
+              //           _settingFocus = false;
+              //         });
+              //       });
+              //     },
+              //     child: const SizedBox(),
+              //   ),
+              // ),
+              SafeArea(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(
+                      PaddingSize.medium,
                     ),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.transparent,
-                            border: Border.all(
-                              width: _detectedFace == null ? 2 : 8,
-                              color: snapshot.connectionState ==
-                                      ConnectionState.done
-                                  ? _focusIsSet
-                                      ? AppColor.lightYellow
-                                      : Colors.white
-                                  : AppColor.moderateGray,
+                    child: Row(
+                      children: [
+                        UnconstrainedBox(
+                          child: SplashButton(
+                            horizontalPadding: PaddingSize.verySmall,
+                            verticalPadding: PaddingSize.verySmall,
+                            buttonColor: Colors.transparent,
+                            borderRadius: BorderRadius.circular(
+                              CurvatureSize.infinity,
+                            ),
+                            callbackFunction: () => Navigator.pop(context),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: GestureDetector(
-                        onTapUp: (TapUpDetails details) {
-                          // Convert user's tap location to relative coordinates (between 0 and 1)
-                          final RenderBox box =
-                              context.findRenderObject() as RenderBox;
-                          final Offset localPoint =
-                              box.globalToLocal(details.globalPosition);
-                          final Offset relativePoint = Offset(
-                            localPoint.dx / box.size.width,
-                            localPoint.dy / box.size.height,
-                          );
-
-                          _camController.setFocusPoint(relativePoint);
-
-                          setState(() {
-                            _focusIsSet = true;
-                          });
-
-                          _focusTimer?.cancel();
-
-                          _focusTimer =
-                              Timer(const Duration(milliseconds: 2000), () {
-                            setState(() {
-                              _focusIsSet = false;
-                            });
-                          });
-                        },
-                        child: Container(
-                          color: Colors.transparent,
-                        ),
-                      ),
-                    ),
-                    SafeArea(
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Row(
-                            children: [
-                              UnconstrainedBox(
-                                child: SplashButton(
-                                  horizontalPadding: 8,
-                                  verticalPadding: 8,
-                                  callbackFunction: () =>
-                                      Navigator.pop(context),
-                                  borderColor: snapshot.connectionState ==
-                                          ConnectionState.done
-                                      ? Colors.white
-                                      : AppColor.moderateGray,
-                                  child: const Icon(
-                                    Icons.arrow_back,
-                                    size: 24,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: AnimatedBuilder(
-                                  animation: _animationController,
-                                  builder: (a, b) {
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          _detectedFace == null
-                                              ? 'Scanning facial features '
-                                              : 'Smile to take a photo.',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            color: snapshot.connectionState ==
-                                                    ConnectionState.done
-                                                ? Colors.white
-                                                : AppColor.moderateGray,
-                                          ),
+                        Expanded(
+                          child: AnimatedBuilder(
+                            animation: _animationController,
+                            builder: (ctx, _) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    _detectedFace == null
+                                        ? 'Scanning facial features '
+                                        : 'Smile to take a photo.',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.normal,
+                                          color: Colors.white,
                                         ),
-                                        if (_detectedFace == null)
-                                          ...List.generate(
-                                            4,
-                                            (index) {
-                                              return Transform.translate(
-                                                offset: Offset(
-                                                  _animationController.value *
-                                                      ((index + 2) * -2),
-                                                  0,
-                                                ),
-                                                child: Text(
-                                                  '.',
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: snapshot
-                                                                .connectionState ==
-                                                            ConnectionState.done
-                                                        ? Colors.white
-                                                        : AppColor.moderateGray,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
+                                  ),
+                                  if (_detectedFace == null)
+                                    ...List.generate(
+                                      4,
+                                      (index) => AnimatedOpacity(
+                                        opacity: _animationController.value >
+                                                index * 0.25
+                                            ? 1.0
+                                            : 0.0,
+                                        duration: const Duration(
+                                            milliseconds:
+                                                AnimationDuration.medium),
+                                        child: Text(
+                                          '.',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors.white,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              );
+                            },
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
+                ),
+              ),
+            ],
           );
         },
       ),

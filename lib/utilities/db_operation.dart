@@ -5,7 +5,7 @@ import 'package:hashlib/hashlib.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
-class DatabaseOperations {
+class DatabaseOperation {
   static Future<void> createConnection() async {
     final dir = await getApplicationDocumentsDirectory();
 

@@ -194,8 +194,14 @@ class AnimationDuration {
   /// Instant animation duration. Value: 0.
   static const int instant = 0;
 
+  /// Quick animation duration. Value: 100.
+  static const int quick = 100;
+
   /// Medium animation duration. Value: 320.
   static const int medium = 320;
+
+  /// Slow animation duration. Value: 1200.
+  static const int slow = 1200;
 }
 
 /// White space size constants for the application.

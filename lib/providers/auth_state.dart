@@ -2,7 +2,7 @@ import 'package:bearlysocial/constants/db_key.dart';
 import 'package:bearlysocial/constants/endpoint.dart';
 import 'package:bearlysocial/schemas/transaction.dart';
 import 'package:bearlysocial/utilities/make_request.dart';
-import 'package:bearlysocial/utilities/db_operations.dart';
+import 'package:bearlysocial/utilities/db_operation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 
@@ -14,14 +14,14 @@ class AuthenticationStateNotifier extends StateNotifier<bool> {
   }
 
   Future<void> exitApp() async {
-    await DatabaseOperations.emptyDatabase();
+    await DatabaseOperation.emptyDatabase();
     state = false;
   }
 
   Future<void> validateToken() async {
     Transaction? txnId, txnToken;
 
-    [txnId, txnToken] = await DatabaseOperations.retrieveTransactions(
+    [txnId, txnToken] = await DatabaseOperation.retrieveTransactions(
       keys: [
         DatabaseKey.id.name,
         DatabaseKey.token.name,

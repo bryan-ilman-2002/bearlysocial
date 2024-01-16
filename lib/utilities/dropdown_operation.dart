@@ -3,7 +3,7 @@ import 'package:bearlysocial/constants/translation_key.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class DropdownOperations {
+class DropdownOperation {
   static List<DropdownMenuEntry> buildMenu({
     required Map<String, dynamic> entries,
   }) {

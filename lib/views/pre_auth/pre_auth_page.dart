@@ -6,7 +6,7 @@ import 'package:bearlysocial/constants/translation_key.dart';
 import 'package:bearlysocial/utilities/make_request.dart';
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
-import 'package:bearlysocial/utilities/db_operations.dart';
+import 'package:bearlysocial/utilities/db_operation.dart';
 import 'package:bearlysocial/components/form_elements/underlined_txt_field.dart';
 import 'package:bearlysocial/views/pre_auth/acc_recovery_sheet.dart';
 import 'package:bearlysocial/providers/auth_state.dart';
@@ -81,10 +81,10 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
         });
         _blockInput = false;
       } else {
-        String hashedUsername = DatabaseOperations.getHash(
+        String hashedUsername = DatabaseOperation.getHash(
           input: _usernameController.text,
         );
-        String hashedPassword = DatabaseOperations.getHash(
+        String hashedPassword = DatabaseOperation.getHash(
           input: _passwordController.text,
         );
 
@@ -136,7 +136,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
     required String id,
     required String responseBody,
   }) async {
-    await DatabaseOperations.insertTransactions(
+    await DatabaseOperation.insertTransactions(
       pairs: {
         DatabaseKey.id.name: id,
         DatabaseKey.token.name:

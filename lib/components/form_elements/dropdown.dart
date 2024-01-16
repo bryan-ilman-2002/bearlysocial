@@ -1,6 +1,6 @@
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
-import 'package:bearlysocial/utilities/dropdown_operations.dart';
+import 'package:bearlysocial/utilities/dropdown_operation.dart';
 import 'package:flutter/material.dart';
 
 class Dropdown extends StatelessWidget {
@@ -73,7 +73,7 @@ class Dropdown extends StatelessWidget {
           runAlignment: WrapAlignment.center,
           spacing: MarginSize.veryLarge,
           runSpacing: MarginSize.veryLarge,
-          children: DropdownOperations.buildTags(
+          children: DropdownOperation.buildTags(
             collection: collection,
             callbackFunction: removeLabel,
           ),

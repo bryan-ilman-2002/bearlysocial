@@ -1,6 +1,6 @@
 import 'package:bearlysocial/providers/auth_state.dart';
 import 'package:bearlysocial/themes.dart';
-import 'package:bearlysocial/utilities/db_operations.dart';
+import 'package:bearlysocial/utilities/db_operation.dart';
 import 'package:bearlysocial/utilities/inline_translation_loader.dart';
 import 'package:bearlysocial/views/loading_page.dart';
 import 'package:bearlysocial/views/post_auth/post_auth_page_manager.dart';
@@ -14,7 +14,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await EasyLocalization.ensureInitialized();
-  await DatabaseOperations.createConnection();
+  await DatabaseOperation.createConnection();
 
   runApp(
     ProviderScope(

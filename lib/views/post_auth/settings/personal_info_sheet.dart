@@ -8,10 +8,11 @@ import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/constants/native_lang_name.dart';
 import 'package:bearlysocial/constants/social_media_consts.dart';
 import 'package:bearlysocial/constants/translation_key.dart';
-import 'package:bearlysocial/utilities/dropdown_operations.dart';
-import 'package:bearlysocial/utilities/nav_to_some_page.dart';
+import 'package:bearlysocial/utilities/dropdown_operation.dart';
 import 'package:bearlysocial/providers/profile_pic_state.dart';
-import 'package:bearlysocial/views/post_auth/settings/front_cam_page.dart';
+import 'package:bearlysocial/utilities/user_permission.dart';
+import 'package:bearlysocial/views/post_auth/settings/selfie_capture_page.dart';
+import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,6 +26,8 @@ class PersonalInformation extends ConsumerStatefulWidget {
 }
 
 class _PersonalInformationState extends ConsumerState<PersonalInformation> {
+  final GlobalKey<ScaffoldState> _sheetKey = GlobalKey<ScaffoldState>();
+
   final FocusNode _firstNameFocusNode = FocusNode();
   final FocusNode _lastNameFocusNode = FocusNode();
 
@@ -46,8 +49,8 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
 
   void _addInterest() {
     setState(() {
-      _interestCollection = DropdownOperations.addLabel(
-        menu: DropdownOperations.allInterests,
+      _interestCollection = DropdownOperation.addLabel(
+        menu: DropdownOperation.allInterests,
         labelToAdd: _interestController.text,
         labelCollection: _interestCollection,
       );
@@ -56,7 +59,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
 
   void _addLanguage() {
     setState(() {
-      _langCollection = DropdownOperations.addLabel(
+      _langCollection = DropdownOperation.addLabel(
         menu: NativeLanguageName.map,
         labelToAdd: _langController.text,
         labelCollection: _langCollection,
@@ -66,7 +69,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
 
   void _removeInterest({required String labelToRemove}) {
     setState(() {
-      _interestCollection = DropdownOperations.removeLabel(
+      _interestCollection = DropdownOperation.removeLabel(
         labelToRemove: labelToRemove,
         labelCollection: _interestCollection,
       );
@@ -75,7 +78,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
 
   void _removeLanguage({required String labelToRemove}) {
     setState(() {
-      _langCollection = DropdownOperations.removeLabel(
+      _langCollection = DropdownOperation.removeLabel(
         labelToRemove: labelToRemove,
         labelCollection: _langCollection,
       );
@@ -92,10 +95,10 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
     _newPasswordFocusNode.addListener(() => setState);
     _newPasswordConfirmationFocusNode.addListener(() => setState);
 
-    _interestMenu = DropdownOperations.buildMenu(
-      entries: DropdownOperations.allInterests,
+    _interestMenu = DropdownOperation.buildMenu(
+      entries: DropdownOperation.allInterests,
     );
-    _langMenu = DropdownOperations.buildMenu(
+    _langMenu = DropdownOperation.buildMenu(
       entries: NativeLanguageName.map,
     );
   }
@@ -115,6 +118,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
   @override
   Widget build(BuildContext context) {
     return app_bottom_sheet.BottomSheet(
+      key: _sheetKey,
       title: TranslationKey.personalInformationTitle.name.tr(),
       content: Column(
         children: [
@@ -129,10 +133,31 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
             child: SplashButton(
               horizontalPadding: PaddingSize.small,
               verticalPadding: PaddingSize.verySmall,
-              // callbackFunction: () => navigateToSomePage(
-              //   context: context,
-              //   somePage: const FrontCameraPage(),
-              // ),
+              callbackFunction: () {
+                UserPermission.cameraPermission.then((cameraPermission) async {
+                  if (!cameraPermission) return;
+
+                  final frontCamera = (await availableCameras()).firstWhere(
+                    (camera) =>
+                        camera.lensDirection == CameraLensDirection.front,
+                  );
+
+                  final BuildContext? ctx = _sheetKey.currentContext;
+
+                  if (ctx != null && ctx.mounted) {
+                    Navigator.of(ctx).push(
+                      PageRouteBuilder(
+                        pageBuilder: (ctx, a, b) => SelfieScreen(
+                          frontCamera: frontCamera,
+                        ),
+                        transitionDuration: const Duration(
+                          seconds: AnimationDuration.instant,
+                        ),
+                      ),
+                    );
+                  }
+                });
+              },
               buttonColor: Theme.of(context).scaffoldBackgroundColor,
               borderColor: Theme.of(context).focusColor,
               borderRadius: BorderRadius.circular(

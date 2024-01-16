@@ -1,329 +1,311 @@
-// import 'dart:async';
-// import 'dart:io';
-// import 'dart:math';
+import 'dart:async';
+import 'dart:io';
+import 'dart:math';
 
-// import 'package:bearlysocial/generic/functions/getters/app_colors.dart';
-// import 'package:bearlysocial/providers/profile_pic.dart';
-// import 'package:bearlysocial/buttons/splash_btn.dart';
-// import 'package:bearlysocial/specific/functions/detect_face_in_selfie.dart';
-// import 'package:bearlysocial/specific/functions/profile_pic_maker.dart';
-// import 'package:camera/camera.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:google_ml_kit/google_ml_kit.dart';
-// import 'package:image/image.dart' as img;
+import 'package:bearlysocial/components/buttons/splash_btn.dart';
+import 'package:bearlysocial/constants/design_tokens.dart';
+import 'package:bearlysocial/utilities/selfie_capture_operation.dart';
+import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:image/image.dart' as img_lib;
 
-// class SelfieCapturePage extends ConsumerStatefulWidget {
-//   final CameraDescription deviceCamera;
+class SelfieScreen extends ConsumerStatefulWidget {
+  final CameraDescription frontCamera;
 
-//   const SelfieCapturePage({
-//     super.key,
-//     required this.deviceCamera,
-//   });
+  const SelfieScreen({
+    super.key,
+    required this.frontCamera,
+  });
 
-//   @override
-//   ConsumerState<SelfieCapturePage> createState() => _SelfieCapturePage();
-// }
+  @override
+  ConsumerState<SelfieScreen> createState() => _SelfieScreen();
+}
 
-// class _SelfieCapturePage extends ConsumerState<SelfieCapturePage>
-//     with SingleTickerProviderStateMixin {
-//   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+class _SelfieScreen extends ConsumerState<SelfieScreen>
+    with SingleTickerProviderStateMixin {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-//   bool _focusIsSet = false;
-//   Timer? _focusTimer;
+  late AnimationController _animationController;
+  late CameraController _camController;
 
-//   late CameraController _deviceCameraController;
-//   late Future<void> _deviceCameraInitialization;
+  late Future<void> _camInit;
 
-//   final FaceDetector _uprightFaceDetector =
-//       GoogleMlKit.vision.faceDetector(FaceDetectorOptions(
-//     performanceMode: FaceDetectorMode.accurate,
-//     enableClassification: true,
-//     enableTracking: true,
-//   ));
-//   bool _detectingFaceInSelfie = false;
+  bool _detecting = false;
 
-//   late AnimationController _animationController;
+  bool _focusIsSet = false;
+  Timer? _focusTimer;
 
-//   Face? _trackedFace;
-//   XFile? newSelfie;
+  Face? _trackedFace;
+  XFile? selfie;
 
-//   @override
-//   void initState() {
-//     super.initState();
+  final FaceDetector _faceDetector = GoogleMlKit.vision.faceDetector(
+    FaceDetectorOptions(
+      performanceMode: FaceDetectorMode.accurate,
+      enableClassification: true,
+      enableTracking: true,
+    ),
+  );
 
-//     _deviceCameraController = CameraController(
-//       widget.deviceCamera,
-//       ResolutionPreset.ultraHigh,
-//       imageFormatGroup: ImageFormatGroup.yuv420,
-//     );
+  @override
+  void initState() {
+    super.initState();
 
-//     _deviceCameraInitialization =
-//         _deviceCameraController.initialize().then((_) {
-//       if (!mounted) return;
+    _animationController = AnimationController(
+      duration: const Duration(
+        milliseconds: AnimationDuration.slow,
+      ),
+      vsync: this,
+    )..repeat();
 
-//       final Size screenSize = MediaQuery.of(context).size;
-//       _deviceCameraController.startImageStream((CameraImage selfie) async {
-//         if (!_detectingFaceInSelfie) {
-//           _detectingFaceInSelfie = true;
+    _camController = CameraController(
+      widget.frontCamera,
+      ResolutionPreset.ultraHigh,
+      imageFormatGroup: ImageFormatGroup.yuv420,
+    );
 
-//           final Face? bestShotFace = await detectFaceInSelfie(
-//             screenSize: MediaQuery.of(context).size,
-//             selfie: selfie,
-//             sensorOrientation: widget.deviceCamera.sensorOrientation,
-//             uprightFaceDetector: _uprightFaceDetector,
-//           );
+    _camInit = _camController.initialize().then((_) {
+      final Size screenSize = MediaQuery.of(context).size;
 
-//           if (_trackedFace?.trackingId == bestShotFace?.trackingId &&
-//               bestShotFace != null) {
-//             final double? smilingProbability = _trackedFace?.smilingProbability;
+      _camController.startImageStream((CameraImage img) async {
+        if (!_detecting) {
+          _detecting = true;
 
-//             if (smilingProbability != null && smilingProbability >= 0.98) {
-//               newSelfie = await _deviceCameraController.takePicture();
+          final Face? detectedFace = await SelfieCaptureOperation.detectFace(
+            screenSize: MediaQuery.of(context).size,
+            image: img,
+            sensorOrientation: widget.frontCamera.sensorOrientation,
+            faceDetector: _faceDetector,
+          );
 
-//               OverlayEntry overlayEntry = OverlayEntry(
-//                 builder: (context) => Positioned(
-//                   top: 0,
-//                   bottom: 0,
-//                   left: 0,
-//                   right: 0,
-//                   child: Container(color: Colors.white),
-//                 ),
-//               );
+          if (_trackedFace?.trackingId == detectedFace?.trackingId &&
+              detectedFace != null &&
+              _trackedFace?.smilingProbability != null &&
+              _trackedFace!.smilingProbability! >= 0.98) {
+            selfie = await _camController.takePicture();
 
-//               Overlay.of(_scaffoldKey.currentContext!).insert(overlayEntry);
-//               await Future.delayed(const Duration(
-//                 milliseconds: 100,
-//               ));
-//               overlayEntry.remove();
+            OverlayEntry overlayEntry = OverlayEntry(
+              builder: (context) =>
+                  Positioned.fill(child: Container(color: Colors.white)),
+            );
 
-//               await _deviceCameraController.stopImageStream();
+            Overlay.of(_scaffoldKey.currentContext!).insert(overlayEntry);
+            await Future.delayed(
+                Duration(milliseconds: AnimationDuration.quick));
+            overlayEntry.remove();
 
-//               Future.delayed(
-//                 const Duration(
-//                   milliseconds: 1200,
-//                 ),
-//                 () {
-//                   Navigator.pop(context);
-//                 },
-//               );
+            await _camController.stopImageStream();
 
-//               final img.Image? profilePicture = await profilePictureMaker(
-//                 imagePath: newSelfie!.path,
-//                 screenSize: screenSize,
-//               );
+            Future.delayed(
+                Duration(milliseconds: 1200), () => Navigator.pop(context));
 
-//               ref.read(setProfilePicture)(profilePicture: profilePicture);
-//             }
-//           }
+            final img_lib.Image? profilePicture =
+                await SelfieCaptureOperation.profilePictureMaker(
+              imagePath: selfie!.path,
+              screenSize: screenSize,
+            );
+          }
 
-//           _trackedFace = bestShotFace;
+          _trackedFace = detectedFace;
+          _detecting = false;
+        }
+      });
+    });
+  }
 
-//           _detectingFaceInSelfie = false;
-//         }
-//       });
-//     });
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _camController.dispose();
+    _faceDetector.close();
+    super.dispose();
+  }
 
-//     _animationController = AnimationController(
-//       duration: const Duration(milliseconds: 800),
-//       vsync: this,
-//     )..repeat(reverse: true);
-//   }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      body: FutureBuilder<void>(
+        future: _camInit,
+        builder: (context, snapshot) {
+          return Stack(
+            children: selfie != null
+                ? <Widget>[
+                    Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(pi),
+                      child: Image.file(
+                        File(selfie!.path),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ]
+                : <Widget>[
+                    if (snapshot.connectionState == ConnectionState.done)
+                      Positioned.fill(
+                        child: AspectRatio(
+                          aspectRatio: _camController.value.aspectRatio,
+                          child: CameraPreview(_camController),
+                        ),
+                      ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: snapshot.connectionState == ConnectionState.done
+                            ? Colors.transparent
+                            : Colors.white,
+                        gradient:
+                            snapshot.connectionState == ConnectionState.done
+                                ? LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    stops: const [0, 0.2, 0.4],
+                                    colors: <Color>[
+                                      Colors.black.withOpacity(0.4),
+                                      Colors.black.withOpacity(0.16),
+                                      Colors.transparent,
+                                    ],
+                                  )
+                                : null,
+                      ),
+                    ),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.transparent,
+                            border: Border.all(
+                              width: _trackedFace == null ? 2 : 8,
+                              color: snapshot.connectionState ==
+                                      ConnectionState.done
+                                  ? _focusIsSet
+                                      ? AppColor.lightYellow
+                                      : Colors.white
+                                  : AppColor.moderateGray,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: GestureDetector(
+                        onTapUp: (TapUpDetails details) {
+                          // Convert user's tap location to relative coordinates (between 0 and 1)
+                          final RenderBox box =
+                              context.findRenderObject() as RenderBox;
+                          final Offset localPoint =
+                              box.globalToLocal(details.globalPosition);
+                          final Offset relativePoint = Offset(
+                            localPoint.dx / box.size.width,
+                            localPoint.dy / box.size.height,
+                          );
 
-//   @override
-//   void dispose() {
-//     _deviceCameraController.dispose();
-//     _uprightFaceDetector.close();
-//     _animationController.dispose();
+                          _camController.setFocusPoint(relativePoint);
 
-//     super.dispose();
-//   }
+                          setState(() {
+                            _focusIsSet = true;
+                          });
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       key: _scaffoldKey,
-//       body: FutureBuilder<void>(
-//         future: _deviceCameraInitialization,
-//         builder: (context, snapshot) {
-//           return Stack(
-//             children: newSelfie == null
-//                 ? <Widget>[
-//                     if (snapshot.connectionState == ConnectionState.done)
-//                       Positioned.fill(
-//                         child: AspectRatio(
-//                           aspectRatio:
-//                               _deviceCameraController.value.aspectRatio,
-//                           child: CameraPreview(_deviceCameraController),
-//                         ),
-//                       ),
-//                     Container(
-//                       decoration: BoxDecoration(
-//                         color: snapshot.connectionState == ConnectionState.done
-//                             ? Colors.transparent
-//                             : Colors.white,
-//                         gradient:
-//                             snapshot.connectionState == ConnectionState.done
-//                                 ? LinearGradient(
-//                                     begin: Alignment.topCenter,
-//                                     end: Alignment.bottomCenter,
-//                                     stops: const [0, 0.2, 0.4],
-//                                     colors: <Color>[
-//                                       Colors.black.withOpacity(0.4),
-//                                       Colors.black.withOpacity(0.16),
-//                                       Colors.transparent,
-//                                     ],
-//                                   )
-//                                 : null,
-//                       ),
-//                     ),
-//                     Center(
-//                       child: Padding(
-//                         padding: const EdgeInsets.all(20),
-//                         child: Container(
-//                           decoration: BoxDecoration(
-//                             shape: BoxShape.circle,
-//                             color: Colors.transparent,
-//                             border: Border.all(
-//                               width: _trackedFace == null ? 2 : 8,
-//                               color: snapshot.connectionState ==
-//                                       ConnectionState.done
-//                                   ? _focusIsSet
-//                                       ? lightYellow
-//                                       : Colors.white
-//                                   : moderateGray,
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                     Positioned.fill(
-//                       child: GestureDetector(
-//                         onTapUp: (TapUpDetails details) {
-//                           // Convert user's tap location to relative coordinates (between 0 and 1)
-//                           final RenderBox box =
-//                               context.findRenderObject() as RenderBox;
-//                           final Offset localPoint =
-//                               box.globalToLocal(details.globalPosition);
-//                           final Offset relativePoint = Offset(
-//                               localPoint.dx / box.size.width,
-//                               localPoint.dy / box.size.height);
+                          _focusTimer?.cancel();
 
-//                           _deviceCameraController.setFocusPoint(relativePoint);
-
-//                           setState(() {
-//                             _focusIsSet = true;
-//                           });
-
-//                           _focusTimer?.cancel();
-
-//                           _focusTimer =
-//                               Timer(const Duration(milliseconds: 2000), () {
-//                             setState(() {
-//                               _focusIsSet = false;
-//                             });
-//                           });
-//                         },
-//                         child: Container(
-//                           color: Colors.transparent,
-//                         ),
-//                       ),
-//                     ),
-//                     SafeArea(
-//                       child: Align(
-//                         alignment: Alignment.topCenter,
-//                         child: Padding(
-//                           padding: const EdgeInsets.all(20),
-//                           child: Row(
-//                             children: [
-//                               UnconstrainedBox(
-//                                 child: SplashButton(
-//                                   horizontalPadding: 8,
-//                                   verticalPadding: 8,
-//                                   callbackFunction: () =>
-//                                       Navigator.pop(context),
-//                                   borderColor: snapshot.connectionState ==
-//                                           ConnectionState.done
-//                                       ? Colors.white
-//                                       : moderateGray,
-//                                   // uniformBorderRadius: 128,
-//                                   child: const Icon(
-//                                     Icons.arrow_back,
-//                                     size: 24,
-//                                   ),
-//                                 ),
-//                               ),
-//                               Expanded(
-//                                 child: AnimatedBuilder(
-//                                   animation: _animationController,
-//                                   builder: (a, b) {
-//                                     return Row(
-//                                       mainAxisAlignment:
-//                                           MainAxisAlignment.center,
-//                                       children: [
-//                                         Text(
-//                                           _trackedFace == null
-//                                               ? 'Scanning facial features '
-//                                               : 'Smile to take a photo.',
-//                                           style: TextStyle(
-//                                             fontSize: 18,
-//                                             color: snapshot.connectionState ==
-//                                                     ConnectionState.done
-//                                                 ? Colors.white
-//                                                 : moderateGray,
-//                                           ),
-//                                         ),
-//                                         if (_trackedFace == null)
-//                                           ...List.generate(
-//                                             4,
-//                                             (index) {
-//                                               return Transform.translate(
-//                                                 offset: Offset(
-//                                                   _animationController.value *
-//                                                       ((index + 2) * -2),
-//                                                   0,
-//                                                 ),
-//                                                 child: Text(
-//                                                   '.',
-//                                                   style: TextStyle(
-//                                                     fontSize: 18,
-//                                                     color: snapshot
-//                                                                 .connectionState ==
-//                                                             ConnectionState.done
-//                                                         ? Colors.white
-//                                                         : moderateGray,
-//                                                   ),
-//                                                 ),
-//                                               );
-//                                             },
-//                                           ),
-//                                       ],
-//                                     );
-//                                   },
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ]
-//                 : <Widget>[
-//                     Transform(
-//                       alignment: Alignment.center,
-//                       transform: Matrix4.rotationY(pi),
-//                       child: Image.file(
-//                         File(newSelfie!.path),
-//                         width: MediaQuery.of(context).size.width,
-//                         height: MediaQuery.of(context).size.height,
-//                         filterQuality: FilterQuality.high,
-//                         fit: BoxFit.fill,
-//                       ),
-//                     ),
-//                   ],
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
+                          _focusTimer =
+                              Timer(const Duration(milliseconds: 2000), () {
+                            setState(() {
+                              _focusIsSet = false;
+                            });
+                          });
+                        },
+                        child: Container(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                    ),
+                    SafeArea(
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Row(
+                            children: [
+                              UnconstrainedBox(
+                                child: SplashButton(
+                                  horizontalPadding: 8,
+                                  verticalPadding: 8,
+                                  callbackFunction: () =>
+                                      Navigator.pop(context),
+                                  borderColor: snapshot.connectionState ==
+                                          ConnectionState.done
+                                      ? Colors.white
+                                      : AppColor.moderateGray,
+                                  child: const Icon(
+                                    Icons.arrow_back,
+                                    size: 24,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: AnimatedBuilder(
+                                  animation: _animationController,
+                                  builder: (a, b) {
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          _trackedFace == null
+                                              ? 'Scanning facial features '
+                                              : 'Smile to take a photo.',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: snapshot.connectionState ==
+                                                    ConnectionState.done
+                                                ? Colors.white
+                                                : AppColor.moderateGray,
+                                          ),
+                                        ),
+                                        if (_trackedFace == null)
+                                          ...List.generate(
+                                            4,
+                                            (index) {
+                                              return Transform.translate(
+                                                offset: Offset(
+                                                  _animationController.value *
+                                                      ((index + 2) * -2),
+                                                  0,
+                                                ),
+                                                child: Text(
+                                                  '.',
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: snapshot
+                                                                .connectionState ==
+                                                            ConnectionState.done
+                                                        ? Colors.white
+                                                        : AppColor.moderateGray,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+          );
+        },
+      ),
+    );
+  }
+}

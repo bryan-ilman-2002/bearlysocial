@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
+import 'package:bearlysocial/providers/profile_pic_state.dart';
 import 'package:bearlysocial/utilities/selfie_capture_operation.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -33,12 +34,12 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
   late Future<void> _camInit;
 
   bool _detecting = false;
+  Face? _detectedFace;
+
+  XFile? selfie;
 
   bool _focusIsSet = false;
   Timer? _focusTimer;
-
-  Face? _trackedFace;
-  XFile? selfie;
 
   final FaceDetector _faceDetector = GoogleMlKit.vision.faceDetector(
     FaceDetectorOptions(
@@ -51,6 +52,7 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
   @override
   void initState() {
     super.initState();
+    final Size screenSize = MediaQuery.of(context).size;
 
     _animationController = AnimationController(
       duration: const Duration(
@@ -66,8 +68,6 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
     );
 
     _camInit = _camController.initialize().then((_) {
-      final Size screenSize = MediaQuery.of(context).size;
-
       _camController.startImageStream((CameraImage img) async {
         if (!_detecting) {
           _detecting = true;
@@ -79,35 +79,60 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
             faceDetector: _faceDetector,
           );
 
-          if (_trackedFace?.trackingId == detectedFace?.trackingId &&
-              detectedFace != null &&
-              _trackedFace?.smilingProbability != null &&
-              _trackedFace!.smilingProbability! >= 0.98) {
+          // Check if the detected face is the same as the previously detected face
+          final bool sameFace =
+              _detectedFace?.trackingId == detectedFace?.trackingId;
+
+          // Check if the detected face has a valid smiling probability
+          final bool validSmilingProbability =
+              _detectedFace?.smilingProbability != null;
+
+          // Check if the detected face is smiling with a high probability (98% or more)
+          final bool highSmilingProbability =
+              _detectedFace!.smilingProbability! >= 0.98;
+
+          if (detectedFace != null &&
+              sameFace &&
+              validSmilingProbability &&
+              highSmilingProbability) {
+            // take picture
             selfie = await _camController.takePicture();
 
-            OverlayEntry overlayEntry = OverlayEntry(
-              builder: (context) =>
-                  Positioned.fill(child: Container(color: Colors.white)),
+            OverlayEntry camFlash = OverlayEntry(
+              builder: (context) => Positioned.fill(
+                child: Container(
+                  color: Colors.white,
+                ),
+              ),
             );
 
-            Overlay.of(_scaffoldKey.currentContext!).insert(overlayEntry);
+            Overlay.of(_scaffoldKey.currentContext!).insert(camFlash);
+
             await Future.delayed(
-                Duration(milliseconds: AnimationDuration.quick));
-            overlayEntry.remove();
+              const Duration(
+                milliseconds: AnimationDuration.quick,
+              ),
+            );
+
+            camFlash.remove();
 
             await _camController.stopImageStream();
 
             Future.delayed(
-                Duration(milliseconds: 1200), () => Navigator.pop(context));
+              const Duration(milliseconds: AnimationDuration.slow),
+              () => Navigator.pop(context),
+            );
 
-            final img_lib.Image? profilePicture =
-                await SelfieCaptureOperation.profilePictureMaker(
+            final img_lib.Image? profilePic =
+                await SelfieCaptureOperation.buildProfilePic(
               imagePath: selfie!.path,
               screenSize: screenSize,
             );
+
+            ref.read(setProfilePic)(profilePicture: profilePic);
           }
 
-          _trackedFace = detectedFace;
+          _detectedFace = detectedFace;
           _detecting = false;
         }
       });
@@ -180,7 +205,7 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
                             shape: BoxShape.circle,
                             color: Colors.transparent,
                             border: Border.all(
-                              width: _trackedFace == null ? 2 : 8,
+                              width: _detectedFace == null ? 2 : 8,
                               color: snapshot.connectionState ==
                                       ConnectionState.done
                                   ? _focusIsSet
@@ -257,7 +282,7 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          _trackedFace == null
+                                          _detectedFace == null
                                               ? 'Scanning facial features '
                                               : 'Smile to take a photo.',
                                           style: TextStyle(
@@ -268,7 +293,7 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
                                                 : AppColor.moderateGray,
                                           ),
                                         ),
-                                        if (_trackedFace == null)
+                                        if (_detectedFace == null)
                                           ...List.generate(
                                             4,
                                             (index) {

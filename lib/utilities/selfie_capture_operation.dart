@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image/image.dart' as img_lib;
@@ -31,6 +30,7 @@ class SelfieCaptureOperation {
 
     return findCenteredFace(
       faces: detectedFaces,
+      image: image,
       screenSize: screenSize,
     );
   }
@@ -74,12 +74,20 @@ class SelfieCaptureOperation {
 
   static Face? findCenteredFace({
     required List<Face> faces,
+    required CameraImage image,
     required Size screenSize,
   }) {
     final screenCenter = Offset(screenSize.width / 2, screenSize.height / 2);
 
     for (final Face face in faces) {
-      final Rect facialBoundingBox = face.boundingBox;
+      final Rect facialBoundingBox = normalizeBoundingBox(
+        rect: face.boundingBox,
+        imageSize: Size(
+          image.width.toDouble(),
+          image.height.toDouble(),
+        ),
+        screenSize: screenSize,
+      );
 
       final Offset faceCenter = Offset(
         facialBoundingBox.left + facialBoundingBox.width / 2,
@@ -92,10 +100,40 @@ class SelfieCaptureOperation {
         face: face,
       );
 
-      if (faceIsCentered) return face;
+      if (faceIsCentered) {
+        return Face(
+          trackingId: face.trackingId,
+          boundingBox: facialBoundingBox,
+          landmarks: face.landmarks,
+          contours: face.contours,
+          smilingProbability: face.smilingProbability,
+        );
+      }
     }
 
     return null;
+  }
+
+  static Rect normalizeBoundingBox({
+    required Rect rect,
+    required Size imageSize,
+    required Size screenSize,
+  }) {
+    final double scaleX = screenSize.width / imageSize.height;
+    final double scaleY = screenSize.height / imageSize.width;
+
+    final double scale = scaleX > scaleY ? scaleX : scaleY;
+    final Offset offset = Offset(
+      (screenSize.width - imageSize.height * scale) / 2,
+      (screenSize.height - imageSize.width * scale) / 2,
+    );
+
+    return Rect.fromLTWH(
+      rect.left * scale + offset.dx,
+      rect.top * scale + offset.dy,
+      rect.width * scale,
+      rect.height * scale,
+    );
   }
 
   static bool validateFacePosition({
@@ -107,19 +145,23 @@ class SelfieCaptureOperation {
     final double headTurn = face.headEulerAngleY ?? double.infinity;
     final double headRotation = face.headEulerAngleZ ?? double.infinity;
 
-    return (screenCenter.dx - faceCenter.dx).abs() <= 40 &&
-        (screenCenter.dy - faceCenter.dy).abs() <= 40 &&
+    final double dxDifference = (screenCenter.dx - faceCenter.dx).abs();
+    final double dyDifference = (screenCenter.dy - faceCenter.dy).abs();
+
+    return dxDifference <= 40 &&
+        dyDifference <= 40 &&
         headTilt.abs() <= 20 &&
-        headTurn.abs() <= 10 &&
+        headTurn.abs() <= 20 &&
         headRotation.abs() <= 20;
   }
 
-  static Future<img_lib.Image?> profilePictureMaker({
+  static Future<img_lib.Image?> buildProfilePic({
     required String imagePath,
     required Size screenSize,
   }) async {
-    final img_lib.Image? image =
-        img_lib.decodeImage(await File(imagePath).readAsBytes());
+    final img_lib.Image? image = img_lib.decodeImage(
+      await File(imagePath).readAsBytes(),
+    );
 
     if (image != null) {
       final int newWidth = screenSize.width.toInt();
@@ -151,34 +193,5 @@ class SelfieCaptureOperation {
     } else {
       return image;
     }
-  }
-}
-
-class BoundingBoxPainter extends CustomPainter {
-  final Face detectedFace;
-
-  BoundingBoxPainter({required this.detectedFace});
-
-  @override
-  void paint(final Canvas canvas, final Size size) {
-    final Paint paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0
-      ..color = Colors.red;
-
-    final double left = detectedFace.boundingBox.left;
-    final double top = detectedFace.boundingBox.top;
-    final double right = detectedFace.boundingBox.right;
-    final double bottom = detectedFace.boundingBox.bottom;
-
-    canvas.drawRect(
-      Rect.fromLTRB(left, top, right, bottom),
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(final BoundingBoxPainter oldDelegate) {
-    return oldDelegate.detectedFace != detectedFace;
   }
 }

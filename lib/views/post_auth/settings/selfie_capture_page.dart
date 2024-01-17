@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:math';
 
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
@@ -33,13 +31,13 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
 
   late Future<void> _camInit;
 
-  bool _detecting = false;
   Face? _detectedFace;
+  bool _detecting = false;
 
-  XFile? selfie;
-
-  bool _settingFocus = false;
   Timer? _focusTimer;
+  bool _settingFocus = false;
+
+  XFile? _selfie;
 
   final FaceDetector _faceDetector = GoogleMlKit.vision.faceDetector(
     FaceDetectorOptions(
@@ -67,6 +65,8 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
     );
 
     _camInit = _camController.initialize().then((_) {
+      if (!mounted) return;
+
       final Size screenSize = MediaQuery.of(context).size;
 
       _camController.startImageStream((CameraImage img) async {
@@ -74,7 +74,7 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
           _detecting = true;
 
           final Face? detectedFace = await SelfieCaptureOperation.detectFace(
-            screenSize: MediaQuery.of(context).size,
+            screenSize: screenSize,
             image: img,
             sensorOrientation: widget.frontCamera.sensorOrientation,
             faceDetector: _faceDetector,
@@ -86,18 +86,19 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
 
           // Check if the detected face has a valid smiling probability
           final bool validSmilingProbability =
-              _detectedFace?.smilingProbability != null;
+              detectedFace?.smilingProbability != null;
 
           // Check if the detected face is smiling with a high probability (98% or more)
           final bool highSmilingProbability =
-              _detectedFace!.smilingProbability! >= 0.98;
+              detectedFace != null && detectedFace.smilingProbability! >= 0.98;
 
-          if (detectedFace != null &&
-              sameFace &&
-              validSmilingProbability &&
-              highSmilingProbability) {
-            // take picture
-            selfie = await _camController.takePicture();
+          if (sameFace && validSmilingProbability && highSmilingProbability) {
+            Future.delayed(
+              const Duration(milliseconds: AnimationDuration.slow),
+              () => Navigator.pop(context),
+            );
+
+            _selfie = await _camController.takePicture();
 
             OverlayEntry camFlash = OverlayEntry(
               builder: (context) => Positioned.fill(
@@ -119,21 +120,18 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
 
             await _camController.stopImageStream();
 
-            Future.delayed(
-              const Duration(milliseconds: AnimationDuration.slow),
-              () => Navigator.pop(context),
-            );
-
             final img_lib.Image? profilePic =
                 await SelfieCaptureOperation.buildProfilePic(
-              imagePath: selfie!.path,
+              imagePath: _selfie!.path,
               screenSize: screenSize,
             );
 
             ref.read(setProfilePic)(profilePicture: profilePic);
           }
 
-          _detectedFace = detectedFace;
+          setState(() {
+            _detectedFace = detectedFace;
+          });
           _detecting = false;
         }
       });
@@ -157,17 +155,6 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
         builder: (context, snapshot) {
           return Stack(
             children: <Widget>[
-              // Transform(
-              //   alignment: Alignment.center,
-              //   transform: Matrix4.rotationY(pi),
-              //   child: Image.file(
-              //     File(selfie!.path),
-              //     width: MediaQuery.of(context).size.width,
-              //     height: MediaQuery.of(context).size.height,
-              //     filterQuality: FilterQuality.high,
-              //     fit: BoxFit.fill,
-              //   ),
-              // ),
               if (snapshot.connectionState == ConnectionState.done)
                 Positioned.fill(
                   child: AspectRatio(
@@ -178,69 +165,66 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
               Container(
                 decoration: BoxDecoration(
                   color: Colors.black,
-                  gradient: snapshot.connectionState == ConnectionState.done
-                      ? LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          stops: const [0, 0.2, 0.4],
-                          colors: <Color>[
-                            Colors.black.withOpacity(OpacitySize.large),
-                            Colors.black.withOpacity(OpacitySize.small),
-                            Colors.transparent,
-                          ],
-                        )
-                      : null,
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0, 0.2, 0.4],
+                    colors: <Color>[
+                      Colors.black.withOpacity(OpacitySize.large),
+                      Colors.black.withOpacity(OpacitySize.small),
+                      Colors.transparent,
+                    ],
+                  ),
                 ),
               ),
               Center(
-                child: Container(
-                  width: SideSize.veryLarge,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.transparent,
-                    border: Border.all(
-                      width: _detectedFace == null
-                          ? ThicknessSize.medium
-                          : ThicknessSize.veryLarge,
-                      color: snapshot.connectionState == ConnectionState.done
-                          ? _settingFocus
-                              ? AppColor.lightYellow
-                              : Colors.white
-                          : AppColor.moderateGray,
+                child: Padding(
+                  padding: const EdgeInsets.all(
+                    PaddingSize.medium,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.transparent,
+                      border: Border.all(
+                        width: _detectedFace == null
+                            ? ThicknessSize.medium
+                            : ThicknessSize.veryLarge,
+                        color:
+                            _settingFocus ? AppColor.heavyYellow : Colors.white,
+                      ),
                     ),
                   ),
                 ),
               ),
-              // Positioned.fill(
-              //   child: GestureDetector(
-              //     onTapUp: (TapUpDetails details) {
-              //       // Convert user's tap location to relative coordinates (between 0 and 1)
-              //       final RenderBox box =
-              //           context.findRenderObject() as RenderBox;
-              //       final Offset localPoint =
-              //           box.globalToLocal(details.globalPosition);
-              //       final Offset relativePoint = Offset(
-              //         localPoint.dx / box.size.width,
-              //         localPoint.dy / box.size.height,
-              //       );
+              Positioned.fill(
+                child: GestureDetector(
+                  onTapUp: (TapUpDetails details) {
+                    final RenderBox renderBox =
+                        context.findRenderObject() as RenderBox;
 
-              //       _camController.setFocusPoint(relativePoint);
+                    final Offset localPoint =
+                        renderBox.globalToLocal(details.globalPosition);
+                    final Offset relativePoint = Offset(
+                        localPoint.dx / renderBox.size.width,
+                        localPoint.dy / renderBox.size.height);
 
-              //       setState(() {
-              //         _settingFocus = true;
-              //       });
+                    _camController.setFocusPoint(relativePoint);
+                    setState(() => _settingFocus = true);
 
-              //       _focusTimer?.cancel();
-
-              //       _focusTimer = Timer(const Duration(milliseconds: 2000), () {
-              //         setState(() {
-              //           _settingFocus = false;
-              //         });
-              //       });
-              //     },
-              //     child: const SizedBox(),
-              //   ),
-              // ),
+                    _focusTimer?.cancel();
+                    _focusTimer = Timer(
+                      const Duration(
+                        milliseconds: AnimationDuration.slow,
+                      ),
+                      () => setState(() => _settingFocus = false),
+                    );
+                  },
+                  child: Container(
+                    color: Colors.transparent,
+                  ),
+                ),
+              ),
               SafeArea(
                 child: Align(
                   alignment: Alignment.topCenter,
@@ -293,8 +277,9 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
                                             ? 1.0
                                             : 0.0,
                                         duration: const Duration(
-                                            milliseconds:
-                                                AnimationDuration.medium),
+                                          milliseconds:
+                                              AnimationDuration.medium,
+                                        ),
                                         child: Text(
                                           '.',
                                           style: Theme.of(context)

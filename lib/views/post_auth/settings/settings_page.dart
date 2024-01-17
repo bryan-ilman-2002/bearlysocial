@@ -1,9 +1,9 @@
+import 'package:bearlysocial/components/form_elements/profile_pic.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/constants/translation_key.dart';
 import 'package:bearlysocial/providers/auth_state.dart';
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/components/buttons/setting_btn.dart';
-import 'package:bearlysocial/providers/profile_pic_state.dart';
 import 'package:bearlysocial/views/post_auth/settings/personal_info_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -34,10 +34,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ref.read(displayProfilePic)(
-              context: context,
-              enlarged: true,
-            ),
+            const ProfilePicture(),
             const SizedBox(
               height: WhiteSpaceSize.medium,
             ),

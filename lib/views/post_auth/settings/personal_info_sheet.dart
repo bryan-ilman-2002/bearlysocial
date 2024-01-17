@@ -2,6 +2,7 @@ import 'package:bearlysocial/base_designs/sheets/bottom_sheet.dart'
     as app_bottom_sheet;
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/components/form_elements/dropdown.dart';
+import 'package:bearlysocial/components/form_elements/profile_pic.dart';
 import 'package:bearlysocial/components/form_elements/social_media_links.dart';
 import 'package:bearlysocial/components/form_elements/underlined_txt_field.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
@@ -9,7 +10,6 @@ import 'package:bearlysocial/constants/native_lang_name.dart';
 import 'package:bearlysocial/constants/social_media_consts.dart';
 import 'package:bearlysocial/constants/translation_key.dart';
 import 'package:bearlysocial/utilities/dropdown_operation.dart';
-import 'package:bearlysocial/providers/profile_pic_state.dart';
 import 'package:bearlysocial/utilities/user_permission.dart';
 import 'package:bearlysocial/views/post_auth/settings/selfie_capture_page.dart';
 import 'package:camera/camera.dart';
@@ -122,10 +122,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
       title: TranslationKey.personalInformationTitle.name.tr(),
       content: Column(
         children: [
-          ref.read(displayProfilePic)(
-            context: context,
-            enlarged: true,
-          ),
+          const ProfilePicture(),
           const SizedBox(
             height: WhiteSpaceSize.small,
           ),

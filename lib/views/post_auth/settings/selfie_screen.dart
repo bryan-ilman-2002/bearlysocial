@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
+import 'package:bearlysocial/components/texts/blinking_dots.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/providers/profile_pic_state.dart';
+import 'package:bearlysocial/utilities/custom_painters.dart';
 import 'package:bearlysocial/utilities/selfie_capture_operation.dart';
 import 'package:camera/camera.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -171,6 +173,10 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.normal,
+          color: Colors.white,
+        );
     return Scaffold(
       key: _scaffoldKey,
       body: FutureBuilder<void>(
@@ -180,149 +186,79 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
             children: <Widget>[
               if (snapshot.connectionState == ConnectionState.done)
                 Positioned.fill(
-                  child: AspectRatio(
-                    aspectRatio: _camController.value.aspectRatio,
-                    child: CameraPreview(_camController),
-                  ),
+                  child: CameraPreview(_camController),
                 ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: const [0, 0.2, 0.4],
-                    colors: <Color>[
-                      Colors.black.withOpacity(0.4),
-                      Colors.black.withOpacity(0.16),
-                      Colors.transparent,
-                    ],
-                  ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: PaddingSize.verySmall,
+                  vertical: 16,
                 ),
-              ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(
-                    PaddingSize.medium,
-                  ),
-                  child: DottedBorder(
-                    borderType: BorderType.Circle,
-                    strokeCap: StrokeCap.round,
-                    strokeWidth: ThicknessSize.veryLarge,
-                    dashPattern: [
-                      _detectedFace == null
-                          ? MarginSize.veryLarge
-                          : MarginSize.verySmall / 10
-                    ],
-                    color: _settingFocus ? AppColor.lightYellow : Colors.white,
-                    child: Container(),
-                  ),
-                ),
-              ),
-              Positioned.fill(
-                child: GestureDetector(
-                  onTapUp: (TapUpDetails details) {
-                    final RenderBox renderBox =
-                        context.findRenderObject() as RenderBox;
-
-                    final Offset localPoint =
-                        renderBox.globalToLocal(details.globalPosition);
-                    final Offset relativePoint = Offset(
-                        localPoint.dx / renderBox.size.width,
-                        localPoint.dy / renderBox.size.height);
-
-                    _camController.setFocusPoint(relativePoint);
-                    setState(() => _settingFocus = true);
-
-                    _focusTimer?.cancel();
-                    _focusTimer = Timer(
-                      const Duration(
-                        milliseconds: AnimationDuration.slow,
+                child: Column(
+                  children: [
+                    UnconstrainedBox(
+                      child: SplashButton(
+                        horizontalPadding: PaddingSize.veryLarge,
+                        verticalPadding: PaddingSize.veryLarge,
+                        buttonColor: Colors.red,
+                        borderRadius: BorderRadius.circular(
+                          CurvatureSize.infinity,
+                        ),
+                        callbackFunction: () => Navigator.pop(context),
+                        child: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                        ),
                       ),
-                      () => setState(() => _settingFocus = false),
-                    );
-                  },
-                  child: Container(
-                    color: Colors.transparent,
-                  ),
+                    ),
+                    BlinkingDots(
+                      enabled: _detectedFace == null,
+                      controller: _animationController,
+                      textStyle: textStyle,
+                      leadingText: _detectedFace == null
+                          ? 'Scanning facial features '
+                          : 'Smile to take a photo.',
+                    ),
+                    _CameraFrame(
+                      color:
+                          _settingFocus ? AppColor.lightYellow : Colors.white,
+                      gapSize: _detectedFace == null
+                          ? MarginSize.veryLarge
+                          : MarginSize.verySmall / 10,
+                    ),
+                    BlinkingDots(
+                      enabled: _settingFocus,
+                      controller: _animationController,
+                      textStyle: textStyle,
+                      leadingText: _settingFocus ? 'Adjusting focus ' : '',
+                    ),
+                  ],
                 ),
               ),
-              SafeArea(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.all(
-                      PaddingSize.medium,
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTapDown: (TapDownDetails details) {
+                  final RenderBox renderBox =
+                      context.findRenderObject() as RenderBox;
+
+                  final Offset localPoint = renderBox.globalToLocal(
+                    details.globalPosition,
+                  );
+                  final Offset relativePoint = Offset(
+                    localPoint.dx / renderBox.size.width,
+                    localPoint.dy / renderBox.size.height,
+                  );
+
+                  _camController.setFocusPoint(relativePoint);
+                  setState(() => _settingFocus = true);
+
+                  _focusTimer?.cancel();
+                  _focusTimer = Timer(
+                    const Duration(
+                      milliseconds: AnimationDuration.slow * 2,
                     ),
-                    child: Row(
-                      children: [
-                        UnconstrainedBox(
-                          child: SplashButton(
-                            horizontalPadding: PaddingSize.verySmall,
-                            verticalPadding: PaddingSize.verySmall,
-                            buttonColor: Colors.transparent,
-                            borderRadius: BorderRadius.circular(
-                              CurvatureSize.infinity,
-                            ),
-                            callbackFunction: () => Navigator.pop(context),
-                            child: const Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: AnimatedBuilder(
-                            animation: _animationController,
-                            builder: (ctx, _) {
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    _detectedFace == null
-                                        ? 'Scanning facial features '
-                                        : 'Smile to take a photo.',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.normal,
-                                          color: Colors.white,
-                                        ),
-                                  ),
-                                  if (_detectedFace == null)
-                                    ...List.generate(
-                                      4,
-                                      (index) => AnimatedOpacity(
-                                        opacity: _animationController.value >
-                                                index * 0.25
-                                            ? 1.0
-                                            : 0.0,
-                                        duration: const Duration(
-                                          milliseconds:
-                                              AnimationDuration.medium,
-                                        ),
-                                        child: Text(
-                                          '.',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleLarge
-                                              ?.copyWith(
-                                                fontWeight: FontWeight.normal,
-                                                color: Colors.white,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                    () => setState(() => _settingFocus = false),
+                  );
+                },
               ),
             ],
           );

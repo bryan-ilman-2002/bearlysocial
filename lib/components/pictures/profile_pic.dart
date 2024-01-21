@@ -19,7 +19,7 @@ class ProfilePicture extends ConsumerWidget {
         shape: BoxShape.circle,
         border: ref.watch(profilePic) == null
             ? Border.all(
-                color: Theme.of(context).focusColor,
+                color: Theme.of(context).dividerColor,
               )
             : null,
       ),

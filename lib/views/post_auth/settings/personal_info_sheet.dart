@@ -2,7 +2,7 @@ import 'package:bearlysocial/base_designs/sheets/bottom_sheet.dart'
     as app_bottom_sheet;
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/components/form_elements/dropdown.dart';
-import 'package:bearlysocial/components/form_elements/profile_pic.dart';
+import 'package:bearlysocial/components/pictures/profile_pic.dart';
 import 'package:bearlysocial/components/form_elements/social_media_links.dart';
 import 'package:bearlysocial/components/form_elements/underlined_txt_field.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
@@ -11,7 +11,7 @@ import 'package:bearlysocial/constants/social_media_consts.dart';
 import 'package:bearlysocial/constants/translation_key.dart';
 import 'package:bearlysocial/utilities/dropdown_operation.dart';
 import 'package:bearlysocial/utilities/user_permission.dart';
-import 'package:bearlysocial/views/post_auth/settings/selfie_capture_page.dart';
+import 'package:bearlysocial/views/post_auth/settings/selfie_screen.dart';
 import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +26,8 @@ class PersonalInformation extends ConsumerStatefulWidget {
 }
 
 class _PersonalInformationState extends ConsumerState<PersonalInformation> {
+  bool _blockInput = false;
+
   final GlobalKey<ScaffoldState> _sheetKey = GlobalKey<ScaffoldState>();
 
   final FocusNode _firstNameFocusNode = FocusNode();
@@ -37,6 +39,11 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _newPasswordConfirmationController =
+      TextEditingController();
 
   final TextEditingController _interestController = TextEditingController();
   final TextEditingController _langController = TextEditingController();
@@ -85,25 +92,54 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
     });
   }
 
+  _captureSelfie() {
+    _blockInput = true;
+
+    UserPermission.cameraPermission.then((cameraPermission) async {
+      if (!cameraPermission) return;
+
+      final frontCamera = (await availableCameras()).firstWhere(
+        (camera) => camera.lensDirection == CameraLensDirection.front,
+      );
+
+      final BuildContext? ctx = _sheetKey.currentContext;
+
+      if (ctx != null && ctx.mounted) {
+        Navigator.of(ctx).push(
+          PageRouteBuilder(
+            pageBuilder: (ctx, p, q) => SelfieScreen(
+              frontCamera: frontCamera,
+            ),
+            transitionDuration: const Duration(
+              seconds: AnimationDuration.instant,
+            ),
+          ),
+        );
+      }
+    });
+
+    _blockInput = false;
+  }
+
   @override
   void initState() {
     super.initState();
-    _firstNameFocusNode.addListener(
-      () => setState,
-    );
-    _lastNameFocusNode.addListener(
-      () => setState,
-    );
+    _firstNameFocusNode.addListener(() {
+      setState(() {});
+    });
+    _lastNameFocusNode.addListener(() {
+      setState(() {});
+    });
 
-    _emailFocusNode.addListener(
-      () => setState,
-    );
-    _newPasswordFocusNode.addListener(
-      () => setState,
-    );
-    _newPasswordConfirmationFocusNode.addListener(
-      () => setState,
-    );
+    _emailFocusNode.addListener(() {
+      setState(() {});
+    });
+    _newPasswordFocusNode.addListener(() {
+      setState(() {});
+    });
+    _newPasswordConfirmationFocusNode.addListener(() {
+      setState(() {});
+    });
 
     _interestMenu = DropdownOperation.buildMenu(
       entries: DropdownOperation.allInterests,
@@ -140,33 +176,9 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
             child: SplashButton(
               horizontalPadding: PaddingSize.small,
               verticalPadding: PaddingSize.verySmall,
-              callbackFunction: () {
-                UserPermission.cameraPermission.then((cameraPermission) async {
-                  if (!cameraPermission) return;
-
-                  final frontCamera = (await availableCameras()).firstWhere(
-                    (camera) =>
-                        camera.lensDirection == CameraLensDirection.front,
-                  );
-
-                  final BuildContext? ctx = _sheetKey.currentContext;
-
-                  if (ctx != null && ctx.mounted) {
-                    Navigator.of(ctx).push(
-                      PageRouteBuilder(
-                        pageBuilder: (ctx, p, q) => SelfieScreen(
-                          frontCamera: frontCamera,
-                        ),
-                        transitionDuration: const Duration(
-                          seconds: AnimationDuration.instant,
-                        ),
-                      ),
-                    );
-                  }
-                });
-              },
+              callbackFunction: _blockInput ? null : _captureSelfie,
               buttonColor: Theme.of(context).scaffoldBackgroundColor,
-              borderColor: Theme.of(context).focusColor,
+              borderColor: Theme.of(context).dividerColor,
               borderRadius: BorderRadius.circular(
                 CurvatureSize.infinity,
               ),
@@ -240,8 +252,8 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           ),
           UnderlinedTextField(
             label: 'Email',
-            controller: TextEditingController(),
-            focusNode: FocusNode(),
+            controller: _emailController,
+            focusNode: _emailFocusNode,
             errorText: null,
           ),
           const SizedBox(
@@ -250,8 +262,8 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           UnderlinedTextField(
             label: 'New Password',
             obscureText: true,
-            controller: TextEditingController(),
-            focusNode: FocusNode(),
+            controller: _newPasswordController,
+            focusNode: _newPasswordFocusNode,
             errorText: null,
           ),
           const SizedBox(
@@ -260,8 +272,8 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           UnderlinedTextField(
             label: 'New Password Confirmation',
             obscureText: true,
-            controller: TextEditingController(),
-            focusNode: FocusNode(),
+            controller: _newPasswordConfirmationController,
+            focusNode: _newPasswordConfirmationFocusNode,
             errorText: null,
           ),
         ],

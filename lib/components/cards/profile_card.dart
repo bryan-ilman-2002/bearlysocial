@@ -1,5 +1,8 @@
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
+import 'package:bearlysocial/components/form_elements/decorated_txt.dart';
+import 'package:bearlysocial/components/pictures/profile_pic.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
+import 'package:bearlysocial/utilities/get_rating_color.dart';
 import 'package:flutter/material.dart';
 
 class ProfileCard extends StatelessWidget {
@@ -19,10 +22,12 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SplashButton(
+      horizontalPadding: PaddingSize.small,
+      verticalPadding: PaddingSize.small,
       callbackFunction: () {
         Navigator.of(context).push(
           PageRouteBuilder(
-            pageBuilder: (ctx, p, q) => SizedBox(),
+            pageBuilder: (ctx, p, q) => const SizedBox(),
             transitionsBuilder: (ctx, animation, _, child) {
               return FadeTransition(
                 opacity: animation,
@@ -32,56 +37,57 @@ class ProfileCard extends StatelessWidget {
           ),
         );
       },
+      buttonColor: Theme.of(context).scaffoldBackgroundColor,
+      borderRadius: BorderRadius.circular(
+        CurvatureSize.large,
+      ),
+      shadow: Shadow.medium,
       child: Row(
         children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Theme.of(context).dividerColor,
+          Stack(
+            children: <Widget>[
+              const ProfilePicture(),
+              Positioned(
+                bottom: 0.0,
+                right: 0.0,
+                child: DecoratedText(
+                  backgroundColor: calculateRatingColor(4.2),
+                  text: '4.2',
+                ),
               ),
-            ),
-            // Replace with your photo widget
-            child: Center(
-              child: Icon(
-                Icons.no_photography_rounded,
-                size: 24,
-                color: Theme.of(context).dividerColor,
-              ),
-            ),
+            ],
           ),
-          const SizedBox(width: 12),
+          const SizedBox(
+            width: PaddingSize.small,
+          ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   name,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).dividerColor,
-                  ),
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-                const SizedBox(height: 4),
-                Text(interests[0]),
-                const SizedBox(height: 16),
+                const SizedBox(height: WhiteSpaceSize.verySmall),
+                const Text(
+                  'Artificial Intelligence',
+                  maxLines: 4,
+                ),
+                const SizedBox(height: WhiteSpaceSize.small),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('4.2'),
-                    const SizedBox(width: 12),
-                    Icon(
+                    const Icon(
                       Icons.location_pin,
-                      size: 20,
                       color: AppColor.heavyRed,
                     ),
-                    const SizedBox(width: 2),
+                    const SizedBox(
+                      width: WhiteSpaceSize.verySmall,
+                    ),
                     Expanded(
                       child: Text(
                         location,
+                        maxLines: 4,
                       ),
                     ),
                   ],

@@ -1,4 +1,4 @@
-import 'package:bearlysocial/components/form_elements/profile_pic.dart';
+import 'package:bearlysocial/components/pictures/profile_pic.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/constants/translation_key.dart';
 import 'package:bearlysocial/providers/auth_state.dart';

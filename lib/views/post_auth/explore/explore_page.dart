@@ -19,7 +19,7 @@ class _ExplorePageState extends State<ExplorePage> {
     ProfileCard(
       name: 'Larry Page',
       rating: 4.2,
-      location: 'Moscow',
+      location: 'Jakarta, Indonesia',
       interests: ['Football'],
     ),
   ];
@@ -28,7 +28,9 @@ class _ExplorePageState extends State<ExplorePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: PaddingSize.small),
+        padding: const EdgeInsets.symmetric(
+          horizontal: PaddingSize.small,
+        ),
         color: Theme.of(context).scaffoldBackgroundColor,
         child: ListView.builder(
           controller: widget.controller,

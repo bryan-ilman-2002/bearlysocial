@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/providers/profile_pic_state.dart';
 import 'package:bearlysocial/utilities/selfie_capture_operation.dart';
 import 'package:camera/camera.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image/image.dart' as img_lib;
@@ -120,9 +123,27 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
 
             await _camController.stopImageStream();
 
+            XFile? compressedSelfie =
+                await FlutterImageCompress.compressAndGetFile(
+              _selfie!.path,
+              SelfieCaptureOperation.addSuffixToFilePath(
+                filePath: _selfie!.path,
+                suffix: '-compressed',
+              ),
+              quality: 16,
+            );
+
+            File imageFile = File(compressedSelfie!.path);
+
+            int fileSizeInBytes = imageFile.readAsBytesSync().lengthInBytes;
+
+            double fileSizeInKB = fileSizeInBytes / 1024;
+
+            print("File size: $fileSizeInKB KB");
+
             final img_lib.Image? profilePic =
                 await SelfieCaptureOperation.buildProfilePic(
-              imagePath: _selfie!.path,
+              imagePath: compressedSelfie.path,
               screenSize: screenSize,
             );
 
@@ -170,8 +191,8 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
                     end: Alignment.bottomCenter,
                     stops: const [0, 0.2, 0.4],
                     colors: <Color>[
-                      Colors.black.withOpacity(OpacitySize.large),
-                      Colors.black.withOpacity(OpacitySize.small),
+                      Colors.black.withOpacity(0.4),
+                      Colors.black.withOpacity(0.16),
                       Colors.transparent,
                     ],
                   ),
@@ -182,18 +203,17 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
                   padding: const EdgeInsets.all(
                     PaddingSize.medium,
                   ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.transparent,
-                      border: Border.all(
-                        width: _detectedFace == null
-                            ? ThicknessSize.medium
-                            : ThicknessSize.veryLarge,
-                        color:
-                            _settingFocus ? AppColor.heavyYellow : Colors.white,
-                      ),
-                    ),
+                  child: DottedBorder(
+                    borderType: BorderType.Circle,
+                    strokeCap: StrokeCap.round,
+                    strokeWidth: ThicknessSize.veryLarge,
+                    dashPattern: [
+                      _detectedFace == null
+                          ? MarginSize.veryLarge
+                          : MarginSize.verySmall / 10
+                    ],
+                    color: _settingFocus ? AppColor.lightYellow : Colors.white,
+                    child: Container(),
                   ),
                 ),
               ),

@@ -2,6 +2,9 @@ import 'package:bearlysocial/views/pre_auth/pre_auth_page.dart';
 import 'package:flutter/material.dart';
 
 class PreAuthPageManager extends StatefulWidget {
+  /// [PreAuthPageManager] is a [StatefulWidget] managing the pre-authentication pages,
+  /// allowing users to navigate between sign-up and sign-in pages using an [IndexedStack].
+
   const PreAuthPageManager({super.key});
 
   @override
@@ -9,21 +12,22 @@ class PreAuthPageManager extends StatefulWidget {
 }
 
 class _PreAuthPageManager extends State<PreAuthPageManager> {
+  List<Widget> _pages = [];
+
+  int _selectedIndex = 0;
+
   List<Widget> _initPages() {
     return <Widget>[
       PreAuthenticationPage(
         onTap: _onTab,
-        accountCreation: true, // sign up page
+        accountCreation: true, // sign-up page
       ),
       PreAuthenticationPage(
         onTap: _onTab,
-        accountCreation: false, // sign in page
+        accountCreation: false, // sign-in page
       ),
     ];
   }
-
-  int _selectedIndex = 0;
-  List<Widget> _pages = [];
 
   void _onTab(int index) {
     setState(() {

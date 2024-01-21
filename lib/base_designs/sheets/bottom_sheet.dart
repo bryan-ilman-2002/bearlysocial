@@ -2,6 +2,8 @@ import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/components/lines/horizontal_line.dart';
 import 'package:flutter/material.dart';
 
+/// [BottomSheet] is a [StatelessWidget] that displays a bottom sheet
+/// with a title, content, and optional closure widgets.
 class BottomSheet extends StatelessWidget {
   final String title;
   final Widget content;

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 /// Color constants for the application.
 class AppColor {
-  /// Light gray color. Value: Color(0xFFBABABA).
-  static const Color lightGray = Color(0xFFBABABA);
+  /// Light gray color. Value: Color(0xFFDCDCDC).
+  static const Color lightGray = Color(0xFFDCDCDC);
 
   /// Moderate gray color. Value: Color(0xFF727272).
   static const Color moderateGray = Color(0xFF727272);
@@ -72,7 +72,8 @@ class TextSize {
 
 /// Icon size constants for the application.
 class IconSize {
-  // static const double small = ;
+  /// Small icon size. Value: 8.0.
+  static const double small = 8.0;
 
   /// Medium icon size. Value: 24.0.
   static const double medium = 24.0;
@@ -220,10 +221,4 @@ class WhiteSpaceSize {
 
   /// Very large white space size. Value: 80.0.
   static const double veryLarge = 80.0;
-}
-
-class OpacitySize {
-  static const double small = 0.16;
-
-  static const double large = 0.4;
 }

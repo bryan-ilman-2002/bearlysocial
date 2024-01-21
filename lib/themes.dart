@@ -110,8 +110,8 @@ DropdownMenuThemeData get _dropdownMenuTheme {
             CurvatureSize.large,
           ),
           side: BorderSide(
-            color: _normalColor as Color,
             width: ThicknessSize.verySmall,
+            color: _normalColor as Color,
           ),
         ),
       ),

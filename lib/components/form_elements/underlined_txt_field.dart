@@ -8,6 +8,7 @@ class UnderlinedTextField extends StatefulWidget {
   final FocusNode focusNode;
   final String? errorText;
 
+  /// [UnderlinedTextField] is a [StatefulWidget] representing a text input field with an underline.
   const UnderlinedTextField({
     super.key,
     required this.label,
@@ -38,8 +39,8 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
                   ? FontWeight.bold
                   : FontWeight.normal,
               color: widget.focusNode.hasFocus
-                  ? Theme.of(context).focusColor
-                  : Theme.of(context).textTheme.titleLarge?.color,
+                  ? Theme.of(context).textTheme.titleLarge?.color
+                  : Theme.of(context).textTheme.bodyMedium?.color,
             ),
         errorText: widget.errorText,
         errorStyle: Theme.of(context).textTheme.bodySmall,

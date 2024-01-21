@@ -5,9 +5,7 @@ import 'package:google_ml_kit/google_ml_kit.dart';
 class BoundingBoxPainter extends CustomPainter {
   final Face face;
 
-  BoundingBoxPainter({
-    required this.face,
-  });
+  BoundingBoxPainter({required this.face});
 
   @override
   void paint(final Canvas canvas, final Size size) {
@@ -22,10 +20,7 @@ class BoundingBoxPainter extends CustomPainter {
     final double bottom = face.boundingBox.bottom;
 
     // Draw the bounding box
-    canvas.drawRect(
-      Rect.fromLTRB(left, top, right, bottom),
-      paint,
-    );
+    canvas.drawRect(Rect.fromLTRB(left, top, right, bottom), paint);
 
     final dotPaint = Paint()
       ..style = PaintingStyle.fill

@@ -11,6 +11,7 @@ class Dropdown extends StatelessWidget {
   final Function addLabel;
   final Function removeLabel;
 
+  /// [Dropdown] is a [StatelessWidget] for creating a dropdown with an associated list of tags.
   const Dropdown({
     super.key,
     required this.hint,
@@ -66,18 +67,18 @@ class Dropdown extends StatelessWidget {
           ),
           const SizedBox(
             height: WhiteSpaceSize.small / 2,
+          ),
+          Wrap(
+            alignment: WrapAlignment.center,
+            runAlignment: WrapAlignment.center,
+            spacing: MarginSize.veryLarge,
+            runSpacing: MarginSize.veryLarge,
+            children: DropdownOperation.buildTags(
+              collection: collection,
+              callbackFunction: removeLabel,
+            ),
           )
         ],
-        Wrap(
-          alignment: WrapAlignment.center,
-          runAlignment: WrapAlignment.center,
-          spacing: MarginSize.veryLarge,
-          runSpacing: MarginSize.veryLarge,
-          children: DropdownOperation.buildTags(
-            collection: collection,
-            callbackFunction: removeLabel,
-          ),
-        )
       ],
     );
   }

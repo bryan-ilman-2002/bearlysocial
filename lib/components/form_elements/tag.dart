@@ -5,6 +5,7 @@ class Tag extends StatelessWidget {
   final String label;
   final Function callbackFunction;
 
+  /// [Tag] is a [StatelessWidget] representing a tag element.
   const Tag({
     super.key,
     required this.label,
@@ -37,10 +38,10 @@ class Tag extends StatelessWidget {
           children: [
             const Icon(
               Icons.circle,
-              size: SideSize.verySmall / 2,
+              size: IconSize.small,
             ),
             const SizedBox(
-              width: WhiteSpaceSize.verySmall / 2,
+              width: MarginSize.small,
             ),
             Text(
               label,

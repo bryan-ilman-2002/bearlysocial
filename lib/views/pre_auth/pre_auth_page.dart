@@ -16,6 +16,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 
 class PreAuthenticationPage extends ConsumerStatefulWidget {
+  /// [PreAuthenticationPage] is a [StatefulWidget] designed to handle pre-authentication processes,
+  /// offering users the capability to sign up or sign in.
+
   final Function(int) onTap;
   final bool accountCreation;
 

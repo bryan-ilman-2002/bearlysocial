@@ -9,6 +9,8 @@ class SettingButton extends StatelessWidget {
   final Color? splashColor;
   final Color? contentColor;
 
+  /// [SettingButton] is a [StatelessWidget] representing a button used in [SettingsPage].
+  /// It consists of an icon and a label, and triggers a callback function when tapped.
   const SettingButton({
     super.key,
     required this.icon,
@@ -62,7 +64,6 @@ class SettingButton extends StatelessWidget {
           ),
         ),
         const HorizontalLine(
-          height: ThicknessSize.verySmall,
           horizontalMargin: MarginSize.medium,
         ),
       ],

@@ -14,6 +14,9 @@ class SplashButton extends StatelessWidget {
   final BoxShadow? shadow;
   final Widget? child;
 
+  /// [SplashButton] is a [StatelessWidget] representing a customizable button
+  /// designed to provide a splash effect upon user interaction.
+  /// It can be configured with various visual properties such as size, padding, colors, and shadows.
   const SplashButton({
     super.key,
     this.width,
@@ -38,7 +41,7 @@ class SplashButton extends StatelessWidget {
         border: Border.all(
           color: Colors.transparent,
         ),
-        borderRadius: borderRadius,
+        borderRadius: borderRadius ?? BorderRadius.zero,
         boxShadow: [
           if (shadow != null) shadow!,
         ],
@@ -54,7 +57,7 @@ class SplashButton extends StatelessWidget {
         child: InkWell(
           onTap: callbackFunction?.call,
           splashColor: splashColor,
-          borderRadius: borderRadius,
+          borderRadius: borderRadius ?? BorderRadius.zero,
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: horizontalPadding ?? PaddingSize.zero,

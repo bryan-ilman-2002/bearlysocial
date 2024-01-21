@@ -88,12 +88,22 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
   @override
   void initState() {
     super.initState();
-    _firstNameFocusNode.addListener(() => setState);
-    _lastNameFocusNode.addListener(() => setState);
+    _firstNameFocusNode.addListener(
+      () => setState,
+    );
+    _lastNameFocusNode.addListener(
+      () => setState,
+    );
 
-    _emailFocusNode.addListener(() => setState);
-    _newPasswordFocusNode.addListener(() => setState);
-    _newPasswordConfirmationFocusNode.addListener(() => setState);
+    _emailFocusNode.addListener(
+      () => setState,
+    );
+    _newPasswordFocusNode.addListener(
+      () => setState,
+    );
+    _newPasswordConfirmationFocusNode.addListener(
+      () => setState,
+    );
 
     _interestMenu = DropdownOperation.buildMenu(
       entries: DropdownOperation.allInterests,
@@ -144,7 +154,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
                   if (ctx != null && ctx.mounted) {
                     Navigator.of(ctx).push(
                       PageRouteBuilder(
-                        pageBuilder: (ctx, a, b) => SelfieScreen(
+                        pageBuilder: (ctx, p, q) => SelfieScreen(
                           frontCamera: frontCamera,
                         ),
                         transitionDuration: const Duration(

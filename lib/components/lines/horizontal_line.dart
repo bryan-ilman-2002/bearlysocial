@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 class HorizontalLine extends StatelessWidget {
   final double width;
   final double height;
-  final double? horizontalMargin;
-  final double? verticalMargin;
+  final double horizontalMargin;
+  final double verticalMargin;
   final Color? color;
 
+  /// [HorizontalLine] is a [StatelessWidget] representing a horizontal line.
   const HorizontalLine({
     super.key,
     this.width = SideSize.infinity,
     this.height = ThicknessSize.verySmall,
-    this.horizontalMargin,
-    this.verticalMargin,
+    this.horizontalMargin = MarginSize.zero,
+    this.verticalMargin = MarginSize.zero,
     this.color,
   });
 
@@ -21,8 +22,8 @@ class HorizontalLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
-        horizontal: horizontalMargin ?? MarginSize.zero,
-        vertical: verticalMargin ?? MarginSize.zero,
+        horizontal: horizontalMargin,
+        vertical: verticalMargin,
       ),
       width: width,
       height: height,

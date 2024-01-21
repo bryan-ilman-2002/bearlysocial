@@ -1,6 +1,6 @@
 import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/views/post_auth/chats/page.dart';
-import 'package:bearlysocial/views/post_auth/explore/page.dart';
+import 'package:bearlysocial/views/post_auth/explore/explore_page.dart';
 import 'package:bearlysocial/views/post_auth/favorites/page.dart';
 import 'package:bearlysocial/components/bars/nav_bar.dart' as app_nav_bar;
 import 'package:bearlysocial/views/post_auth/sessions/page.dart';
@@ -8,6 +8,10 @@ import 'package:bearlysocial/views/post_auth/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 
 class PostAuthPageManager extends StatefulWidget {
+  /// [PostAuthPageManager] is a [StatefulWidget] responsible for managing post-authentication pages,
+  /// allowing users to navigate between various pages using an [IndexedStack].
+  /// It features a [app_nav_bar.NavigationBar] and a [FloatingActionButton] for scrolling to the top.
+
   const PostAuthPageManager({super.key});
 
   @override
@@ -15,11 +19,12 @@ class PostAuthPageManager extends StatefulWidget {
 }
 
 class _PostAuthPageManager extends State<PostAuthPageManager> {
-  bool _showingScrollButton = false;
-  late ScrollController _controller;
+  List<Widget> _pages = [];
 
   int _selectedIndex = 0;
-  List<Widget> _pages = [];
+
+  late ScrollController _controller;
+  bool _showingScrollButton = false;
 
   Map<String, Map<String, dynamic>> _navItems = {};
 

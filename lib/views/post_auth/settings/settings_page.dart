@@ -49,7 +49,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ],
             ),
             const SizedBox(
-              height: WhiteSpaceSize.medium / 2,
+              height: MarginSize.veryLarge,
             ),
             SettingButton(
               icon: Icons.person_outlined,

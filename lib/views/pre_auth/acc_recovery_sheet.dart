@@ -8,6 +8,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class AccountRecovery extends StatefulWidget {
+  // [AccountRecovery] is a [StatefulWidget] that handles the recovery of a user account.
+
   const AccountRecovery({super.key});
 
   @override

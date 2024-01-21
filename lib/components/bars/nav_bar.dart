@@ -1,6 +1,7 @@
 import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:flutter/material.dart';
 
+/// [NavigationBar] is a [StatelessWidget] that displays the app's main navigation bar.
 class NavigationBar extends StatelessWidget {
   final Map<String, Map<String, dynamic>> navItems;
   final int selectedIndex;

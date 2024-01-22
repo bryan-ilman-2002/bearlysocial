@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
@@ -31,12 +30,13 @@ class SelfieScreen extends ConsumerStatefulWidget {
 
 class _SelfieScreen extends ConsumerState<SelfieScreen>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   late AnimationController _animationController;
   late CameraController _camController;
 
   late Future<void> _camInit;
+
+  double? _yAxisValue;
+  double? _xAxisValue;
 
   Face? _detectedFace;
   bool _detecting = false;
@@ -53,8 +53,48 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
       enableTracking: true,
     ),
   );
-  var _top;
-  var _right;
+
+  void _calculateCameraFrameCancelButtonPosition() {
+    final screenSize = MediaQuery.of(context).size;
+
+    var frameSize = (screenSize.width < screenSize.height)
+        ? screenSize.width
+        : screenSize.height / 2;
+
+    frameSize -= PaddingSize.verySmall; // minus the frame's padding value
+
+    final frameRadius = frameSize / 2;
+    const angleSize = (45 / 180) * pi;
+
+    final top = (screenSize.height / 2) - (sin(angleSize) * frameRadius);
+    final right = (screenSize.width / 2) - (cos(angleSize) * frameRadius);
+
+    setState(() {
+      _yAxisValue = top - 24.0; // this number is arbitrary
+      _xAxisValue = right - 16.0; // this number is arbitrary
+    });
+  }
+
+  void _insertCamFlash() {
+    if (!mounted) return;
+
+    OverlayEntry camFlash = OverlayEntry(
+      builder: (ctx) => Positioned.fill(
+        child: Container(
+          color: Colors.white,
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(camFlash);
+
+    Future.delayed(
+      const Duration(
+        milliseconds: AnimationDuration.quick,
+      ),
+      () => camFlash.remove(),
+    );
+  }
 
   @override
   void initState() {
@@ -93,15 +133,13 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
           final bool sameFace =
               _detectedFace?.trackingId == detectedFace?.trackingId;
 
-          // Check if the detected face has a valid smiling probability
-          final bool validSmilingProbability =
-              detectedFace?.smilingProbability != null;
+          final double? smilingProbability = detectedFace?.smilingProbability;
 
           // Check if the detected face is smiling with a high probability (98% or more)
           final bool highSmilingProbability =
-              detectedFace != null && detectedFace.smilingProbability! >= 0.98;
+              smilingProbability != null && smilingProbability >= 0.98;
 
-          if (sameFace && validSmilingProbability && highSmilingProbability) {
+          if (sameFace && highSmilingProbability) {
             Future.delayed(
               const Duration(milliseconds: AnimationDuration.slow),
               () => Navigator.pop(context),
@@ -109,47 +147,31 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
 
             _selfie = await _camController.takePicture();
 
-            OverlayEntry camFlash = OverlayEntry(
-              builder: (context) => Positioned.fill(
-                child: Container(
-                  color: Colors.white,
-                ),
-              ),
-            );
-
-            Overlay.of(_scaffoldKey.currentContext!).insert(camFlash);
-
-            await Future.delayed(
-              const Duration(
-                milliseconds: AnimationDuration.quick,
-              ),
-            );
-
-            camFlash.remove();
+            _insertCamFlash();
 
             await _camController.stopImageStream();
 
-            XFile? compressedSelfie =
-                await FlutterImageCompress.compressAndGetFile(
-              _selfie!.path,
-              SelfieCaptureOperation.addSuffixToFilePath(
-                filePath: _selfie!.path,
-                suffix: '-compressed',
-              ),
+            final String? initialFilePath = _selfie?.path;
+
+            if (initialFilePath == null) {
+              return;
+            }
+
+            final String renamedFilePath =
+                SelfieCaptureOperation.addSuffixToFilePath(
+              filePath: initialFilePath,
+              suffix: '-compressed',
+            );
+
+            await FlutterImageCompress.compressAndGetFile(
+              initialFilePath,
+              renamedFilePath,
               quality: 16,
             );
 
-            File imageFile = File(compressedSelfie!.path);
-
-            int fileSizeInBytes = imageFile.readAsBytesSync().lengthInBytes;
-
-            double fileSizeInKB = fileSizeInBytes / 1024;
-
-            print("File size: $fileSizeInKB KB");
-
             final img_lib.Image? profilePic =
                 await SelfieCaptureOperation.buildProfilePic(
-              imagePath: compressedSelfie.path,
+              imagePath: renamedFilePath,
               screenSize: screenSize,
             );
 
@@ -170,42 +192,20 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
     _animationController.dispose();
     _camController.dispose();
     _faceDetector.close();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    void calculatePosition() {
-      double cameraFrameSize;
+    _calculateCameraFrameCancelButtonPosition();
 
-      if (MediaQuery.of(context).size.width <
-          MediaQuery.of(context).size.height) {
-        cameraFrameSize = MediaQuery.of(context).size.width;
-      } else {
-        cameraFrameSize = MediaQuery.of(context).size.height * (2 / 3);
-      }
-
-      double cameraFrameRadius = cameraFrameSize / 2;
-
-      double top = (MediaQuery.of(context).size.height / 2) -
-          (0.707106 * cameraFrameRadius);
-      double right = (MediaQuery.of(context).size.width / 2) -
-          (0.707106 * cameraFrameRadius);
-
-      setState(() {
-        _top = top - 16;
-        _right = right - 8;
-      });
-    }
-
-    calculatePosition();
     final textStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.normal,
           color: Colors.white,
         );
 
     return Scaffold(
-      key: _scaffoldKey,
       body: FutureBuilder<void>(
         future: _camInit,
         builder: (context, snapshot) {
@@ -216,7 +216,6 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
                   child: CameraPreview(_camController),
                 ),
               Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
                     child: _detectedFace == null
@@ -231,19 +230,13 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
                           ),
                   ),
                   Expanded(
-                    flex: MediaQuery.of(context).size.width <=
-                            MediaQuery.of(context).size.height
-                        ? 2
-                        : 4,
-                    child: Container(
-                      margin: EdgeInsets.all(8.0),
-                      child: _CameraFrame(
-                        color:
-                            _settingFocus ? AppColor.lightYellow : Colors.white,
-                        gapSize: _detectedFace == null
-                            ? MarginSize.veryLarge
-                            : MarginSize.verySmall / 10,
-                      ),
+                    flex: 2,
+                    child: _CameraFrame(
+                      color:
+                          _settingFocus ? AppColor.lightYellow : Colors.white,
+                      gapSize: _detectedFace == null
+                          ? MarginSize.veryLarge
+                          : MarginSize.verySmall / 10,
                     ),
                   ),
                   Expanded(
@@ -283,8 +276,8 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
                 },
               ),
               Positioned(
-                top: _top,
-                right: _right,
+                top: _yAxisValue,
+                right: _xAxisValue,
                 child: UnconstrainedBox(
                   child: SplashButton(
                     horizontalPadding: PaddingSize.verySmall,

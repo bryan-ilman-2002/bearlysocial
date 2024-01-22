@@ -7,6 +7,8 @@ import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image/image.dart' as img_lib;
 
 class SelfieCaptureOperation {
+  static double? cameraFrameSize;
+
   static Future<Face?> detectFace({
     required Size screenSize,
     required int sensorOrientation,
@@ -141,6 +143,9 @@ class SelfieCaptureOperation {
     required Offset faceCenter,
     required Face face,
   }) {
+    const double coordinateDeviation = 40.0;
+    const double poseInaccuracy = 20.0;
+
     final double headTilt = face.headEulerAngleX ?? double.infinity;
     final double headTurn = face.headEulerAngleY ?? double.infinity;
     final double headRotation = face.headEulerAngleZ ?? double.infinity;
@@ -148,11 +153,11 @@ class SelfieCaptureOperation {
     final double dxDifference = (screenCenter.dx - faceCenter.dx).abs();
     final double dyDifference = (screenCenter.dy - faceCenter.dy).abs();
 
-    return dxDifference <= 40 &&
-        dyDifference <= 40 &&
-        headTilt.abs() <= 20 &&
-        headTurn.abs() <= 20 &&
-        headRotation.abs() <= 20;
+    return dxDifference <= coordinateDeviation &&
+        dyDifference <= coordinateDeviation &&
+        headTilt.abs() <= poseInaccuracy &&
+        headTurn.abs() <= poseInaccuracy &&
+        headRotation.abs() <= poseInaccuracy;
   }
 
   static String addSuffixToFilePath({

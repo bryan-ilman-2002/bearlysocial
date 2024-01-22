@@ -56,12 +56,9 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
 
   void _calculateCameraFrameCancelButtonPosition() {
     final screenSize = MediaQuery.of(context).size;
-
-    var frameSize = (screenSize.width < screenSize.height)
-        ? screenSize.width
-        : screenSize.height / 2;
-
-    frameSize -= PaddingSize.verySmall; // minus the frame's padding value
+    final frameSize = SelfieCaptureOperation.calculateCameraFrameSize(
+      screenSize: screenSize,
+    );
 
     final frameRadius = frameSize / 2;
     const angleSize = (45 / 180) * pi;
@@ -146,7 +143,6 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
             );
 
             _selfie = await _camController.takePicture();
-
             _insertCamFlash();
 
             await _camController.stopImageStream();

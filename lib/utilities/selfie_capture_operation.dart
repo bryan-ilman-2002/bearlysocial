@@ -1,13 +1,22 @@
 import 'dart:io';
-import 'dart:math';
 
+import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image/image.dart' as img_lib;
 
 class SelfieCaptureOperation {
-  static double? cameraFrameSize;
+  static double calculateCameraFrameSize({
+    required Size screenSize,
+  }) {
+    var frameSize = (screenSize.width < screenSize.height)
+        ? screenSize.width
+        : screenSize.height / 2;
+    frameSize -= PaddingSize.verySmall; // minus the frame's padding value
+
+    return frameSize;
+  }
 
   static Future<Face?> detectFace({
     required Size screenSize,
@@ -193,7 +202,7 @@ class SelfieCaptureOperation {
         height: newHeight,
       );
 
-      final int size = min(stretchedImage.width, stretchedImage.height) - 20;
+      final int size = calculateCameraFrameSize(screenSize: screenSize).toInt();
       final int offsetX = (stretchedImage.width - size) ~/ 2;
       final int offsetY = (stretchedImage.height - size) ~/ 2;
 

@@ -15,6 +15,9 @@ class _CameraFrame extends StatelessWidget {
       strokeWidth: ThicknessSize.veryLarge,
       borderType: BorderType.Circle,
       dashPattern: [gapSize],
+      borderPadding: const EdgeInsets.all(
+        PaddingSize.verySmall,
+      ),
       strokeCap: StrokeCap.round,
       color: color,
       child: Container(),

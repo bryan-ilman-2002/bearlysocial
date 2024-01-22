@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
-import 'package:bearlysocial/components/texts/blinking_dots.dart';
+import 'package:bearlysocial/components/texts/animated_elliptical_txt.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/providers/profile_pic_state.dart';
-import 'package:bearlysocial/utilities/custom_painters.dart';
 import 'package:bearlysocial/utilities/selfie_capture_operation.dart';
 import 'package:camera/camera.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -53,6 +53,8 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
       enableTracking: true,
     ),
   );
+  var _top;
+  var _right;
 
   @override
   void initState() {
@@ -173,10 +175,35 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
 
   @override
   Widget build(BuildContext context) {
+    void calculatePosition() {
+      double cameraFrameSize;
+
+      if (MediaQuery.of(context).size.width <
+          MediaQuery.of(context).size.height) {
+        cameraFrameSize = MediaQuery.of(context).size.width;
+      } else {
+        cameraFrameSize = MediaQuery.of(context).size.height * (2 / 3);
+      }
+
+      double cameraFrameRadius = cameraFrameSize / 2;
+
+      double top = (MediaQuery.of(context).size.height / 2) -
+          (0.707106 * cameraFrameRadius);
+      double right = (MediaQuery.of(context).size.width / 2) -
+          (0.707106 * cameraFrameRadius);
+
+      setState(() {
+        _top = top - 16;
+        _right = right - 8;
+      });
+    }
+
+    calculatePosition();
     final textStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.normal,
           color: Colors.white,
         );
+
     return Scaffold(
       key: _scaffoldKey,
       body: FutureBuilder<void>(
@@ -188,55 +215,50 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
                 Positioned.fill(
                   child: CameraPreview(_camController),
                 ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: PaddingSize.verySmall,
-                  vertical: 16,
-                ),
-                child: Column(
-                  children: [
-                    UnconstrainedBox(
-                      child: SplashButton(
-                        horizontalPadding: PaddingSize.veryLarge,
-                        verticalPadding: PaddingSize.veryLarge,
-                        buttonColor: Colors.red,
-                        borderRadius: BorderRadius.circular(
-                          CurvatureSize.infinity,
-                        ),
-                        callbackFunction: () => Navigator.pop(context),
-                        child: const Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                        ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: _detectedFace == null
+                        ? AnimatedEllipticalText(
+                            controller: _animationController,
+                            textStyle: textStyle,
+                            leadingText: 'Scanning facial features',
+                          )
+                        : Text(
+                            'Smile to take a photo.',
+                            style: textStyle,
+                          ),
+                  ),
+                  Expanded(
+                    flex: MediaQuery.of(context).size.width <=
+                            MediaQuery.of(context).size.height
+                        ? 2
+                        : 4,
+                    child: Container(
+                      margin: EdgeInsets.all(8.0),
+                      child: _CameraFrame(
+                        color:
+                            _settingFocus ? AppColor.lightYellow : Colors.white,
+                        gapSize: _detectedFace == null
+                            ? MarginSize.veryLarge
+                            : MarginSize.verySmall / 10,
                       ),
                     ),
-                    BlinkingDots(
-                      enabled: _detectedFace == null,
-                      controller: _animationController,
-                      textStyle: textStyle,
-                      leadingText: _detectedFace == null
-                          ? 'Scanning facial features '
-                          : 'Smile to take a photo.',
-                    ),
-                    _CameraFrame(
-                      color:
-                          _settingFocus ? AppColor.lightYellow : Colors.white,
-                      gapSize: _detectedFace == null
-                          ? MarginSize.veryLarge
-                          : MarginSize.verySmall / 10,
-                    ),
-                    BlinkingDots(
-                      enabled: _settingFocus,
-                      controller: _animationController,
-                      textStyle: textStyle,
-                      leadingText: _settingFocus ? 'Adjusting focus ' : '',
-                    ),
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    child: _settingFocus
+                        ? AnimatedEllipticalText(
+                            controller: _animationController,
+                            textStyle: textStyle,
+                            leadingText: 'Adjusting focus',
+                          )
+                        : const SizedBox(),
+                  ),
+                ],
               ),
               GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTapDown: (TapDownDetails details) {
+                onTapUp: (TapUpDetails details) {
                   final RenderBox renderBox =
                       context.findRenderObject() as RenderBox;
 
@@ -259,6 +281,25 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
                     () => setState(() => _settingFocus = false),
                   );
                 },
+              ),
+              Positioned(
+                top: _top,
+                right: _right,
+                child: UnconstrainedBox(
+                  child: SplashButton(
+                    horizontalPadding: PaddingSize.verySmall,
+                    verticalPadding: PaddingSize.verySmall,
+                    buttonColor: Colors.white,
+                    borderRadius: BorderRadius.circular(
+                      CurvatureSize.infinity,
+                    ),
+                    callbackFunction: () => Navigator.pop(context),
+                    child: const Icon(
+                      Icons.close_rounded,
+                      color: AppColor.heavyGray,
+                    ),
+                  ),
+                ),
               ),
             ],
           );

@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/components/texts/animated_elliptical_txt.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
-import 'package:bearlysocial/providers/profile_pic_state.dart';
+import 'package:bearlysocial/utilities/file_management.dart';
 import 'package:bearlysocial/utilities/selfie_capture_operation.dart';
 import 'package:camera/camera.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -18,10 +18,12 @@ part 'package:bearlysocial/components/lines/camera_frame.dart';
 
 class SelfieScreen extends ConsumerStatefulWidget {
   final CameraDescription frontCamera;
+  final Function({required img_lib.Image? profilePic}) onPictureSuccess;
 
   const SelfieScreen({
     super.key,
     required this.frontCamera,
+    required this.onPictureSuccess,
   });
 
   @override
@@ -61,7 +63,7 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
     );
 
     final frameRadius = frameSize / 2;
-    const angleSize = (45 / 180) * pi;
+    const angleSize = (45 / 180) * pi; // in radian
 
     final top = (screenSize.height / 2) - (sin(angleSize) * frameRadius);
     final right = (screenSize.width / 2) - (cos(angleSize) * frameRadius);
@@ -153,8 +155,7 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
               return;
             }
 
-            final String renamedFilePath =
-                SelfieCaptureOperation.addSuffixToFilePath(
+            final String renamedFilePath = FileManagement.addSuffixToFilePath(
               filePath: initialFilePath,
               suffix: '-compressed',
             );
@@ -171,7 +172,7 @@ class _SelfieScreen extends ConsumerState<SelfieScreen>
               screenSize: screenSize,
             );
 
-            ref.read(setProfilePic)(profilePicture: profilePic);
+            widget.onPictureSuccess(profilePic: profilePic);
           }
 
           setState(() {

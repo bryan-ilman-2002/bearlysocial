@@ -5,6 +5,9 @@ enum DatabaseKey {
   /// The key for the 'token' field in the database.
   token,
 
+  /// The key for the 'profilePic' field in the database.
+  profilePic,
+
   /// The key for the 'firstName' field in the database.
   firstName,
 

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:bearlysocial/constants/db_key.dart';
 import 'package:bearlysocial/constants/endpoint.dart';
 import 'package:bearlysocial/constants/translation_key.dart';
-import 'package:bearlysocial/utilities/make_request.dart';
+import 'package:bearlysocial/utilities/api.dart';
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/utilities/db_operation.dart';
@@ -68,6 +68,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
     _usernameFocusNode.dispose();
     _passwordFocusNode.dispose();
     _passwordConfirmationFocusNode.dispose();
+
     super.dispose();
   }
 
@@ -82,6 +83,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
           _passwordConfirmationErrorText =
               TranslationKey.errorPasswordConfirmation.name.tr();
         });
+
         _blockInput = false;
       } else {
         String hashedUsername = DatabaseOperation.getHash(
@@ -91,7 +93,7 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
           input: _passwordController.text,
         );
 
-        final Response httpResponse = await makeRequest(
+        final Response httpResponse = await API.makeRequest(
           endpoint: widget.accountCreation ? Endpoint.signUp : Endpoint.signIn,
           body: {
             'id': hashedUsername,

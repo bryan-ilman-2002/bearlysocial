@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class SettingButton extends StatelessWidget {
   final IconData icon;
   final String label;
+  final bool showSignal;
   final Function() callbackFunction;
   final Color? splashColor;
   final Color? contentColor;
@@ -15,6 +16,7 @@ class SettingButton extends StatelessWidget {
     super.key,
     required this.icon,
     required this.label,
+    this.showSignal = false,
     required this.callbackFunction,
     this.splashColor,
     this.contentColor,

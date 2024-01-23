@@ -2,7 +2,7 @@ import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/components/texts/decorated_txt.dart';
 import 'package:bearlysocial/components/pictures/profile_pic.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
-import 'package:bearlysocial/utilities/get_rating_color.dart';
+import 'package:bearlysocial/utilities/form_management.dart';
 import 'package:flutter/material.dart';
 
 class ProfileCard extends StatelessWidget {
@@ -51,7 +51,9 @@ class ProfileCard extends StatelessWidget {
                 bottom: 0.0,
                 right: 0.0,
                 child: DecoratedText(
-                  backgroundColor: calculateRatingColor(4.2),
+                  backgroundColor: FormManagement.calculateRatingColor(
+                    rating: 4.2,
+                  ),
                   text: '4.2',
                 ),
               ),

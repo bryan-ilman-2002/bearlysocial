@@ -42,21 +42,38 @@ class DatabaseOperation {
     });
   }
 
-  /// Retrieves transactions from the database.
+  /// Retrieves a transaction value from the database.
   ///
-  /// This function is asynchronous and returns a Future that completes with a list of transactions.
+  /// This function is asynchronous and returns a Future that completes with a transaction value.
   ///
-  /// The `keys` parameter is a list of keys for the transactions to be retrieved.
-  static Future<List<Transaction?>> retrieveTransactions({
-    required List<String> keys,
+  /// The `key` parameter is a key for the transaction value to be retrieved.
+  static Future<String> retrieveTransaction({
+    required String key,
   }) async {
     final Isar? dbConnection = Isar.getInstance();
 
-    final List<int> hashes = keys.map(crc32code).toList();
-    final List<Transaction?>? values =
-        await dbConnection?.transactions.getAll(hashes);
+    final int hash = crc32code(key);
 
-    return [...?values];
+    final Transaction? transaction = await dbConnection?.transactions.get(hash);
+    final String? value = transaction?.value;
+
+    return value ?? '';
+  }
+
+  /// Retrieves transaction values from the database.
+  ///
+  /// This function is asynchronous and returns a Future that completes with a list of transaction values.
+  ///
+  /// The `keys` parameter is a list of keys for the transaction values to be retrieved.
+  static Future<List<String>> retrieveTransactions({
+    required List<String> keys,
+  }) async {
+    final dbConnection = Isar.getInstance();
+
+    final hashes = keys.map(crc32code).toList();
+    final txns = await dbConnection?.transactions.getAll(hashes);
+
+    return txns?.map((txn) => txn?.value ?? '').toList() ?? [];
   }
 
   /// Generates a SHA-256 hash of the input string.

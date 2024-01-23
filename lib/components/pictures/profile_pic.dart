@@ -1,40 +1,40 @@
 import 'package:bearlysocial/constants/design_tokens.dart';
-import 'package:bearlysocial/providers/profile_pic_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image/image.dart' as img;
+import 'package:image/image.dart' as img_lib;
 
-class ProfilePicture extends ConsumerWidget {
+class ProfilePicture extends StatelessWidget {
+  final dynamic imageSource;
+
   const ProfilePicture({
     super.key,
+    this.imageSource,
   });
 
+  Widget _getProfilePic() {
+    switch (imageSource.runtimeType) {
+      case img_lib.Image:
+        return Image.memory(Uint8List.fromList(img_lib.encodePng(imageSource)));
+      default:
+        return const Icon(
+          Icons.no_photography_outlined,
+        );
+    }
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Container(
       width: SideSize.large,
       height: SideSize.large,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: ref.watch(profilePic) == null
-            ? Border.all(
-                color: Theme.of(context).dividerColor,
-              )
-            : null,
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+        ),
       ),
       child: Center(
-        child: ref.watch(profilePic) == null
-            ? const Icon(
-                Icons.no_photography_outlined,
-              )
-            : ClipOval(
-                child: Image.memory(
-                  Uint8List.fromList(
-                    img.encodePng(ref.watch(profilePic)!),
-                  ),
-                ),
-              ),
+        child: _getProfilePic(),
       ),
     );
   }

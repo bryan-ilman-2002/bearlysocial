@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bearlysocial/base_designs/sheets/bottom_sheet.dart'
     as app_bottom_sheet;
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
@@ -5,10 +7,13 @@ import 'package:bearlysocial/components/form_elements/dropdown.dart';
 import 'package:bearlysocial/components/pictures/profile_pic.dart';
 import 'package:bearlysocial/components/form_elements/social_media_links.dart';
 import 'package:bearlysocial/components/form_elements/underlined_txt_field.dart';
+import 'package:bearlysocial/constants/db_key.dart';
 import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/constants/native_lang_name.dart';
 import 'package:bearlysocial/constants/social_media_consts.dart';
 import 'package:bearlysocial/constants/translation_key.dart';
+import 'package:bearlysocial/providers/auth_state.dart';
+import 'package:bearlysocial/utilities/db_operation.dart';
 import 'package:bearlysocial/utilities/dropdown_operation.dart';
 import 'package:bearlysocial/utilities/user_permission.dart';
 import 'package:bearlysocial/views/post_auth/settings/selfie_screen.dart';
@@ -16,6 +21,7 @@ import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image/image.dart' as img_lib;
 
 class PersonalInformation extends ConsumerStatefulWidget {
   const PersonalInformation({super.key});
@@ -26,8 +32,6 @@ class PersonalInformation extends ConsumerStatefulWidget {
 }
 
 class _PersonalInformationState extends ConsumerState<PersonalInformation> {
-  bool _blockInput = false;
-
   final GlobalKey<ScaffoldState> _sheetKey = GlobalKey<ScaffoldState>();
 
   final FocusNode _firstNameFocusNode = FocusNode();
@@ -40,6 +44,11 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
 
+  final TextEditingController _instagramLinkController =
+      TextEditingController();
+  final TextEditingController _facebookLinkController = TextEditingController();
+  final TextEditingController _linkedInLinkController = TextEditingController();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _newPasswordConfirmationController =
@@ -48,11 +57,16 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
   final TextEditingController _interestController = TextEditingController();
   final TextEditingController _langController = TextEditingController();
 
-  List<DropdownMenuEntry> _interestMenu = [];
-  List<DropdownMenuEntry> _langMenu = [];
-
   List<String> _interestCollection = [];
   List<String> _langCollection = [];
+
+  img_lib.Image? _profilePic;
+
+  void _setProfilePic({required img_lib.Image? profilePic}) {
+    setState(() {
+      _profilePic = profilePic;
+    });
+  }
 
   void _addInterest() {
     setState(() {
@@ -83,7 +97,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
     });
   }
 
-  void _removeLanguage({required String labelToRemove}) {
+  void _removeLang({required String labelToRemove}) {
     setState(() {
       _langCollection = DropdownOperation.removeLabel(
         labelToRemove: labelToRemove,
@@ -92,9 +106,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
     });
   }
 
-  _captureSelfie() {
-    _blockInput = true;
-
+  void _captureSelfie() {
     UserPermission.cameraPermission.then((cameraPermission) async {
       if (!cameraPermission) return;
 
@@ -109,6 +121,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           PageRouteBuilder(
             pageBuilder: (ctx, p, q) => SelfieScreen(
               frontCamera: frontCamera,
+              onPictureSuccess: _setProfilePic,
             ),
             transitionDuration: const Duration(
               seconds: AnimationDuration.instant,
@@ -117,20 +130,103 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
         );
       }
     });
+  }
 
-    _blockInput = false;
+  String _savedFirstName = '';
+  String _savedLastName = '';
+
+  List<String> _savedInterestCollection = [];
+  List<String> _savedLangCollection = [];
+
+  String _savedInstagramUsername = '';
+  String _savedFacebookUsername = '';
+  String _savedLinkedInUsername = '';
+
+  String _savedEmail = '';
+
+  void _reset() async {
+    _savedFirstName = await DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.firstName.name,
+    );
+    _firstNameController.text = _savedFirstName;
+
+    _savedLastName = await DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.lastName.name,
+    );
+    _lastNameController.text = _savedLastName;
+
+    _savedInstagramUsername = await DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.instagramUsername.name,
+    );
+    _instagramLinkController.text = _savedInstagramUsername;
+
+    _savedFacebookUsername = await DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.facebookUsername.name,
+    );
+    _facebookLinkController.text = _savedFacebookUsername;
+
+    _savedLinkedInUsername = await DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.linkedInUsername.name,
+    );
+    _linkedInLinkController.text = _savedLinkedInUsername;
+
+    final savedInterestCollection = await DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.interests.name,
+    );
+    _savedInterestCollection = savedInterestCollection.isEmpty
+        ? []
+        : List<String>.from(
+            json.decode(
+              savedInterestCollection,
+            ),
+          );
+
+    final savedLangCollection = await DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.languages.name,
+    );
+    _savedLangCollection = savedLangCollection.isEmpty
+        ? []
+        : List<String>.from(
+            json.decode(
+              savedLangCollection,
+            ),
+          );
+
+    _emailController.text = await DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.email.name,
+    );
+
+    _newPasswordController.text = '';
+    _newPasswordConfirmationController.text = '';
+  }
+
+  void _apply() {}
+
+  void _validateInput() {
+    // _blockInput = true;
+
+    // setState(() {
+    //   _usernameErrorText = _usernameController.text.isEmpty
+    //       ? TranslationKey.invalidUsername.name.tr()
+    //       : null;
+    //   _passwordErrorText = _passwordController.text.isEmpty
+    //       ? TranslationKey.invalidPassword.name.tr()
+    //       : null;
+    // });
   }
 
   @override
   void initState() {
     super.initState();
+
+    _reset();
+
     _firstNameFocusNode.addListener(() {
       setState(() {});
     });
     _lastNameFocusNode.addListener(() {
       setState(() {});
     });
-
     _emailFocusNode.addListener(() {
       setState(() {});
     });
@@ -140,13 +236,6 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
     _newPasswordConfirmationFocusNode.addListener(() {
       setState(() {});
     });
-
-    _interestMenu = DropdownOperation.buildMenu(
-      entries: DropdownOperation.allInterests,
-    );
-    _langMenu = DropdownOperation.buildMenu(
-      entries: NativeLanguageName.map,
-    );
   }
 
   @override
@@ -168,7 +257,9 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
       title: TranslationKey.personalInformationTitle.name.tr(),
       content: Column(
         children: [
-          const ProfilePicture(),
+          ProfilePicture(
+            imageSource: _profilePic,
+          ),
           const SizedBox(
             height: WhiteSpaceSize.small,
           ),
@@ -176,7 +267,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
             child: SplashButton(
               horizontalPadding: PaddingSize.small,
               verticalPadding: PaddingSize.verySmall,
-              callbackFunction: _blockInput ? null : _captureSelfie,
+              callbackFunction: _captureSelfie,
               buttonColor: Theme.of(context).scaffoldBackgroundColor,
               borderColor: Theme.of(context).dividerColor,
               borderRadius: BorderRadius.circular(
@@ -212,7 +303,9 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           Dropdown(
             hint: 'Interest(s)',
             controller: _interestController,
-            menu: _interestMenu,
+            menu: DropdownOperation.buildMenu(
+              entries: DropdownOperation.allInterests,
+            ),
             collection: _interestCollection,
             addLabel: _addInterest,
             removeLabel: _removeInterest,
@@ -223,29 +316,33 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           Dropdown(
             hint: 'language(s)',
             controller: _langController,
-            menu: _langMenu,
+            menu: DropdownOperation.buildMenu(
+              entries: NativeLanguageName.map,
+            ),
             collection: _langCollection,
             addLabel: _addLanguage,
-            removeLabel: _removeLanguage,
+            removeLabel: _removeLang,
           ),
           const SizedBox(
             height: WhiteSpaceSize.medium,
           ),
-          const SocialMediaLink(
+          SocialMediaLink(
             platform: SocialMedia.instagram,
-            enableInput: false,
+            controller: _instagramLinkController,
           ),
           const SizedBox(
             height: WhiteSpaceSize.medium,
           ),
-          const SocialMediaLink(
+          SocialMediaLink(
             platform: SocialMedia.facebook,
+            controller: _facebookLinkController,
           ),
           const SizedBox(
             height: WhiteSpaceSize.medium,
           ),
-          const SocialMediaLink(
-            platform: SocialMedia.linkedin,
+          SocialMediaLink(
+            platform: SocialMedia.linkedIn,
+            controller: _linkedInLinkController,
           ),
           const SizedBox(
             height: WhiteSpaceSize.medium,
@@ -282,7 +379,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
         SplashButton(
           horizontalPadding: PaddingSize.veryLarge,
           verticalPadding: PaddingSize.small,
-          callbackFunction: () {},
+          callbackFunction: _reset,
           buttonColor: Colors.transparent,
           borderColor: Colors.transparent,
           borderRadius: BorderRadius.circular(

@@ -4,11 +4,12 @@ import 'package:bearlysocial/components/form_elements/underlined_txt_field.dart'
 import 'package:bearlysocial/base_designs/sheets/bottom_sheet.dart'
     as app_bottom_sheet;
 import 'package:bearlysocial/constants/translation_key.dart';
+import 'package:bearlysocial/utilities/form_management.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class AccountRecovery extends StatefulWidget {
-  // [AccountRecovery] is a [StatefulWidget] that handles the recovery of a user account.
+  /// [AccountRecovery] is a [StatefulWidget] that handles the recovery of a user account.
 
   const AccountRecovery({super.key});
 
@@ -37,11 +38,9 @@ class _AccountRecoveryState extends State<AccountRecovery> {
     super.dispose();
   }
 
-  void _checkEmail() {
+  void _validateEmail() {
     setState(() {
-      final RegExp emailRegExp = RegExp(
-          r'^[a-zA-Z0-9.a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
-      if (emailRegExp.hasMatch(_emailController.text)) {
+      if (FormManagement.validateEmail(email: _emailController.text)) {
         _submitted = true;
         _emailErrorText = null;
       } else {
@@ -101,7 +100,7 @@ class _AccountRecoveryState extends State<AccountRecovery> {
                     borderRadius: BorderRadius.circular(
                       CurvatureSize.large,
                     ),
-                    callbackFunction: _checkEmail,
+                    callbackFunction: _validateEmail,
                     shadow: Shadow.medium,
                     child: Text(
                       TranslationKey.submitButton.name.tr(),

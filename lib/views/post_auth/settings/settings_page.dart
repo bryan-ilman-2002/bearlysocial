@@ -22,6 +22,8 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
+  bool _unsavedPersonalInfo = false;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

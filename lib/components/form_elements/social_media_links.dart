@@ -7,12 +7,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SocialMediaLink extends StatelessWidget {
   final SocialMedia platform;
-  final bool enableInput;
+  final TextEditingController? controller;
 
   const SocialMediaLink({
     super.key,
     required this.platform,
-    this.enableInput = true,
+    this.controller,
   });
 
   @override
@@ -22,31 +22,63 @@ class SocialMediaLink extends StatelessWidget {
               color: Theme.of(context).focusColor,
             );
 
+    final Widget svgIcon = SvgPicture.asset(
+      'assets/svgs/${platform.icon}',
+      width: SideSize.small,
+      height: SideSize.small,
+      color: Theme.of(context).focusColor,
+    );
+
+    final Widget warningIcon = SvgPicture.asset(
+      'assets/svgs/warning_icon.svg',
+      width: SideSize.small,
+      height: SideSize.small,
+      color: Theme.of(context).focusColor,
+    );
+
+    final Widget linkText = controller == null
+        ? Text(
+            platform.domain,
+            style: TextStyle(
+              decoration: TextDecoration.underline,
+              color: Theme.of(context).indicatorColor,
+            ),
+          )
+        : TextField(
+            controller: controller,
+            style: linkStyle,
+            decoration: InputDecoration(
+              isCollapsed: true,
+              border: InputBorder.none,
+              hintText: 'Type your username here.',
+              hintStyle: linkStyle,
+            ),
+          );
+
     return GestureDetector(
-      onTap: () => enableInput
-          ? null
-          : launchUrl(
+      onTap: () => controller == null
+          ? launchUrl(
               Uri.parse(platform.domain),
               mode: LaunchMode.externalApplication,
-            ),
-      onLongPress: () => enableInput
-          ? null
-          : Clipboard.setData(
-              ClipboardData(
-                text: platform.domain,
-              ),
-            ),
+            )
+          : null,
+      onLongPress: () => controller == null
+          ? Clipboard.setData(ClipboardData(text: platform.domain))
+          : null,
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(
+          Padding(
+            padding: const EdgeInsets.symmetric(
               horizontal: PaddingSize.verySmall,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  'unverified',
+                  'Unverified',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontStyle: FontStyle.italic,
+                      ),
                 ),
               ],
             ),
@@ -67,42 +99,14 @@ class SocialMediaLink extends StatelessWidget {
             ),
             child: Row(
               children: [
-                SvgPicture.asset(
-                  'assets/svgs/${platform.icon}',
-                  width: SideSize.small,
-                  height: SideSize.small,
-                  color: Theme.of(context).focusColor,
-                ),
+                svgIcon,
                 const SizedBox(
                   width: WhiteSpaceSize.verySmall,
                 ),
-                enableInput
-                    ? Expanded(
-                        child: TextField(
-                          style: linkStyle,
-                          decoration: InputDecoration(
-                            isCollapsed: true,
-                            border: InputBorder.none,
-                            hintText: 'Type your username here.',
-                            hintStyle: linkStyle,
-                          ),
-                        ),
-                      )
-                    : Expanded(
-                        child: Text(
-                          platform.domain,
-                          style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            color: Theme.of(context).indicatorColor,
-                          ),
-                        ),
-                      ),
-                SvgPicture.asset(
-                  'assets/svgs/warning_icon.svg',
-                  width: SideSize.small,
-                  height: SideSize.small,
-                  color: Theme.of(context).focusColor,
+                Expanded(
+                  child: linkText,
                 ),
+                warningIcon,
               ],
             ),
           ),

@@ -1,7 +1,6 @@
 import 'package:bearlysocial/constants/db_key.dart';
 import 'package:bearlysocial/constants/endpoint.dart';
-import 'package:bearlysocial/schemas/transaction.dart';
-import 'package:bearlysocial/utilities/make_request.dart';
+import 'package:bearlysocial/utilities/api.dart';
 import 'package:bearlysocial/utilities/db_operation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
@@ -19,7 +18,7 @@ class AuthenticationStateNotifier extends StateNotifier<bool> {
   }
 
   Future<void> validateToken() async {
-    Transaction? txnId, txnToken;
+    late String txnId, txnToken;
 
     [txnId, txnToken] = await DatabaseOperation.retrieveTransactions(
       keys: [
@@ -28,20 +27,13 @@ class AuthenticationStateNotifier extends StateNotifier<bool> {
       ],
     );
 
-    if (txnId != null && txnToken != null) {
-      final Response httpResponse = await makeRequest(
-        endpoint: Endpoint.validateToken,
-        body: {
-          'id': txnId.value,
-          'token': txnToken.value,
-        },
-      );
+    final Response httpResponse = await API.makeRequest(
+      endpoint: Endpoint.validateToken,
+      body: {'id': txnId, 'token': txnToken},
+    );
 
-      if (httpResponse.statusCode == 200) {
-        enterApp();
-      } else {
-        exitApp();
-      }
+    if (httpResponse.statusCode == 200) {
+      enterApp();
     } else {
       exitApp();
     }

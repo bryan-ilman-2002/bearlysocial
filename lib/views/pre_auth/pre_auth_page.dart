@@ -140,14 +140,11 @@ class _PreAuthenticationPageState extends ConsumerState<PreAuthenticationPage> {
   void _storeAccessNumber({
     required String id,
     required String responseBody,
-  }) async {
-    await DatabaseOperation.insertTransactions(
-      pairs: {
-        DatabaseKey.id.name: id,
-        DatabaseKey.token.name:
-            jsonDecode(responseBody)[DatabaseKey.token.name],
-      },
-    );
+  }) {
+    DatabaseOperation.insertTransactions(pairs: {
+      DatabaseKey.id.name: id,
+      DatabaseKey.token.name: jsonDecode(responseBody)[DatabaseKey.token.name],
+    });
 
     setState(() {
       _usernameErrorText = null;

@@ -4,6 +4,7 @@ import 'package:bearlysocial/constants/translation_key.dart';
 import 'package:bearlysocial/providers/auth_state.dart';
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/components/buttons/setting_btn.dart';
+import 'package:bearlysocial/providers/personal_info_saving_state.dart';
 import 'package:bearlysocial/views/post_auth/settings/personal_info_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +23,6 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
-  bool _unsavedPersonalInfo = false;
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -45,7 +44,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               children: [
                 Text(
                   'Mark Zuckerberg',
-                  maxLines: 4,
+                  maxLines: 2,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
@@ -56,6 +55,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             SettingButton(
               icon: Icons.person_outlined,
               label: TranslationKey.personalInformationButton.name.tr(),
+              displayBadge: ref.watch(isPersonalInfoEdited),
               callbackFunction: () {
                 showModalBottomSheet(
                   context: context,
@@ -63,7 +63,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
                   builder: (BuildContext context) {
-                    return const PersonalInformation();
+                    return PersonalInformation();
                   },
                 );
               },

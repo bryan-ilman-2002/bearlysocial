@@ -26,8 +26,8 @@ enum DatabaseKey {
   /// The key for the 'facebookUsername' field in the database.
   facebookUsername,
 
-  /// The key for the 'linkedInUsername' field in the database.
-  linkedInUsername,
+  /// The key for the 'linkedinUsername' field in the database.
+  linkedinUsername,
 
   /// The key for the 'email' field in the database.
   email,

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class SettingButton extends StatelessWidget {
   final IconData icon;
   final String label;
-  final bool showSignal;
+  final bool displayBadge;
   final Function() callbackFunction;
   final Color? splashColor;
   final Color? contentColor;
@@ -16,7 +16,7 @@ class SettingButton extends StatelessWidget {
     super.key,
     required this.icon,
     required this.label,
-    this.showSignal = false,
+    this.displayBadge = false,
     required this.callbackFunction,
     this.splashColor,
     this.contentColor,
@@ -56,6 +56,16 @@ class SettingButton extends StatelessWidget {
                           ),
                     ),
                   ),
+                  if (displayBadge) ...[
+                    const Icon(
+                      Icons.circle,
+                      size: IconSize.small,
+                      color: AppColor.heavyRed,
+                    ),
+                    const SizedBox(
+                      width: WhiteSpaceSize.verySmall,
+                    ),
+                  ],
                   Icon(
                     Icons.keyboard_arrow_right,
                     color: contentColor,

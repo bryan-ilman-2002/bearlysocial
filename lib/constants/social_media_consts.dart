@@ -1,7 +1,7 @@
 enum SocialMedia {
   instagram,
   facebook,
-  linkedIn,
+  linkedin,
 }
 
 extension Getter on SocialMedia {
@@ -11,7 +11,7 @@ extension Getter on SocialMedia {
         return 'https:/www.instagram.com';
       case SocialMedia.facebook:
         return 'https:/www.facebook.com';
-      case SocialMedia.linkedIn:
+      case SocialMedia.linkedin:
         return 'https:/www.linkedin.com';
       default:
         return '';
@@ -24,7 +24,7 @@ extension Getter on SocialMedia {
         return 'instagram_icon.svg';
       case SocialMedia.facebook:
         return 'facebook_icon.svg';
-      case SocialMedia.linkedIn:
+      case SocialMedia.linkedin:
         return 'linkedin_icon.svg';
       default:
         return '';

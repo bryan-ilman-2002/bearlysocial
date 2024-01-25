@@ -19,14 +19,27 @@ class DatabaseOperation {
     );
   }
 
+  static void insertTransaction({
+    required String key,
+    required String value,
+  }) {
+    final Isar? dbConnection = Isar.getInstance();
+
+    Transaction transaction = Transaction()
+      ..key = crc32code(key)
+      ..value = value;
+
+    dbConnection?.writeTxnSync(
+      () => dbConnection.transactions.putSync(transaction),
+    );
+  }
+
   /// Inserts transactions into the database.
   ///
-  /// This function is asynchronous and returns a Future that completes when the transactions are inserted.
-  ///
   /// The `pairs` parameter is a map of key-value pairs to be inserted as transactions.
-  static Future<void> insertTransactions({
+  static void insertTransactions({
     required Map<String, String> pairs,
-  }) async {
+  }) {
     final Isar? dbConnection = Isar.getInstance();
 
     List<Transaction> transactions = pairs.entries.map((entry) {
@@ -35,43 +48,34 @@ class DatabaseOperation {
         ..value = entry.value;
     }).toList();
 
-    await dbConnection?.writeTxn(() async {
-      await dbConnection.transactions.putAll(
-        transactions,
-      );
-    });
+    dbConnection?.writeTxnSync(
+      () => dbConnection.transactions.putAllSync(transactions),
+    );
   }
 
-  /// Retrieves a transaction value from the database.
-  ///
-  /// This function is asynchronous and returns a Future that completes with a transaction value.
-  ///
-  /// The `key` parameter is a key for the transaction value to be retrieved.
-  static Future<String> retrieveTransaction({
+  static String retrieveTransaction({
     required String key,
-  }) async {
+  }) {
     final Isar? dbConnection = Isar.getInstance();
 
     final int hash = crc32code(key);
+    final Transaction? transaction = dbConnection?.transactions.getSync(hash);
 
-    final Transaction? transaction = await dbConnection?.transactions.get(hash);
-    final String? value = transaction?.value;
-
-    return value ?? '';
+    return transaction?.value ?? '';
   }
 
-  /// Retrieves transaction values from the database.
+  /// Retrieves transactions from the database.
   ///
-  /// This function is asynchronous and returns a Future that completes with a list of transaction values.
+  /// This function returns a list of transactions.
   ///
-  /// The `keys` parameter is a list of keys for the transaction values to be retrieved.
-  static Future<List<String>> retrieveTransactions({
+  /// The `keys` parameter is a list of keys for the transactions to be retrieved.
+  static List<String> retrieveTransactions({
     required List<String> keys,
-  }) async {
+  }) {
     final dbConnection = Isar.getInstance();
 
     final hashes = keys.map(crc32code).toList();
-    final txns = await dbConnection?.transactions.getAll(hashes);
+    final txns = dbConnection?.transactions.getAllSync(hashes);
 
     return txns?.map((txn) => txn?.value ?? '').toList() ?? [];
   }
@@ -88,10 +92,8 @@ class DatabaseOperation {
   }
 
   /// Empties the database.
-  ///
-  /// This function is asynchronous and returns a Future that completes when the database is cleared.
-  static Future<void> emptyDatabase() async {
+  static void emptyDatabase() {
     final Isar? dbConnection = Isar.getInstance();
-    await dbConnection?.writeTxn(() async => await dbConnection.clear());
+    dbConnection?.writeTxnSync(() => dbConnection.clearSync());
   }
 }

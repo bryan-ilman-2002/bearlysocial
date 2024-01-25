@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:bearlysocial/base_designs/sheets/bottom_sheet.dart'
     as app_bottom_sheet;
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
@@ -12,9 +10,10 @@ import 'package:bearlysocial/constants/design_tokens.dart';
 import 'package:bearlysocial/constants/native_lang_name.dart';
 import 'package:bearlysocial/constants/social_media_consts.dart';
 import 'package:bearlysocial/constants/translation_key.dart';
-import 'package:bearlysocial/providers/auth_state.dart';
+import 'package:bearlysocial/providers/personal_info_saving_state.dart';
 import 'package:bearlysocial/utilities/db_operation.dart';
 import 'package:bearlysocial/utilities/dropdown_operation.dart';
+import 'package:bearlysocial/utilities/form_management.dart';
 import 'package:bearlysocial/utilities/user_permission.dart';
 import 'package:bearlysocial/views/post_auth/settings/selfie_screen.dart';
 import 'package:camera/camera.dart';
@@ -31,6 +30,184 @@ class PersonalInformation extends ConsumerStatefulWidget {
       _PersonalInformationState();
 }
 
+final _FormState _formState = _FormState.instance;
+
+class _FormState {
+  _FormState._privateConstructor() {
+    syncWithDatabase();
+
+    firstNameController.addListener(() {
+      isFirstNameEdited = savedFirstName != firstNameController.text;
+      evaluatePersonalInfoEditingState();
+    });
+    lastNameController.addListener(() {
+      isLastNameEdited = savedLastName != lastNameController.text;
+      evaluatePersonalInfoEditingState();
+    });
+    instaLinkController.addListener(() {
+      isInstaUsernameEdited = savedInstaUsername != instaLinkController.text;
+      evaluatePersonalInfoEditingState();
+    });
+    facebookLinkController.addListener(() {
+      isFacebookUsernameEdited =
+          savedFacebookUsername != facebookLinkController.text;
+      evaluatePersonalInfoEditingState();
+    });
+    linkedinLinkController.addListener(() {
+      isLinkedInUsernameEdited =
+          savedLinkedInUsername != linkedinLinkController.text;
+      evaluatePersonalInfoEditingState();
+    });
+    emailController.addListener(() {
+      isEmailEdited = savedEmail != emailController.text;
+      evaluatePersonalInfoEditingState();
+    });
+    newPasswordController.addListener(() {
+      isNewPasswordEdited = newPasswordController.text.isNotEmpty;
+      evaluatePersonalInfoEditingState();
+    });
+    newPasswordConfirmationController.addListener(() {
+      isNewPasswordConfirmationEdited =
+          newPasswordConfirmationController.text.isNotEmpty;
+      evaluatePersonalInfoEditingState();
+    });
+  }
+
+  static final _FormState instance = _FormState._privateConstructor();
+
+  WidgetRef? ref;
+
+  // Editing Fields
+  img_lib.Image? profilePicEdit;
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController interestController = TextEditingController();
+  final TextEditingController langController = TextEditingController();
+  List<String> interestCollectionEdit = [];
+  List<String> langCollectionEdit = [];
+  final TextEditingController instaLinkController = TextEditingController();
+  final TextEditingController facebookLinkController = TextEditingController();
+  final TextEditingController linkedinLinkController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController newPasswordConfirmationController =
+      TextEditingController();
+
+  // Saved Fields
+  late img_lib.Image? savedProfilePic;
+  late String savedFirstName;
+  late String savedLastName;
+  late List<String> savedInterestCollection;
+  late List<String> savedLangCollection;
+  late String savedInstaUsername;
+  late String savedFacebookUsername;
+  late String savedLinkedInUsername;
+  late String savedEmail;
+
+  // Edit Status Fields
+  late bool isProfilePicEdited;
+  late bool isFirstNameEdited;
+  late bool isLastNameEdited;
+  late bool isInterestCollectionEdited;
+  late bool isLangCollectionEdited;
+  late bool isInstaUsernameEdited;
+  late bool isFacebookUsernameEdited;
+  late bool isLinkedInUsernameEdited;
+  late bool isEmailEdited;
+  late bool isNewPasswordEdited;
+  late bool isNewPasswordConfirmationEdited;
+
+  void syncWithDatabase() {
+    savedProfilePic = null;
+
+    savedFirstName = DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.firstName.name,
+    );
+    savedLastName = DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.lastName.name,
+    );
+
+    savedInterestCollection = FormManagement.stringToList(
+      jsonListString: DatabaseOperation.retrieveTransaction(
+        key: DatabaseKey.interests.name,
+      ),
+    );
+    savedLangCollection = FormManagement.stringToList(
+      jsonListString: DatabaseOperation.retrieveTransaction(
+        key: DatabaseKey.languages.name,
+      ),
+    );
+
+    savedInstaUsername = DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.instagramUsername.name,
+    );
+    savedFacebookUsername = DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.facebookUsername.name,
+    );
+    savedLinkedInUsername = DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.linkedinUsername.name,
+    );
+    savedEmail = DatabaseOperation.retrieveTransaction(
+      key: DatabaseKey.email.name,
+    );
+
+    undoChanges();
+  }
+
+  void undoChanges() {
+    profilePicEdit = savedProfilePic;
+    firstNameController.text = savedFirstName;
+    lastNameController.text = savedLastName;
+
+    interestCollectionEdit = savedInterestCollection;
+    langCollectionEdit = savedLangCollection;
+
+    instaLinkController.text = savedInstaUsername;
+    facebookLinkController.text = savedFacebookUsername;
+    linkedinLinkController.text = savedLinkedInUsername;
+
+    emailController.text = savedLinkedInUsername;
+    newPasswordController.text = '';
+    newPasswordConfirmationController.text = '';
+
+    isProfilePicEdited = false;
+    isFirstNameEdited = false;
+    isLastNameEdited = false;
+
+    isInterestCollectionEdited = false;
+    isLangCollectionEdited = false;
+
+    isInstaUsernameEdited = false;
+    isFacebookUsernameEdited = false;
+    isLinkedInUsernameEdited = false;
+
+    isEmailEdited = false;
+    isNewPasswordEdited = false;
+    isNewPasswordConfirmationEdited = false;
+
+    evaluatePersonalInfoEditingState();
+  }
+
+  void evaluatePersonalInfoEditingState() {
+    // Check if any personal information has been edited
+    bool isAnyPersonalInfoEdited = isProfilePicEdited ||
+        isFirstNameEdited ||
+        isLastNameEdited ||
+        isInterestCollectionEdited ||
+        isLangCollectionEdited ||
+        isInstaUsernameEdited ||
+        isFacebookUsernameEdited ||
+        isLinkedInUsernameEdited ||
+        isEmailEdited ||
+        isNewPasswordEdited ||
+        isNewPasswordConfirmationEdited;
+
+    // If any personal information has been edited, set the editing state to true
+    // Otherwise, set the editing state to false
+    ref?.read(setPersonalInfoEditingState)(state: isAnyPersonalInfoEdited);
+  }
+}
+
 class _PersonalInformationState extends ConsumerState<PersonalInformation> {
   final GlobalKey<ScaffoldState> _sheetKey = GlobalKey<ScaffoldState>();
 
@@ -41,68 +218,82 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
   final FocusNode _newPasswordFocusNode = FocusNode();
   final FocusNode _newPasswordConfirmationFocusNode = FocusNode();
 
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-
-  final TextEditingController _instagramLinkController =
-      TextEditingController();
-  final TextEditingController _facebookLinkController = TextEditingController();
-  final TextEditingController _linkedInLinkController = TextEditingController();
-
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _newPasswordConfirmationController =
-      TextEditingController();
-
-  final TextEditingController _interestController = TextEditingController();
-  final TextEditingController _langController = TextEditingController();
-
-  List<String> _interestCollection = [];
-  List<String> _langCollection = [];
-
-  img_lib.Image? _profilePic;
-
   void _setProfilePic({required img_lib.Image? profilePic}) {
     setState(() {
-      _profilePic = profilePic;
+      _formState.profilePicEdit = profilePic;
+
+      _formState.isProfilePicEdited = true;
+      _formState.evaluatePersonalInfoEditingState();
     });
   }
 
   void _addInterest() {
     setState(() {
-      _interestCollection = DropdownOperation.addLabel(
+      _formState.interestCollectionEdit = DropdownOperation.addLabel(
         menu: DropdownOperation.allInterests,
-        labelToAdd: _interestController.text,
-        labelCollection: _interestCollection,
+        labelToAdd: _formState.interestController.text,
+        labelCollection: _formState.interestCollectionEdit,
       );
+
+      _formState.isInterestCollectionEdited =
+          FormManagement.listsContainSameElements(
+        listA: _formState.savedInterestCollection,
+        listB: _formState.interestCollectionEdit,
+      );
+
+      _formState.evaluatePersonalInfoEditingState();
     });
   }
 
   void _addLanguage() {
     setState(() {
-      _langCollection = DropdownOperation.addLabel(
+      _formState.langCollectionEdit = DropdownOperation.addLabel(
         menu: NativeLanguageName.map,
-        labelToAdd: _langController.text,
-        labelCollection: _langCollection,
+        labelToAdd: _formState.langController.text,
+        labelCollection: _formState.langCollectionEdit,
       );
+
+      _formState.isLangCollectionEdited =
+          FormManagement.listsContainSameElements(
+        listA: _formState.savedLangCollection,
+        listB: _formState.langCollectionEdit,
+      );
+
+      _formState.evaluatePersonalInfoEditingState();
     });
   }
 
   void _removeInterest({required String labelToRemove}) {
     setState(() {
-      _interestCollection = DropdownOperation.removeLabel(
+      _formState.interestCollectionEdit = DropdownOperation.removeLabel(
         labelToRemove: labelToRemove,
-        labelCollection: _interestCollection,
+        labelCollection: _formState.interestCollectionEdit,
       );
+
+      _formState.isInterestCollectionEdited =
+          FormManagement.listsContainSameElements(
+        listA: _formState.savedInterestCollection,
+        listB: _formState.interestCollectionEdit,
+      );
+
+      _formState.evaluatePersonalInfoEditingState();
     });
   }
 
   void _removeLang({required String labelToRemove}) {
     setState(() {
-      _langCollection = DropdownOperation.removeLabel(
+      _formState.langCollectionEdit = DropdownOperation.removeLabel(
         labelToRemove: labelToRemove,
-        labelCollection: _langCollection,
+        labelCollection: _formState.langCollectionEdit,
       );
+
+      _formState.isLangCollectionEdited =
+          FormManagement.listsContainSameElements(
+        listA: _formState.savedLangCollection,
+        listB: _formState.langCollectionEdit,
+      );
+
+      _formState.evaluatePersonalInfoEditingState();
     });
   }
 
@@ -132,94 +323,11 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
     });
   }
 
-  String _savedFirstName = '';
-  String _savedLastName = '';
-
-  List<String> _savedInterestCollection = [];
-  List<String> _savedLangCollection = [];
-
-  String _savedInstagramUsername = '';
-  String _savedFacebookUsername = '';
-  String _savedLinkedInUsername = '';
-
-  String _savedEmail = '';
-
-  void _reset() async {
-    _savedFirstName = await DatabaseOperation.retrieveTransaction(
-      key: DatabaseKey.firstName.name,
-    );
-    _firstNameController.text = _savedFirstName;
-
-    _savedLastName = await DatabaseOperation.retrieveTransaction(
-      key: DatabaseKey.lastName.name,
-    );
-    _lastNameController.text = _savedLastName;
-
-    _savedInstagramUsername = await DatabaseOperation.retrieveTransaction(
-      key: DatabaseKey.instagramUsername.name,
-    );
-    _instagramLinkController.text = _savedInstagramUsername;
-
-    _savedFacebookUsername = await DatabaseOperation.retrieveTransaction(
-      key: DatabaseKey.facebookUsername.name,
-    );
-    _facebookLinkController.text = _savedFacebookUsername;
-
-    _savedLinkedInUsername = await DatabaseOperation.retrieveTransaction(
-      key: DatabaseKey.linkedInUsername.name,
-    );
-    _linkedInLinkController.text = _savedLinkedInUsername;
-
-    final savedInterestCollection = await DatabaseOperation.retrieveTransaction(
-      key: DatabaseKey.interests.name,
-    );
-    _savedInterestCollection = savedInterestCollection.isEmpty
-        ? []
-        : List<String>.from(
-            json.decode(
-              savedInterestCollection,
-            ),
-          );
-
-    final savedLangCollection = await DatabaseOperation.retrieveTransaction(
-      key: DatabaseKey.languages.name,
-    );
-    _savedLangCollection = savedLangCollection.isEmpty
-        ? []
-        : List<String>.from(
-            json.decode(
-              savedLangCollection,
-            ),
-          );
-
-    _emailController.text = await DatabaseOperation.retrieveTransaction(
-      key: DatabaseKey.email.name,
-    );
-
-    _newPasswordController.text = '';
-    _newPasswordConfirmationController.text = '';
-  }
-
-  void _apply() {}
-
-  void _validateInput() {
-    // _blockInput = true;
-
-    // setState(() {
-    //   _usernameErrorText = _usernameController.text.isEmpty
-    //       ? TranslationKey.invalidUsername.name.tr()
-    //       : null;
-    //   _passwordErrorText = _passwordController.text.isEmpty
-    //       ? TranslationKey.invalidPassword.name.tr()
-    //       : null;
-    // });
-  }
+  void _validateInput() {}
 
   @override
   void initState() {
     super.initState();
-
-    _reset();
 
     _firstNameFocusNode.addListener(() {
       setState(() {});
@@ -252,13 +360,14 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
 
   @override
   Widget build(BuildContext context) {
+    _formState.ref = ref;
     return app_bottom_sheet.BottomSheet(
       key: _sheetKey,
       title: TranslationKey.personalInformationTitle.name.tr(),
       content: Column(
         children: [
           ProfilePicture(
-            imageSource: _profilePic,
+            imageSource: _formState.profilePicEdit,
           ),
           const SizedBox(
             height: WhiteSpaceSize.small,
@@ -284,7 +393,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           ),
           UnderlinedTextField(
             label: 'First Name',
-            controller: _firstNameController,
+            controller: _formState.firstNameController,
             focusNode: _firstNameFocusNode,
             errorText: null,
           ),
@@ -293,7 +402,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           ),
           UnderlinedTextField(
             label: 'Last Name',
-            controller: _lastNameController,
+            controller: _formState.lastNameController,
             focusNode: _lastNameFocusNode,
             errorText: null,
           ),
@@ -302,11 +411,11 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           ),
           Dropdown(
             hint: 'Interest(s)',
-            controller: _interestController,
+            controller: _formState.interestController,
             menu: DropdownOperation.buildMenu(
               entries: DropdownOperation.allInterests,
             ),
-            collection: _interestCollection,
+            collection: _formState.interestCollectionEdit,
             addLabel: _addInterest,
             removeLabel: _removeInterest,
           ),
@@ -315,11 +424,11 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           ),
           Dropdown(
             hint: 'language(s)',
-            controller: _langController,
+            controller: _formState.langController,
             menu: DropdownOperation.buildMenu(
               entries: NativeLanguageName.map,
             ),
-            collection: _langCollection,
+            collection: _formState.langCollectionEdit,
             addLabel: _addLanguage,
             removeLabel: _removeLang,
           ),
@@ -328,28 +437,28 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           ),
           SocialMediaLink(
             platform: SocialMedia.instagram,
-            controller: _instagramLinkController,
+            controller: _formState.instaLinkController,
           ),
           const SizedBox(
             height: WhiteSpaceSize.medium,
           ),
           SocialMediaLink(
             platform: SocialMedia.facebook,
-            controller: _facebookLinkController,
+            controller: _formState.facebookLinkController,
           ),
           const SizedBox(
             height: WhiteSpaceSize.medium,
           ),
           SocialMediaLink(
-            platform: SocialMedia.linkedIn,
-            controller: _linkedInLinkController,
+            platform: SocialMedia.linkedin,
+            controller: _formState.linkedinLinkController,
           ),
           const SizedBox(
             height: WhiteSpaceSize.medium,
           ),
           UnderlinedTextField(
             label: 'Email',
-            controller: _emailController,
+            controller: _formState.emailController,
             focusNode: _emailFocusNode,
             errorText: null,
           ),
@@ -359,7 +468,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           UnderlinedTextField(
             label: 'New Password',
             obscureText: true,
-            controller: _newPasswordController,
+            controller: _formState.newPasswordController,
             focusNode: _newPasswordFocusNode,
             errorText: null,
           ),
@@ -369,7 +478,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           UnderlinedTextField(
             label: 'New Password Confirmation',
             obscureText: true,
-            controller: _newPasswordConfirmationController,
+            controller: _formState.newPasswordConfirmationController,
             focusNode: _newPasswordConfirmationFocusNode,
             errorText: null,
           ),
@@ -379,7 +488,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
         SplashButton(
           horizontalPadding: PaddingSize.veryLarge,
           verticalPadding: PaddingSize.small,
-          callbackFunction: _reset,
+          callbackFunction: _formState.undoChanges,
           buttonColor: Colors.transparent,
           borderColor: Colors.transparent,
           borderRadius: BorderRadius.circular(

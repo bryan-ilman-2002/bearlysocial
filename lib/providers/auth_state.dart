@@ -12,15 +12,15 @@ class AuthenticationStateNotifier extends StateNotifier<bool> {
     state = true;
   }
 
-  Future<void> exitApp() async {
-    await DatabaseOperation.emptyDatabase();
+  void exitApp() {
+    DatabaseOperation.emptyDatabase();
     state = false;
   }
 
   Future<void> validateToken() async {
     late String txnId, txnToken;
 
-    [txnId, txnToken] = await DatabaseOperation.retrieveTransactions(
+    [txnId, txnToken] = DatabaseOperation.retrieveTransactions(
       keys: [
         DatabaseKey.id.name,
         DatabaseKey.token.name,

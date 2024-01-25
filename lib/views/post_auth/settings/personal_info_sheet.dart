@@ -71,11 +71,14 @@ class _FormState {
           newPasswordConfirmationController.text.isNotEmpty;
       evaluatePersonalInfoEditingState();
     });
+
+    initialized = true;
   }
 
   static final _FormState instance = _FormState._privateConstructor();
 
-  WidgetRef? ref;
+  bool initialized = false;
+  late WidgetRef ref;
 
   // Editing Fields
   img_lib.Image? profilePicEdit;
@@ -155,37 +158,50 @@ class _FormState {
   }
 
   void undoChanges() {
+    // Profile Picture
     profilePicEdit = savedProfilePic;
-    firstNameController.text = savedFirstName;
-    lastNameController.text = savedLastName;
-
-    interestCollectionEdit = savedInterestCollection;
-    langCollectionEdit = savedLangCollection;
-
-    instaLinkController.text = savedInstaUsername;
-    facebookLinkController.text = savedFacebookUsername;
-    linkedinLinkController.text = savedLinkedInUsername;
-
-    emailController.text = savedLinkedInUsername;
-    newPasswordController.text = '';
-    newPasswordConfirmationController.text = '';
-
     isProfilePicEdited = false;
+
+    // First Name
+    firstNameController.text = savedFirstName;
     isFirstNameEdited = false;
+
+    // Last Name
+    lastNameController.text = savedLastName;
     isLastNameEdited = false;
 
+    // Interests
+    interestCollectionEdit = savedInterestCollection;
+    interestController.text = '';
     isInterestCollectionEdited = false;
+
+    // Languages
+    langCollectionEdit = savedLangCollection;
+    langController.text = '';
     isLangCollectionEdited = false;
 
+    // Social Media Links
+    instaLinkController.text = savedInstaUsername;
     isInstaUsernameEdited = false;
+
+    facebookLinkController.text = savedFacebookUsername;
     isFacebookUsernameEdited = false;
+
+    linkedinLinkController.text = savedLinkedInUsername;
     isLinkedInUsernameEdited = false;
 
+    // Email
+    emailController.text = savedLinkedInUsername;
     isEmailEdited = false;
+
+    // Password
+    newPasswordController.text = '';
     isNewPasswordEdited = false;
+    newPasswordConfirmationController.text = '';
     isNewPasswordConfirmationEdited = false;
 
-    evaluatePersonalInfoEditingState();
+    // Evaluate Personal Info Editing State
+    if (initialized) evaluatePersonalInfoEditingState();
   }
 
   void evaluatePersonalInfoEditingState() {
@@ -204,7 +220,7 @@ class _FormState {
 
     // If any personal information has been edited, set the editing state to true
     // Otherwise, set the editing state to false
-    ref?.read(setPersonalInfoEditingState)(state: isAnyPersonalInfoEdited);
+    ref.watch(setPersonalInfoEditingState)(value: isAnyPersonalInfoEdited);
   }
 }
 
@@ -236,7 +252,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
       );
 
       _formState.isInterestCollectionEdited =
-          FormManagement.listsContainSameElements(
+          !FormManagement.listsContainSameElements(
         listA: _formState.savedInterestCollection,
         listB: _formState.interestCollectionEdit,
       );
@@ -254,7 +270,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
       );
 
       _formState.isLangCollectionEdited =
-          FormManagement.listsContainSameElements(
+          !FormManagement.listsContainSameElements(
         listA: _formState.savedLangCollection,
         listB: _formState.langCollectionEdit,
       );
@@ -271,7 +287,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
       );
 
       _formState.isInterestCollectionEdited =
-          FormManagement.listsContainSameElements(
+          !FormManagement.listsContainSameElements(
         listA: _formState.savedInterestCollection,
         listB: _formState.interestCollectionEdit,
       );
@@ -288,7 +304,7 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
       );
 
       _formState.isLangCollectionEdited =
-          FormManagement.listsContainSameElements(
+          !FormManagement.listsContainSameElements(
         listA: _formState.savedLangCollection,
         listB: _formState.langCollectionEdit,
       );
@@ -329,6 +345,8 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
   void initState() {
     super.initState();
 
+    _formState.ref = ref;
+
     _firstNameFocusNode.addListener(() {
       setState(() {});
     });
@@ -360,7 +378,6 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
 
   @override
   Widget build(BuildContext context) {
-    _formState.ref = ref;
     return app_bottom_sheet.BottomSheet(
       key: _sheetKey,
       title: TranslationKey.personalInformationTitle.name.tr(),
@@ -488,7 +505,11 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
         SplashButton(
           horizontalPadding: PaddingSize.veryLarge,
           verticalPadding: PaddingSize.small,
-          callbackFunction: _formState.undoChanges,
+          callbackFunction: () {
+            setState(() {
+              _formState.undoChanges();
+            });
+          },
           buttonColor: Colors.transparent,
           borderColor: Colors.transparent,
           borderRadius: BorderRadius.circular(

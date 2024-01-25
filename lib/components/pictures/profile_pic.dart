@@ -14,7 +14,13 @@ class ProfilePicture extends StatelessWidget {
   Widget _getProfilePic() {
     switch (imageSource.runtimeType) {
       case img_lib.Image:
-        return Image.memory(Uint8List.fromList(img_lib.encodePng(imageSource)));
+        return ClipOval(
+          child: Image.memory(
+            Uint8List.fromList(
+              img_lib.encodePng(imageSource),
+            ),
+          ),
+        );
       default:
         return const Icon(
           Icons.no_photography_outlined,
@@ -29,9 +35,11 @@ class ProfilePicture extends StatelessWidget {
       height: SideSize.large,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-        ),
+        border: imageSource == null
+            ? Border.all(
+                color: Theme.of(context).dividerColor,
+              )
+            : null,
       ),
       child: Center(
         child: _getProfilePic(),

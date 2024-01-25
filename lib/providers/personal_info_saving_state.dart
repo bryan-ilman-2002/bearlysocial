@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class PersonalInfoEditingStateNotifier extends StateNotifier<bool> {
   PersonalInfoEditingStateNotifier() : super(false);
 
-  void setPersonalInfoEditingState({required bool state}) {
-    state = state;
+  void setPersonalInfoEditingState({required bool value}) {
+    state = value;
   }
 }
 

@@ -5,7 +5,7 @@ import 'package:bearlysocial/providers/auth_state.dart';
 import 'package:bearlysocial/components/buttons/splash_btn.dart';
 import 'package:bearlysocial/components/buttons/setting_btn.dart';
 import 'package:bearlysocial/providers/personal_info_saving_state.dart';
-import 'package:bearlysocial/views/post_auth/settings/personal_info_sheet.dart';
+import 'package:bearlysocial/views/sheets/personal_info_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

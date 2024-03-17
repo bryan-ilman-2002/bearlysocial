@@ -15,7 +15,7 @@ import 'package:bearlysocial/utilities/db_operation.dart';
 import 'package:bearlysocial/utilities/dropdown_operation.dart';
 import 'package:bearlysocial/utilities/form_management.dart';
 import 'package:bearlysocial/utilities/user_permission.dart';
-import 'package:bearlysocial/views/post_auth/settings/selfie_screen.dart';
+import 'package:bearlysocial/views/pages/selfie_screen.dart';
 import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -484,7 +484,6 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           ),
           UnderlinedTextField(
             label: 'New Password',
-            obscureText: true,
             controller: _formState.newPasswordController,
             focusNode: _newPasswordFocusNode,
             errorText: null,
@@ -494,7 +493,6 @@ class _PersonalInformationState extends ConsumerState<PersonalInformation> {
           ),
           UnderlinedTextField(
             label: 'New Password Confirmation',
-            obscureText: true,
             controller: _formState.newPasswordConfirmationController,
             focusNode: _newPasswordConfirmationFocusNode,
             errorText: null,

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 class UnderlinedTextField extends StatefulWidget {
   final String label;
-  final bool obscureText;
   final TextEditingController controller;
   final FocusNode focusNode;
   final String? errorText;
@@ -12,7 +11,6 @@ class UnderlinedTextField extends StatefulWidget {
   const UnderlinedTextField({
     super.key,
     required this.label,
-    this.obscureText = false,
     required this.controller,
     required this.focusNode,
     this.errorText,
@@ -22,12 +20,9 @@ class UnderlinedTextField extends StatefulWidget {
 }
 
 class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
-  bool _obscureState = true;
-
   @override
   Widget build(BuildContext context) {
     return TextField(
-      obscureText: widget.obscureText ? _obscureState : false,
       focusNode: widget.focusNode,
       controller: widget.controller,
       style: Theme.of(context).textTheme.bodyMedium,
@@ -69,25 +64,6 @@ class _UnderlinedTextFieldState extends State<UnderlinedTextField> {
           ),
         ),
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: widget.obscureText
-            ? IconButton(
-                padding: const EdgeInsets.only(
-                  top: PaddingSize.small,
-                ),
-                icon: Icon(
-                  _obscureState ? Icons.visibility : Icons.visibility_off,
-                  color: widget.focusNode.hasFocus
-                      ? Theme.of(context).focusColor
-                      : Theme.of(context).dividerColor,
-                ),
-                splashColor: Colors.transparent,
-                onPressed: () {
-                  setState(() {
-                    _obscureState = !_obscureState;
-                  });
-                },
-              )
-            : null,
       ),
     );
   }

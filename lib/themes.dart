@@ -7,7 +7,7 @@ Color? _normalColor;
 Color? _focusColor;
 Color? _indicatorColor;
 
-ThemeData buildAppThemeData({required bool lightMode}) {
+ThemeData createTheme({required bool lightMode}) {
   _backgroundColor = lightMode ? Colors.white : AppColor.heavyGray;
   _highlightColor = lightMode ? AppColor.lightGray : AppColor.moderateGray;
   _normalColor = lightMode ? AppColor.moderateGray : AppColor.lightGray;
@@ -32,7 +32,7 @@ ThemeData buildAppThemeData({required bool lightMode}) {
 TextTheme get _textTheme {
   return TextTheme(
     displayLarge: _bodyMedium.copyWith(
-      fontSize: TextSize.veryLarge,
+      fontSize: 1.5 * TextSize.veryLarge,
       fontWeight: FontWeight.bold,
       color: _focusColor,
     ),

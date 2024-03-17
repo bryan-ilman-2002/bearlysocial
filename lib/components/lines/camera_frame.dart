@@ -1,4 +1,4 @@
-part of 'package:bearlysocial/views/post_auth/settings/selfie_screen.dart';
+part of 'package:bearlysocial/views/pages/selfie_screen.dart';
 
 class _CameraFrame extends StatelessWidget {
   final Color color;

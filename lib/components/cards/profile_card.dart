@@ -73,7 +73,7 @@ class ProfileCard extends StatelessWidget {
                 ),
                 const SizedBox(height: WhiteSpaceSize.verySmall),
                 const Text(
-                  'Artificial Intelligence',
+                  'Football, Travel, Artificial Intelligence',
                   maxLines: 4,
                 ),
                 const SizedBox(height: WhiteSpaceSize.small),

@@ -2,9 +2,9 @@ import 'package:bearlysocial/providers/auth_state.dart';
 import 'package:bearlysocial/themes.dart';
 import 'package:bearlysocial/utilities/db_operation.dart';
 import 'package:bearlysocial/utilities/inline_translation_loader.dart';
-import 'package:bearlysocial/views/loading_page.dart';
-import 'package:bearlysocial/views/post_auth/post_auth_page_manager.dart';
-import 'package:bearlysocial/views/pre_auth/pre_auth_page_manager.dart';
+import 'package:bearlysocial/views/pages/auth_page.dart';
+import 'package:bearlysocial/views/pages/loading_page.dart';
+import 'package:bearlysocial/views/pages/session_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -63,17 +63,17 @@ class _AppState extends ConsumerState<App> {
 
     return MaterialApp(
       title: 'BearlySocial',
-      theme: buildAppThemeData(lightMode: true),
-      darkTheme: buildAppThemeData(lightMode: false),
+      theme: createTheme(lightMode: true),
+      darkTheme: createTheme(lightMode: false),
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      scrollBehavior: const _BouncingScroll(),
       home: _loading
           ? const LoadingPage()
           : ref.watch(auth)
-              ? const PostAuthPageManager()
-              : const PreAuthPageManager(),
+              ? const SessionPage()
+              : const AuthPage(),
+      scrollBehavior: const _BouncingScroll(),
     );
   }
 }

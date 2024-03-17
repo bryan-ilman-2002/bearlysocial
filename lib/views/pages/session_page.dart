@@ -1,24 +1,23 @@
 import 'package:bearlysocial/constants/design_tokens.dart';
-import 'package:bearlysocial/views/post_auth/chats/page.dart';
-import 'package:bearlysocial/views/post_auth/explore/explore_page.dart';
-import 'package:bearlysocial/views/post_auth/favorites/page.dart';
+import 'package:bearlysocial/views/pages/explore_page.dart';
+import 'package:bearlysocial/views/pages/favorites_page.dart';
 import 'package:bearlysocial/components/bars/nav_bar.dart' as app_nav_bar;
-import 'package:bearlysocial/views/post_auth/sessions/page.dart';
-import 'package:bearlysocial/views/post_auth/settings/settings_page.dart';
+import 'package:bearlysocial/views/pages/page.dart';
+import 'package:bearlysocial/views/pages/settings_page.dart';
 import 'package:flutter/material.dart';
 
-class PostAuthPageManager extends StatefulWidget {
-  /// [PostAuthPageManager] is a [StatefulWidget] responsible for managing post-authentication pages,
+class SessionPage extends StatefulWidget {
+  /// [SessionPage] is a [StatefulWidget] responsible for managing post-authentication pages,
   /// allowing users to navigate between various pages using an [IndexedStack].
   /// It features a [app_nav_bar.NavigationBar] and a [FloatingActionButton] for scrolling to the top.
 
-  const PostAuthPageManager({super.key});
+  const SessionPage({super.key});
 
   @override
-  State<PostAuthPageManager> createState() => _PostAuthPageManager();
+  State<SessionPage> createState() => _SessionPage();
 }
 
-class _PostAuthPageManager extends State<PostAuthPageManager> {
+class _SessionPage extends State<SessionPage> {
   List<Widget> _pages = [];
 
   int _selectedIndex = 0;
@@ -73,9 +72,6 @@ class _PostAuthPageManager extends State<PostAuthPageManager> {
       SessionsPage(
         controller: _createController(),
       ),
-      ChatsPage(
-        controller: _createController(),
-      ),
       SettingsPage(
         controller: _createController(),
       ),
@@ -100,10 +96,6 @@ class _PostAuthPageManager extends State<PostAuthPageManager> {
       'Sessions': {
         'normalIcon': Icons.calendar_today_outlined,
         'highlightedIcon': Icons.calendar_today,
-      },
-      'Chats': {
-        'normalIcon': Icons.chat_outlined,
-        'highlightedIcon': Icons.chat,
       },
       'Settings': {
         'normalIcon': Icons.settings_outlined,

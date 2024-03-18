@@ -32,7 +32,7 @@ ThemeData createTheme({required bool lightMode}) {
 TextTheme get _textTheme {
   return TextTheme(
     displayLarge: _bodyMedium.copyWith(
-      fontSize: 1.5 * TextSize.veryLarge,
+      fontSize: TextSize.veryLarge,
       fontWeight: FontWeight.bold,
       color: _focusColor,
     ),

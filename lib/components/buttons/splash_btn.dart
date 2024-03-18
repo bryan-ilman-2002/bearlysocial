@@ -41,7 +41,10 @@ class SplashButton extends StatelessWidget {
         border: Border.all(
           color: Colors.transparent,
         ),
-        borderRadius: borderRadius ?? BorderRadius.zero,
+        borderRadius: borderRadius ??
+            BorderRadius.circular(
+              CurvatureSize.large,
+            ),
         boxShadow: [
           if (shadow != null) shadow!,
         ],
@@ -52,12 +55,18 @@ class SplashButton extends StatelessWidget {
           side: BorderSide(
             color: borderColor ?? Colors.transparent,
           ),
-          borderRadius: borderRadius ?? BorderRadius.zero,
+          borderRadius: borderRadius ??
+              BorderRadius.circular(
+                CurvatureSize.large,
+              ),
         ),
         child: InkWell(
           onTap: callbackFunction?.call,
           splashColor: splashColor,
-          borderRadius: borderRadius ?? BorderRadius.zero,
+          borderRadius: borderRadius ??
+              BorderRadius.circular(
+                CurvatureSize.large,
+              ),
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: horizontalPadding ?? PaddingSize.zero,

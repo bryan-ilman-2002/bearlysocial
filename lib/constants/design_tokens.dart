@@ -66,8 +66,8 @@ class TextSize {
   /// Large text size. Value: 18.0.
   static const double large = 18.0;
 
-  /// Very large text size. Value: 32.0.
-  static const double veryLarge = 32.0;
+  /// Very large text size. Value: 48.0.
+  static const double veryLarge = 48.0;
 }
 
 /// Icon size constants for the application.

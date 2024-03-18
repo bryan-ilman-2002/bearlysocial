@@ -72,14 +72,6 @@ class _AuthPageState extends State<AuthPage> {
                     ),
                   ],
                 ),
-                ElevatedButton(
-                  child: const Text('Toggle'),
-                  onPressed: () {
-                    setState(() {
-                      _showHook = !_showHook;
-                    });
-                  },
-                ),
               ],
             ),
           ),
